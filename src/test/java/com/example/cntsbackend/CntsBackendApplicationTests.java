@@ -1,13 +1,40 @@
 package com.example.cntsbackend;
 
+import com.example.cntsbackend.common.CommonResponse;
+import com.example.cntsbackend.domain.Account;
+import com.example.cntsbackend.service.serviceimpl.AccountServiceImpl;
 import org.junit.jupiter.api.Test;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Date;
+
 @SpringBootTest
+@MapperScan("com.example.cntsbackend.persistence")
 class CntsBackendApplicationTests {
+    @Autowired
+    private AccountServiceImpl accountService;
 
     @Test
     void contextLoads() {
     }
-
+    @Test
+    public void sendVerificationCodeByPhoneTest() {
+        CommonResponse<Account> accountCommonResponse = accountService.sendVerificationCodeByPhone("123");
+        System.out.println(accountCommonResponse.getMessage());
+        System.out.println(accountCommonResponse.getCode());
+    }
+    @Test
+    public void sendVerificationCodeByEmailTest() {
+        CommonResponse<Account> accountCommonResponse = accountService.sendVerificationCodeByEmail("123");
+        System.out.println(accountCommonResponse.getMessage());
+        System.out.println(accountCommonResponse.getCode());
+    }
+    @Test
+    public void loginByPhoneTest() {
+        CommonResponse<Account> accountCommonResponse = accountService.loginByPhone("123");
+        System.out.println(accountCommonResponse.getData());
+        System.out.println(accountCommonResponse.getCode());
+    }
 }
