@@ -21,14 +21,14 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void sendVerificationCodeByPhoneTest() {
-        CommonResponse<Account> accountCommonResponse = accountService.sendVerificationCodeByPhone("123");
+        CommonResponse<String> accountCommonResponse = accountService.sendVerificationCodeByPhone("123");
         System.out.println(accountCommonResponse.getMessage());
         System.out.println(accountCommonResponse.getCode());
     }
     @Test
     public void sendVerificationCodeByEmailTest() {
-        CommonResponse<Account> accountCommonResponse = accountService.sendVerificationCodeByEmail("123");
-        System.out.println(accountCommonResponse.getMessage());
+        CommonResponse<String> accountCommonResponse = accountService.sendVerificationCodeByEmail("2674314843@qq.com");
+        System.out.println(accountCommonResponse.getData());
         System.out.println(accountCommonResponse.getCode());
     }
     @Test

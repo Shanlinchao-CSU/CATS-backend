@@ -42,5 +42,8 @@ public class CommonResponse<T> {
     public static <T> CommonResponse<T> createForError(int code, String message){
         return new CommonResponse<>(code,message);
     }
+    public static <T> CommonResponse<T> createForError(String message,T data){
+        return new CommonResponse<>(ResponseCode.ERROR.getCode(),message, data);
+    }
 
 }
