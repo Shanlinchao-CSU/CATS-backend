@@ -2,10 +2,11 @@ package com.example.cntsbackend.service.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.cntsbackend.common.CommonResponse;
-import com.example.cntsbackend.common.SendMailUtil;
 import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.persistence.AccountMapper;
 import com.example.cntsbackend.service.AccountService;
+import com.example.cntsbackend.util.SendMailUtil;
+import com.example.cntsbackend.util.SendPhoneUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,7 @@ public class AccountServiceImpl implements AccountService {
         if(checkPhoneNumberExist(phoneNumber)==0){
             // 生成四位包括数字、小写字母和大写字母的随机验证码
             String verificationCode = generateVerificationCode();
+            SendPhoneUtil.sendSMS(phoneNumber,verificationCode);
             return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
         }else{
             return CommonResponse.createForError("0");

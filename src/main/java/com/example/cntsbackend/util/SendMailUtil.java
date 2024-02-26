@@ -1,4 +1,4 @@
-package com.example.cntsbackend.common;
+package com.example.cntsbackend.util;
 
 import javax.mail.*;
 import javax.mail.internet.*;
