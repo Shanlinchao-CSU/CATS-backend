@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Date;
+import java.util.Map;
 
 @SpringBootTest
 @MapperScan("com.example.cntsbackend.persistence")
@@ -33,7 +34,7 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void loginByPhoneTest() {
-        CommonResponse<Account> accountCommonResponse = accountService.loginByPhone("123");
+        CommonResponse<Map> accountCommonResponse = accountService.loginByPhone("123");
         System.out.println(accountCommonResponse.getData());
         System.out.println(accountCommonResponse.getCode());
     }

@@ -10,7 +10,10 @@ import com.example.cntsbackend.util.SendPhoneUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -31,9 +34,9 @@ public class AccountServiceImpl implements AccountService {
     public int checkEmailExist(String email) {
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
         if (account != null) {
-            return 0; // 号码已存在，发送验证码
+            return 0; // 邮箱已存在，发送验证码
         }
-        return 1; // 号码不存在，发送错误信息(号码未被注册)
+        return 1; // 邮箱不存在，发送错误信息(邮箱未被注册)
     }
 
     //发送手机验证码
@@ -74,13 +77,25 @@ public class AccountServiceImpl implements AccountService {
     }
 
     //邮箱登录
-    public CommonResponse<Account> loginByEmail(String email){
+    public CommonResponse<Map> loginByEmail(String email){
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
-        return CommonResponse.createForSuccess(account);
+        Map<String, Object> map = new HashMap<>();
+        String token = UUID.randomUUID().toString();
+
+        map.put("Account",account);
+        map.put("token",token);
+
+        return CommonResponse.createForSuccess("邮箱登录",map);
     }
     //手机号码登录
-    public CommonResponse<Account> loginByPhone(String phone){
+    public CommonResponse<Map> loginByPhone(String phone){
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
-        return CommonResponse.createForSuccess(account);
+        Map<String, Object> map = new HashMap<>();
+        String token = UUID.randomUUID().toString();
+
+        map.put("Account",account);
+        map.put("token",token);
+
+        return CommonResponse.createForSuccess("手机号码登录",map);
     }
 }

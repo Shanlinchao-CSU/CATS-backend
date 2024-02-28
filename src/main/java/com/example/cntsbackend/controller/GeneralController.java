@@ -1,4 +1,4 @@
-package com.example.cntsbackend.cotroller;
+package com.example.cntsbackend.controller;
 
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.example.cntsbackend.service.AccountService;
+
+import java.util.Map;
 
 /**
  * General 通用controller
@@ -51,7 +53,7 @@ public class GeneralController {
      * @param email 邮箱
      */
     @GetMapping("/login/email")
-    public CommonResponse<Account> loginByEmail(@PathParam("email") String email){
+    public CommonResponse<Map> loginByEmail(@PathParam("email") String email){
         return accountService.loginByEmail(email);
     }
 
@@ -60,7 +62,7 @@ public class GeneralController {
      * @param phone 手机
      */
     @GetMapping("/login/phone")
-    public CommonResponse<Account> loginByPhone(@PathParam("phone") String phone){
+    public CommonResponse<Map> loginByPhone(@PathParam("phone") String phone){
         return accountService.loginByPhone(phone);
     }
 }

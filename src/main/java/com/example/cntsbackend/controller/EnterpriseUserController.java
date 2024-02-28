@@ -1,4 +1,4 @@
-package com.example.cntsbackend.cotroller;
+package com.example.cntsbackend.controller;
 
 import org.springframework.stereotype.Controller;
 
