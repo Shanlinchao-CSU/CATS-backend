@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.File;
+
 @Data
 @TableName(value = "register_application")
 public class RegisterApplication {
@@ -16,4 +18,7 @@ public class RegisterApplication {
     private String email;
     private Integer type;
     private String file_address;
+
+    public RegisterApplication(String str, String name, String password, String phone, String email, int enterprise_type, int type) {
+    }
 }
