@@ -22,6 +22,7 @@ public class GeneralController {
 
     /**
      * 发送手机验证码
+     *
      * @param phone 手机号
      * @return 验证码 CommonResponse<String>
      */
@@ -32,43 +33,46 @@ public class GeneralController {
 
     /**
      * 发送邮箱验证码
+     *
      * @param email 邮箱
      * @return 验证码 CommonResponse<String>
      */
     @GetMapping("/code/email")
-    public CommonResponse<String> setEmailCode(@PathParam("email") String email){
+    public CommonResponse<String> setEmailCode(@PathParam("email") String email) {
         return accountService.sendVerificationCodeByEmail(email);
     }
 
     /**
      * 账号+密码 登录
-     * @param id 账号
+     *
+     * @param id       账号
      * @param password 密码
      * @return 登录结果 CommonResponse<Map>
      */
     @GetMapping("/id")
-    public CommonResponse<Map> loginById(@PathParam("id") String id, @PathParam("password") String password){
-//        return accountService.loginById(id, password);
-        return null;
+    public CommonResponse<Map> loginById(@PathParam("id") String id, @PathParam("password") String password) {
+        return accountService.loginById(id, password);
     }
 
     /**
      * 邮箱 登录
+     *
      * @param email 邮箱
      * @return 登录结果 CommonResponse<Map>
      */
     @GetMapping("/email")
-    public CommonResponse<Map> loginByEmail(@PathParam("email") String email){
+    public CommonResponse<Map> loginByEmail(@PathParam("email") String email) {
         return accountService.loginByEmail(email);
     }
 
     /**
      * 手机 登录
+     *
      * @param phone 手机
      * @return 登录结果 CommonResponse<Map>
      */
     @GetMapping("/phone")
-    public CommonResponse<Map> loginByPhone(@PathParam("phone") String phone){
+    public CommonResponse<Map> loginByPhone(@PathParam("phone") String phone) {
         return accountService.loginByPhone(phone);
     }
 }

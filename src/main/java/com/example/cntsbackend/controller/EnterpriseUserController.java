@@ -28,6 +28,7 @@ public class EnterpriseUserController {
 
     /**
      * 企业查看交易信息
+     *
      * @param id 账号
      * @return 交易信息 List<Transaction>
      */
@@ -39,13 +40,14 @@ public class EnterpriseUserController {
 
     /**
      * 企业用户注册
-     * @param file 文件
-     * @param name 名字
-     * @param password 密码
-     * @param phone 电话
-     * @param email 邮箱
+     *
+     * @param file            文件
+     * @param name            名字
+     * @param password        密码
+     * @param phone           电话
+     * @param email           邮箱
      * @param enterprise_type 企业类型
-     * @param type 类型
+     * @param type            类型
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/info")
