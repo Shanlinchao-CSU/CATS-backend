@@ -2,12 +2,9 @@ package com.example.cntsbackend.service.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.cntsbackend.common.CommonResponse;
-import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.Transaction;
-import com.example.cntsbackend.persistence.AccountMapper;
 import com.example.cntsbackend.persistence.TransactionMapper;
 import com.example.cntsbackend.service.TransactionService;
-import com.example.cntsbackend.util.SendMailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

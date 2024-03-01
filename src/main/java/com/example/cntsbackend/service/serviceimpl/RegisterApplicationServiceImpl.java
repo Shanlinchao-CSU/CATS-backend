@@ -14,10 +14,21 @@ import java.io.File;
 public class RegisterApplicationServiceImpl implements RegisterApplicationService {
     @Autowired
     private RegisterApplicationMapper registerApplicationMapper;
-    public CommonResponse<String> register(File file ,String name ,String password ,String phone ,String email ,int enterprise_type ,int type ){
+    public CommonResponse<String> EnterpriseUserRegister(File file ,String name ,String password ,String phone ,String email ,int enterprise_type ,int type ){
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone).eq("email", email));
         String str= String.valueOf(file);
         RegisterApplication registerApplication1 = new RegisterApplication(str,name,password,phone,email,enterprise_type,type);
+        if(registerApplication!=null){
+            return CommonResponse.createForError();
+        }else {
+            int i = registerApplicationMapper.insert(registerApplication1);
+            return CommonResponse.createForSuccess("SUCCESS");
+        }
+    }
+    public CommonResponse<String> ThirdPartyRegulatorsRegister(File file ,String name ,String password ,String email ,int type ){
+        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("email", email));
+        String str= String.valueOf(file);
+        RegisterApplication registerApplication1 = new RegisterApplication(str,name,password,"",email,100,type);
         if(registerApplication!=null){
             return CommonResponse.createForError();
         }else {

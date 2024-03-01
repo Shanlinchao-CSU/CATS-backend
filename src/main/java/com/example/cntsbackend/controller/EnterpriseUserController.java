@@ -50,6 +50,6 @@ public class EnterpriseUserController {
      */
     @PostMapping("/info")
     public CommonResponse<String> register(@PathParam("file") File file, @PathParam("name") String name, @PathParam("password") String password, @PathParam("phone") String phone, @PathParam("email") String email, @PathParam("enterprise_type") int enterprise_type, @PathParam("type") int type) {
-        return registerApplicationService.register(file, name, password, phone, email, enterprise_type, type);
+        return registerApplicationService.EnterpriseUserRegister(file, name, password, phone, email, enterprise_type, type);
     }
 }

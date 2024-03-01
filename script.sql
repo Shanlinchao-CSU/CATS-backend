@@ -19,7 +19,8 @@ create table register_application
     phone                   varchar(255) null,
     email                   varchar(255) null,
     type                    int          null,
-    file_address            varchar(255) null
+    file_address            varchar(255) null,
+    enterprise_type         int          null
 );
 
 create table transaction

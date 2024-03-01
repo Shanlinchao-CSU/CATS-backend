@@ -14,4 +14,6 @@ public interface AccountService {
     public CommonResponse<Map> loginByPhone(String phone);
     //邮箱登录
     public CommonResponse<Map> loginByEmail(String email);
+    //ID+密码登录
+    CommonResponse<Map> loginById(String id,String password);
 }

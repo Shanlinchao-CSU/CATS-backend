@@ -98,4 +98,14 @@ public class AccountServiceImpl implements AccountService {
 
         return CommonResponse.createForSuccess("手机号码登录",map);
     }
+    public CommonResponse<Map> loginById(String id,String password){
+        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_name", id).eq("password", password));
+        Map<String, Object> map = new HashMap<>();
+        String token = UUID.randomUUID().toString();
+
+        map.put("Account",account);
+        map.put("token",token);
+
+        return CommonResponse.createForSuccess("id+密码登录",map);
+    }
 }
