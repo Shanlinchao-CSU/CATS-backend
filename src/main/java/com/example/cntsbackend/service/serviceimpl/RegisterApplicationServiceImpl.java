@@ -25,8 +25,8 @@ public class RegisterApplicationServiceImpl implements RegisterApplicationServic
             return CommonResponse.createForSuccess("SUCCESS");
         }
     }
-    public CommonResponse<String> ThirdPartyRegulatorsRegister(File file ,String name ,String password ,String email ,int type ){
-        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("email", email));
+    public CommonResponse<String> ThirdPartyRegulatorsRegister(File file ,String name ,String password ,String phone ,String email ,int type ){
+        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone).eq("email", email));
         String str= String.valueOf(file);
         RegisterApplication registerApplication1 = new RegisterApplication(str,name,password,"",email,100,type);
         if(registerApplication!=null){
