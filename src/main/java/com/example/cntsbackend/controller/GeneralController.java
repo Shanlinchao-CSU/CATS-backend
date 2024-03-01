@@ -49,6 +49,7 @@ public class GeneralController {
     @GetMapping("/id")
     public CommonResponse<Map> loginById(@PathParam("id") String id, @PathParam("password") String password){
 //        return accountService.loginById(id, password);
+        return null;
     }
 
     /**
