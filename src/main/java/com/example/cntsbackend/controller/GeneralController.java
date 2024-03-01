@@ -14,7 +14,7 @@ import java.util.Map;
  * General 通用controller
  * 减少重复代码
  */
-@Controller
+@Controller("/general")
 public class GeneralController {
 
     @Autowired
@@ -23,8 +23,9 @@ public class GeneralController {
     /**
      * 发送手机验证码
      * @param phone 手机号
+     * @return 验证码 CommonResponse<String>
      */
-    @GetMapping("/login/code/phone")
+    @GetMapping("/code/phone")
     public CommonResponse<String> sendPhoneCode(@PathParam("phone") String phone) {
         return accountService.sendVerificationCodeByPhone(phone);
     }
@@ -32,8 +33,9 @@ public class GeneralController {
     /**
      * 发送邮箱验证码
      * @param email 邮箱
+     * @return 验证码 CommonResponse<String>
      */
-    @GetMapping("/login/code/email")
+    @GetMapping("/code/email")
     public CommonResponse<String> setEmailCode(@PathParam("email") String email){
         return accountService.sendVerificationCodeByEmail(email);
     }
@@ -42,17 +44,19 @@ public class GeneralController {
      * 账号+密码 登录
      * @param id 账号
      * @param password 密码
+     * @return 登录结果 CommonResponse<Map>
      */
-    @GetMapping("/login/id")
-    public void loginById(@PathParam("id") String id, @PathParam("password") String password){
+    @GetMapping("/id")
+    public CommonResponse<Map> loginById(@PathParam("id") String id, @PathParam("password") String password){
 //        return accountService.loginById(id, password);
     }
 
     /**
      * 邮箱 登录
      * @param email 邮箱
+     * @return 登录结果 CommonResponse<Map>
      */
-    @GetMapping("/login/email")
+    @GetMapping("/email")
     public CommonResponse<Map> loginByEmail(@PathParam("email") String email){
         return accountService.loginByEmail(email);
     }
@@ -60,8 +64,9 @@ public class GeneralController {
     /**
      * 手机 登录
      * @param phone 手机
+     * @return 登录结果 CommonResponse<Map>
      */
-    @GetMapping("/login/phone")
+    @GetMapping("/phone")
     public CommonResponse<Map> loginByPhone(@PathParam("phone") String phone){
         return accountService.loginByPhone(phone);
     }

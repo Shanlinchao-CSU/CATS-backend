@@ -5,6 +5,6 @@ import org.springframework.stereotype.Controller;
 /**
  * DataAuditors 数据审核员controller
  */
-@Controller
+@Controller("/dataAuditors")
 public class DataAuditorsController {
 }
