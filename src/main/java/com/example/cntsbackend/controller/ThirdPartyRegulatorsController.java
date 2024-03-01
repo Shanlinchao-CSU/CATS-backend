@@ -43,12 +43,13 @@ public class ThirdPartyRegulatorsController {
      * @param name     名字
      * @param password 密码
      * @param email    邮箱
+     * @param phone    电话
      * @param type     类型
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/info")
-    public CommonResponse<String> register(@PathParam("file") File file, @PathParam("name") String name, @PathParam("password") String password, @PathParam("email") String email, @PathParam("type") int type) {
-        return registerApplicationService.ThirdPartyRegulatorsRegister(file, name, password, email, type);
+    public CommonResponse<String> register(@PathParam("file") File file, @PathParam("name") String name, @PathParam("password") String password, @PathParam("email") String email, @PathParam("phone") String phone, @PathParam("type") int type) {
+        return registerApplicationService.ThirdPartyRegulatorsRegister(file, name, password, phone, email, type);
     }
 
 }
