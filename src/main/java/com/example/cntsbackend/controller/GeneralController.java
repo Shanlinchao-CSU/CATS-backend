@@ -14,7 +14,7 @@ import java.util.Map;
  * General 通用controller
  * 减少重复代码
  */
-@Controller("/general")
+@Controller
 public class GeneralController {
 
     @Autowired
@@ -26,7 +26,7 @@ public class GeneralController {
      * @param phone 手机号
      * @return 验证码 CommonResponse<String>
      */
-    @GetMapping("/code/phone")
+    @GetMapping("/general/code/phone")
     public CommonResponse<String> sendPhoneCode(@PathParam("phone") String phone) {
         return accountService.sendVerificationCodeByPhone(phone);
     }
@@ -37,7 +37,7 @@ public class GeneralController {
      * @param email 邮箱
      * @return 验证码 CommonResponse<String>
      */
-    @GetMapping("/code/email")
+    @GetMapping("/general/code/email")
     public CommonResponse<String> setEmailCode(@PathParam("email") String email) {
         return accountService.sendVerificationCodeByEmail(email);
     }
@@ -49,7 +49,7 @@ public class GeneralController {
      * @param password 密码
      * @return 登录结果 CommonResponse<Map>
      */
-    @GetMapping("/id")
+    @GetMapping("/general/id")
     public CommonResponse<Map> loginById(@PathParam("id") String id, @PathParam("password") String password) {
         return accountService.loginById(id, password);
     }
@@ -60,7 +60,7 @@ public class GeneralController {
      * @param email 邮箱
      * @return 登录结果 CommonResponse<Map>
      */
-    @GetMapping("/email")
+    @GetMapping("/general/email")
     public CommonResponse<Map> loginByEmail(@PathParam("email") String email) {
         return accountService.loginByEmail(email);
     }
@@ -71,7 +71,7 @@ public class GeneralController {
      * @param phone 手机
      * @return 登录结果 CommonResponse<Map>
      */
-    @GetMapping("/phone")
+    @GetMapping("/general/phone")
     public CommonResponse<Map> loginByPhone(@PathParam("phone") String phone) {
         return accountService.loginByPhone(phone);
     }

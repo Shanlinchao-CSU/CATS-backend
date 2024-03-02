@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Administrator 管理员controller
  */
-@Controller("/administrator")
+@Controller
 public class AdministratorController {
 
     @Autowired
@@ -23,7 +23,7 @@ public class AdministratorController {
      *
      * @return 交易信息 List<Transaction>
      */
-    @GetMapping("/transaction")
+    @GetMapping("/administrator/transaction")
     public CommonResponse<List<Transaction>> getAllTransactionDatas() {
         return transactionService.getAllTransactionDatas();
     }

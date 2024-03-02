@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * EnterpriseUser 企业用户controller
  */
-@Controller("/enterprise")
+@Controller
 public class EnterpriseUserController {
 
     @Autowired
@@ -32,7 +32,7 @@ public class EnterpriseUserController {
      * @param id 账号
      * @return 交易信息 List<Transaction>
      */
-    @GetMapping("/transaction/{id}")
+    @GetMapping("/enterprise/transaction/{id}")
     public CommonResponse<List<Transaction>> getTransaction(@PathVariable("id") String id) {
         return transactionService.getTransactionData(id);
     }
@@ -50,7 +50,7 @@ public class EnterpriseUserController {
      * @param type            类型
      * @return 注册结果 CommonResponse<String>
      */
-    @PostMapping("/info")
+    @PostMapping("/enterprise/info")
     public CommonResponse<String> register(@PathParam("file") File file, @PathParam("name") String name, @PathParam("password") String password, @PathParam("phone") String phone, @PathParam("email") String email, @PathParam("enterprise_type") int enterprise_type, @PathParam("type") int type) {
         return registerApplicationService.EnterpriseUserRegister(file, name, password, phone, email, enterprise_type, type);
     }

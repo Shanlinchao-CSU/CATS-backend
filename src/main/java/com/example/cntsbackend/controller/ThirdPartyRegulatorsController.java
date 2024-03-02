@@ -17,7 +17,7 @@ import java.util.List;
  * ThirdPartyRegulators 第三方监管机构controller
  */
 
-@Controller("/thirdParty")
+@Controller
 public class ThirdPartyRegulatorsController {
 
     @Autowired
@@ -31,7 +31,7 @@ public class ThirdPartyRegulatorsController {
      *
      * @return 交易信息 List<Transaction>
      */
-    @GetMapping("/transaction")
+    @GetMapping("/thirdParty/transaction")
     public CommonResponse<List<Transaction>> getAllTransactionDatas() {
         return transactionService.getAllTransactionDatas();
     }
@@ -47,7 +47,7 @@ public class ThirdPartyRegulatorsController {
      * @param type     类型
      * @return 注册结果 CommonResponse<String>
      */
-    @PostMapping("/info")
+    @PostMapping("/thirdParty/info")
     public CommonResponse<String> register(@PathParam("file") File file, @PathParam("name") String name, @PathParam("password") String password, @PathParam("email") String email, @PathParam("phone") String phone, @PathParam("type") int type) {
         return registerApplicationService.ThirdPartyRegulatorsRegister(file, name, password, phone, email, type);
     }
