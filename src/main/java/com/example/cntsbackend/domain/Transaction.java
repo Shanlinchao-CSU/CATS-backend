@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -15,12 +14,24 @@ import java.util.Date;
 public class Transaction {
     @TableId(type = IdType.AUTO)
     private int transaction_id;
-    private String from;
-    private String to;
-    private BigDecimal amount;
+    private String t_from;
+    private String t_to;
+    private int amount;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date start_time;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date complete_time;
     private Boolean state;
+
+    public Transaction(String from, String to, int amount, Date start_time, Date complete_time, Boolean state) {
+        this.t_from = from;
+        this.t_to = to;
+        this.amount = amount;
+        this.start_time = start_time;
+        this.complete_time = complete_time;
+        this.state = state;
+    }
+
+    public Transaction() {
+    }
 }

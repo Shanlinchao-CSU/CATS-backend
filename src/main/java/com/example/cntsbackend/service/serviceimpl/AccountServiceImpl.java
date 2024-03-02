@@ -3,7 +3,11 @@ package com.example.cntsbackend.service.serviceimpl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
+import com.example.cntsbackend.domain.CMessage;
+import com.example.cntsbackend.domain.RegisterApplication;
 import com.example.cntsbackend.persistence.AccountMapper;
+import com.example.cntsbackend.persistence.CMessageMapper;
+import com.example.cntsbackend.persistence.RegisterApplicationMapper;
 import com.example.cntsbackend.service.AccountService;
 import com.example.cntsbackend.util.SendMailUtil;
 import com.example.cntsbackend.util.SendPhoneUtil;
@@ -19,6 +23,10 @@ import java.util.UUID;
 public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountMapper accountMapper;
+    @Autowired
+    private RegisterApplicationMapper registerApplicationMapper;
+    @Autowired
+    private CMessageMapper cMessageMapper;
     private static final String CHARACTERS = "0123456789";
     private static final int CODE_LENGTH = 4;
 
@@ -107,5 +115,19 @@ public class AccountServiceImpl implements AccountService {
         map.put("token",token);
 
         return CommonResponse.createForSuccess("id+密码登录",map);
+    }
+    public CommonResponse<String> AgreeApplication(String name ,String password ,String phone ,String email ,int enterprise_type ,int type){
+        //TODO:确定cmessage表碳额度的初始值
+        accountMapper.insert(new Account(name, password, phone, email, enterprise_type, type));
+        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone).eq("email", email));
+        int account_id = account.getAccount_id();
+        cMessageMapper.insert(new CMessage(account_id,500));
+        registerApplicationMapper.delete(new QueryWrapper<RegisterApplication>().eq("phone",phone).eq("email",email));
+        return CommonResponse.createForSuccess("审核成功，同意注册");
+    }
+
+    public CommonResponse<String> RefuseApplication(String name ,String password ,String phone ,String email ,int enterprise_type ,int type){
+        registerApplicationMapper.delete(new QueryWrapper<RegisterApplication>().eq("phone",phone).eq("email",email));
+        return CommonResponse.createForSuccess("审核成功，拒绝注册");
     }
 }

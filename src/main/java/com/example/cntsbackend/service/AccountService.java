@@ -16,4 +16,8 @@ public interface AccountService {
     public CommonResponse<Map> loginByEmail(String email);
     //ID+密码登录
     CommonResponse<Map> loginById(String id,String password);
+    //同意注册
+    CommonResponse<String> AgreeApplication(String name ,String password ,String phone ,String email ,int enterprise_type ,int type);
+    //拒绝注册
+    CommonResponse<String> RefuseApplication(String name ,String password ,String phone ,String email ,int enterprise_type ,int type);
 }

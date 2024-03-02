@@ -3,6 +3,7 @@ package com.example.cntsbackend;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.service.serviceimpl.AccountServiceImpl;
+import com.example.cntsbackend.service.serviceimpl.TransactionServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import java.util.Map;
 class CntsBackendApplicationTests {
     @Autowired
     private AccountServiceImpl accountService;
+    @Autowired
+    private TransactionServiceImpl transactionService;
 
     @Test
     void contextLoads() {
@@ -38,4 +41,21 @@ class CntsBackendApplicationTests {
         System.out.println(accountCommonResponse.getData());
         System.out.println(accountCommonResponse.getCode());
     }
+    @Test
+    public void PublishTransactionTest() {
+        CommonResponse<String> transaction = transactionService.PublishTransaction("aaa", 200);
+        System.out.println(transaction.getMessage());
+    }
+
+    @Test
+    public void CompleteTransactionTest() {
+        CommonResponse<String> transaction = transactionService.CompleteTransaction("aaa", 1);
+        System.out.println(transaction.getMessage());
+    }
+    @Test
+    public void AgreeApplicationTest() {
+        CommonResponse<String> application = accountService.AgreeApplication("bbb", "123","123","123",1,0);
+        System.out.println(application.getMessage());
+    }
+
 }

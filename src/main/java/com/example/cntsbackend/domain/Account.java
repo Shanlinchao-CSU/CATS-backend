@@ -17,5 +17,16 @@ public class Account {
     private Integer type;
     private Integer enterprise_type;
 
+    public Account(String account_name, String password, String phone, String email, Integer type, Integer enterprise_type) {
+        this.account_name = account_name;
+        this.password = password;
+        this.phone = phone;
+        this.email = email;
+        this.type = type;
+        this.enterprise_type = enterprise_type;
+    }
+
+    public Account() {
+    }
 }
 

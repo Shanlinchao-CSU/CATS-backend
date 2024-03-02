@@ -10,6 +10,13 @@ create table account
     enterprise_type int          null
 );
 
+create table cmessage
+(
+    account_id int not null
+        primary key,
+    climit     int null
+);
+
 create table register_application
 (
     register_application_id int auto_increment
@@ -27,12 +34,12 @@ create table transaction
 (
     transaction_id int auto_increment
         primary key,
-    `from`         varchar(255)   null,
-    `to`           varchar(255)   null,
-    amount         decimal(10, 2) null,
-    start_time     datetime       null,
-    complete_time  datetime       null,
-    state          tinyint(1)     null
+    t_from         varchar(255) null,
+    t_to           varchar(255) null,
+    amount         int          null,
+    start_time     datetime     null,
+    complete_time  datetime     null,
+    state          tinyint(1)   null
 );
 
 
