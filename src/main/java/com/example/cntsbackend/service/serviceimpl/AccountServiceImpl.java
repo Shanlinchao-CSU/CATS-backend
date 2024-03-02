@@ -116,17 +116,24 @@ public class AccountServiceImpl implements AccountService {
 
         return CommonResponse.createForSuccess("id+密码登录",map);
     }
-    public CommonResponse<String> AgreeApplication(String name ,String password ,String phone ,String email ,int enterprise_type ,int type){
-        //TODO:确定cmessage表碳额度的初始值
-        accountMapper.insert(new Account(name, password, phone, email, enterprise_type, type));
+    public CommonResponse<String> AgreeApplication(String phone ,String email){
+        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone).eq("email", email));
+        String account_name = registerApplication.getAccount_name();
+        String password = registerApplication.getPassword();
+        int enterprise_type = registerApplication.getEnterprise_type();
+        String file_address = registerApplication.getFile_address();
+        String enterprise_address = registerApplication.getEnterprise_address();
+        Integer type = registerApplication.getType();
+        accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type, enterprise_address ,file_address));
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone).eq("email", email));
         int account_id = account.getAccount_id();
+        //TODO:确定cmessage表碳额度的初始值
         cMessageMapper.insert(new CMessage(account_id,500));
         registerApplicationMapper.delete(new QueryWrapper<RegisterApplication>().eq("phone",phone).eq("email",email));
         return CommonResponse.createForSuccess("审核成功，同意注册");
     }
 
-    public CommonResponse<String> RefuseApplication(String name ,String password ,String phone ,String email ,int enterprise_type ,int type){
+    public CommonResponse<String> RefuseApplication(String phone ,String email){
         registerApplicationMapper.delete(new QueryWrapper<RegisterApplication>().eq("phone",phone).eq("email",email));
         return CommonResponse.createForSuccess("审核成功，拒绝注册");
     }

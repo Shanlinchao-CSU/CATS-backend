@@ -6,7 +6,7 @@ import java.io.File;
 
 public interface RegisterApplicationService {
     //企业注册
-    CommonResponse<String> EnterpriseUserRegister(File file , String name , String password , String phone , String email , int enterprise_type , int type );
+    CommonResponse<String> EnterpriseUserRegister(File file , String name , String password , String phone , String email , int enterprise_type , int type ,String enterprise_address);
     //第三方注册
     CommonResponse<String> ThirdPartyRegulatorsRegister(File file , String name , String password ,  String phone ,String email ,  int type );
 

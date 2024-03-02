@@ -1,13 +1,15 @@
 create table account
 (
-    account_id      int auto_increment
+    account_id         int auto_increment
         primary key,
-    account_name    varchar(255) null,
-    password        varchar(255) null,
-    phone           varchar(255) null,
-    email           varchar(255) null,
-    type            int          null,
-    enterprise_type int          null
+    account_name       varchar(255) null,
+    password           varchar(255) null,
+    phone              varchar(255) null,
+    email              varchar(255) null,
+    type               int          null,
+    enterprise_type    int          null,
+    enterprise_address varchar(255) null,
+    file               varchar(255) null
 );
 
 create table cmessage
@@ -27,7 +29,8 @@ create table register_application
     email                   varchar(255) null,
     type                    int          null,
     file_address            varchar(255) null,
-    enterprise_type         int          null
+    enterprise_type         int          null,
+    enterprise_address      varchar(255) null
 );
 
 create table transaction

@@ -3,12 +3,14 @@ package com.example.cntsbackend;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.service.serviceimpl.AccountServiceImpl;
+import com.example.cntsbackend.service.serviceimpl.RegisterApplicationServiceImpl;
 import com.example.cntsbackend.service.serviceimpl.TransactionServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.File;
 import java.util.Date;
 import java.util.Map;
 
@@ -19,6 +21,8 @@ class CntsBackendApplicationTests {
     private AccountServiceImpl accountService;
     @Autowired
     private TransactionServiceImpl transactionService;
+    @Autowired
+    private RegisterApplicationServiceImpl registerApplicationService;
 
     @Test
     void contextLoads() {
@@ -54,7 +58,12 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void AgreeApplicationTest() {
-        CommonResponse<String> application = accountService.AgreeApplication("bbb", "123","123","123",1,0);
+        CommonResponse<String> application = accountService.AgreeApplication("bbb", "123");
+        System.out.println(application.getMessage());
+    }
+    @Test
+    public void EnterpriseUserRegisterTest() {
+        CommonResponse<String> application = registerApplicationService.EnterpriseUserRegister(new File("https://www.baidu.com"),"111","111","111","111",1,0,"111");
         System.out.println(application.getMessage());
     }
 
