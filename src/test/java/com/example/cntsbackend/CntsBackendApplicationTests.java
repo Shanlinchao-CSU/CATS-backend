@@ -29,9 +29,10 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void sendVerificationCodeByPhoneTest() {
-        CommonResponse<String> accountCommonResponse = accountService.sendVerificationCodeByPhone("123");
+        CommonResponse<String> accountCommonResponse = accountService.sendVerificationCodeByPhone("19313028910");
         System.out.println(accountCommonResponse.getMessage());
         System.out.println(accountCommonResponse.getCode());
+        System.out.println(accountCommonResponse.getData());
     }
     @Test
     public void sendVerificationCodeByEmailTest() {
@@ -72,6 +73,11 @@ class CntsBackendApplicationTests {
         System.out.println(application.getMessage());
     }
     @Test
+    public void changeEmailTest() {
+        CommonResponse<String> application = accountService.changeEmail("123", "2674314843@qq.com");
+        System.out.println(application.getMessage());
+    }
+    @Test
     public void updateAccountInfoTest() {
         CommonResponse<String> stringCommonResponse = accountService.updateAccountInfo(new Account());
         System.out.println(stringCommonResponse.getMessage());
@@ -80,6 +86,25 @@ class CntsBackendApplicationTests {
     public void AgreeUpdateAccountInfoTest() {
         CommonResponse<String> stringCommonResponse = accountService.AgreeUpdateAccountInfo("666", "666");
         System.out.println(stringCommonResponse.getMessage());
+    }
+    @Test
+    public void VerifyNewPhoneTest() {
+        CommonResponse<String> stringCommonResponse = accountService.VerifyNewPhone("19313028910");
+        System.out.println(stringCommonResponse.getMessage());
+        System.out.println(stringCommonResponse.getData());
+    }
+    @Test
+    public void VerifyNewEmailTest() {
+        CommonResponse<String> stringCommonResponse = accountService.VerifyNewEmail("2674314843@qq.com");
+        System.out.println(stringCommonResponse.getMessage());
+        System.out.println(stringCommonResponse.getData());
+    }
+
+    @Test
+    public void findPasswordTest() {
+        CommonResponse<String> stringCommonResponse = accountService.findPassword("123");
+        System.out.println(stringCommonResponse.getMessage());
+        System.out.println(stringCommonResponse.getData());
     }
 
 }

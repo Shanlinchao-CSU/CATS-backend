@@ -65,7 +65,11 @@ public class AccountServiceImpl implements AccountService {
             return CommonResponse.createForError("0");
         }
     }
-
+    public CommonResponse<String> sendVerificationCodeByChangePhone(String phoneNumber){
+        String verificationCode = generateVerificationCode();
+        SendPhoneUtil.sendSMS(phoneNumber,verificationCode);
+        return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
+    }
     //发送邮箱验证码
     public CommonResponse<String> sendVerificationCodeByEmail(String email) {
         if(checkEmailExist(email)==0){
@@ -76,6 +80,11 @@ public class AccountServiceImpl implements AccountService {
         }else{
             return CommonResponse.createForError("ERROR","0");
         }
+    }
+    public CommonResponse<String> sendVerificationCodeByChangeEmail(String email){
+        String verificationCode = generateVerificationCode();
+        SendMailUtil.sendQQEmail(email, Integer.parseInt(verificationCode));
+        return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
     }
     //生成四位验证码
     private String generateVerificationCode() {
@@ -142,7 +151,14 @@ public class AccountServiceImpl implements AccountService {
             return CommonResponse.createForSuccess("修改密码成功");
         }else return CommonResponse.createForError("用户不存在，修改密码失败");
     }
-    public CommonResponse<String> changePhone(String email,String phone){
+    public CommonResponse<String> VerifyNewPhone(String phone){
+        if(checkPhoneNumberExist(phone)==0){
+            return CommonResponse.createForError("手机号已被使用");
+        }else{
+            return sendVerificationCodeByChangePhone(phone);
+        }
+    }
+    public CommonResponse<String> changePhone(String phone,String email){
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
         if(account!=null){
             account.setPhone(phone);
@@ -154,7 +170,13 @@ public class AccountServiceImpl implements AccountService {
             return CommonResponse.createForSuccess("修改手机号成功");
         }else return CommonResponse.createForError("用户不存在，修改手机号失败");
     }
-
+    public CommonResponse<String> VerifyNewEmail(String email){
+        if(checkEmailExist(email)==0){
+            return CommonResponse.createForError("邮箱已被使用");
+        }else{
+            return sendVerificationCodeByChangeEmail(email);
+        }
+    }
     public CommonResponse<String> changeEmail(String phone,String email){
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         if(account!=null){
@@ -173,6 +195,13 @@ public class AccountServiceImpl implements AccountService {
         return CommonResponse.createForSuccess("提交修改信息成功，等待审核");
     }
 
+    public CommonResponse<String> findPassword(String str){
+        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", str).or().eq("email", str));
+        if(account!=null){
+            String password = account.getPassword();
+            return CommonResponse.createForSuccess("找回密码成功",password);
+        }else return CommonResponse.createForError("手机号或邮箱不存在");
+    }
 
 
 
