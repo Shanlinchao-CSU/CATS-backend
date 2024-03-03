@@ -6,6 +6,9 @@ import com.example.cntsbackend.domain.Account;
 import java.util.Map;
 
 public interface AccountService {
+
+    //----------------------------------企业用户--------------------------------
+
     //发送手机验证码
     public CommonResponse<String> sendVerificationCodeByPhone(String phoneNumber);
     //发送邮箱验证码
@@ -16,8 +19,23 @@ public interface AccountService {
     public CommonResponse<Map> loginByEmail(String email);
     //ID+密码登录
     CommonResponse<Map> loginById(String id,String password);
+    //修改密码
+    CommonResponse<String> changePassword(String phone,String password);
+    //修改手机号
+    CommonResponse<String> changePhone(String email,String phone);
+    //修改邮箱
+    CommonResponse<String> changeEmail(String phone,String email);
+    //用户修改个人信息(需要管理员审核)
+    CommonResponse<String> updateAccountInfo(Account account);
+
+    //-----------------------------------管理员--------------------------------------
+
     //同意注册
     CommonResponse<String> AgreeApplication(String phone ,String email);
     //拒绝注册
     CommonResponse<String> RefuseApplication(String phone ,String email);
+    //同意修改个人信息
+    CommonResponse<String> AgreeUpdateAccountInfo(String phone ,String email);
+    //拒绝修改个人信息
+    CommonResponse<String> RefuseUpdateAccountInfo(String phone ,String email);
 }

@@ -66,5 +66,20 @@ class CntsBackendApplicationTests {
         CommonResponse<String> application = registerApplicationService.EnterpriseUserRegister(new File("https://www.baidu.com"),"111","111","111","111",1,0,"111");
         System.out.println(application.getMessage());
     }
+    @Test
+    public void changePasswordTest() {
+        CommonResponse<String> application = accountService.changePassword("1223", "666");
+        System.out.println(application.getMessage());
+    }
+    @Test
+    public void updateAccountInfoTest() {
+        CommonResponse<String> stringCommonResponse = accountService.updateAccountInfo(new Account());
+        System.out.println(stringCommonResponse.getMessage());
+    }
+    @Test
+    public void AgreeUpdateAccountInfoTest() {
+        CommonResponse<String> stringCommonResponse = accountService.AgreeUpdateAccountInfo("666", "666");
+        System.out.println(stringCommonResponse.getMessage());
+    }
 
 }

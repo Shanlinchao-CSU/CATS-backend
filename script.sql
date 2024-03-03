@@ -45,4 +45,18 @@ create table transaction
     state          tinyint(1)   null
 );
 
+create table update_account
+(
+    account_id         int auto_increment
+        primary key,
+    account_name       varchar(255) null,
+    password           varchar(255) null,
+    phone              varchar(255) null,
+    email              varchar(255) null,
+    type               int          null,
+    enterprise_type    int          null,
+    enterprise_address varchar(255) null,
+    file               varchar(255) null
+);
+
 
