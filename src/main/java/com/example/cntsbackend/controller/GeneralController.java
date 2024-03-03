@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.example.cntsbackend.service.AccountService;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
@@ -75,4 +77,52 @@ public class GeneralController {
     public CommonResponse<Map> loginByPhone(@PathParam("phone") String phone) {
         return accountService.loginByPhone(phone);
     }
+
+    /**
+     * 修改密码
+     *
+     * @param phone    手机
+     * @param password 密码
+     * @return 修改结果 CommonResponse<String>
+     */
+    @PatchMapping("/general/password")
+    public CommonResponse<String> changePassword(@PathParam("phone") String phone, @PathParam("password") String password) {
+        return accountService.changePassword(phone, password);
+    }
+
+    /**
+     * TODO 修改手机号
+     *
+     * @param email 邮箱
+     * @param phone 手机
+     * @return 修改结果 CommonResponse<String>
+     */
+    @PatchMapping("/general/phone")
+    public CommonResponse<String> changePhone(@PathParam("email") String email, @PathParam("phone") String phone) {
+        return accountService.changePhone(email, phone);
+    }
+
+    /**
+     * TODO 修改邮箱
+     *
+     * @param phone 手机
+     * @param email 邮箱
+     * @return 修改结果 CommonResponse<String>
+     */
+    @PatchMapping("/general/email")
+    public CommonResponse<String> changeEmail(@PathParam("phone") String phone, @PathParam("email") String email) {
+        return accountService.changeEmail(phone, email);
+    }
+
+    /**
+     * 用户修改个人信息(需要管理员审核)
+     *
+     * @param account 账号
+     * @return 修改结果 CommonResponse<String>
+     */
+    @PatchMapping("/general/account_info")
+    public CommonResponse<String> updateAccountInfo(@RequestBody Account account) {
+        return accountService.updateAccountInfo(account);
+    }
+
 }
