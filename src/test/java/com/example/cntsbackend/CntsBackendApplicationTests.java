@@ -100,11 +100,4 @@ class CntsBackendApplicationTests {
         System.out.println(stringCommonResponse.getData());
     }
 
-    @Test
-    public void findPasswordTest() {
-        CommonResponse<String> stringCommonResponse = accountService.findPassword("123");
-        System.out.println(stringCommonResponse.getMessage());
-        System.out.println(stringCommonResponse.getData());
-    }
-
 }

@@ -195,12 +195,8 @@ public class AccountServiceImpl implements AccountService {
         return CommonResponse.createForSuccess("提交修改信息成功，等待审核");
     }
 
-    public CommonResponse<String> findPassword(String str){
-        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", str).or().eq("email", str));
-        if(account!=null){
-            String password = account.getPassword();
-            return CommonResponse.createForSuccess("找回密码成功",password);
-        }else return CommonResponse.createForError("手机号或邮箱不存在");
+    public CommonResponse<String> findPassword(String phone,String password){
+        return changePassword(phone,password);
     }
 
 
