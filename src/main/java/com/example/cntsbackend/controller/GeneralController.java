@@ -45,6 +45,28 @@ public class GeneralController {
     }
 
     /**
+     * 验证新手机号并发送验证码(修改手机必须先验证，验证通过并且验证码输入正确后再调用下面的changePhone())
+     *
+     * @param phone 手机
+     * @return 验证结果 CommonResponse<String>
+     */
+    @GetMapping("/general/verify/phone")
+    public CommonResponse<String> verifyNewPhone(@PathParam("phone") String phone) {
+        return accountService.VerifyNewPhone(phone);
+    }
+
+    /**
+     * 验证新邮箱并发送验证码(修改邮箱必须先验证，验证通过并且验证码输入正确后调用下面的changeEmail())
+     *
+     * @param email 邮箱
+     * @return 验证结果 CommonResponse<String>
+     */
+    @GetMapping("/general/verify/email")
+    public CommonResponse<String> verifyNewEmail(@PathParam("email") String email) {
+        return accountService.VerifyNewEmail(email);
+    }
+
+    /**
      * 账号+密码 登录
      *
      * @param id       账号
@@ -91,7 +113,7 @@ public class GeneralController {
     }
 
     /**
-     * TODO 修改手机号
+     * 修改手机号
      *
      * @param email 邮箱
      * @param phone 手机
@@ -103,7 +125,7 @@ public class GeneralController {
     }
 
     /**
-     * TODO 修改邮箱
+     * 修改邮箱
      *
      * @param phone 手机
      * @param email 邮箱
@@ -124,5 +146,18 @@ public class GeneralController {
     public CommonResponse<String> updateAccountInfo(@RequestBody Account account) {
         return accountService.updateAccountInfo(account);
     }
+
+    /**
+     * 找回密码(使用手机号或邮箱)
+     *
+     * @param str   手机号 或 邮箱
+     * @param password 密码
+     * @return 找回结果 CommonResponse<String>
+     */
+    @PatchMapping("/general/str/password")
+    public CommonResponse<String> findPassword(@PathParam("str") String str, @PathParam("password") String password) {
+        return accountService.findPassword(str, password);
+    }
+
 
 }
