@@ -59,4 +59,16 @@ create table update_account
     file               varchar(255) null
 );
 
-
+create table accounting_record
+(
+    id                  int auto_increment comment '记录的id'
+        primary key,
+    enterprise_id       int          null comment '对应企业的id',
+    month               int          null comment '该碳核算记录对应的月份',
+    time                timestamp    null comment '生成该记录的具体时间',
+    state               int          null comment '0表示通过审核，1表示等待审核，2表示被拒绝',
+    variable_json       varchar(800) null comment '用来描述计算过程所需参数的json字符串',
+    result              int          null comment '碳核算结果',
+    supporting_material varchar(100) null comment '存文件保存路径'
+)
+    comment '碳核算记录';
