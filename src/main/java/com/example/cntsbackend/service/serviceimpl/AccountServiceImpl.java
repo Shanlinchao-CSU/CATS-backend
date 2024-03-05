@@ -3,10 +3,7 @@ package com.example.cntsbackend.service.serviceimpl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.cntsbackend.common.CommonResponse;
-import com.example.cntsbackend.domain.Account;
-import com.example.cntsbackend.domain.CMessage;
-import com.example.cntsbackend.domain.RegisterApplication;
-import com.example.cntsbackend.domain.UpdateAccount;
+import com.example.cntsbackend.domain.*;
 import com.example.cntsbackend.persistence.AccountMapper;
 import com.example.cntsbackend.persistence.CMessageMapper;
 import com.example.cntsbackend.persistence.RegisterApplicationMapper;
@@ -195,8 +192,15 @@ public class AccountServiceImpl implements AccountService {
         return CommonResponse.createForSuccess("提交修改信息成功，等待审核");
     }
 
-    public CommonResponse<String> findPassword(String phone,String password){
-        return changePassword(phone,password);
+    public CommonResponse<String> findPassword(String str,String password){
+        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", str).or().eq("email", str));
+        if(account!=null) {
+            account.setPassword(password);
+            UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("phone", str).or().eq("email", str);
+            accountMapper.update(account,updateWrapper);
+            return CommonResponse.createForSuccess("找回密码成功");
+        }else return CommonResponse.createForError("手机号或邮箱不存在");
     }
 
 

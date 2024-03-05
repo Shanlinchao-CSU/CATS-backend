@@ -31,8 +31,8 @@ public interface AccountService {
     CommonResponse<String> changeEmail(String phone,String email);
     //用户修改个人信息(需要管理员审核)
     CommonResponse<String> updateAccountInfo(Account account);
-    //找回密码(使用手机号)
-    CommonResponse<String> findPassword(String phone,String password);
+    //找回密码(使用手机号或邮箱号)
+    CommonResponse<String> findPassword(String str,String password);
 
     //-----------------------------------管理员--------------------------------------
 
