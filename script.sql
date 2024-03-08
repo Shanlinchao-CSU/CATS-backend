@@ -43,7 +43,8 @@ create table quota_sale
         primary key,
     quota      double null comment '出售的额度',
     seller_id  int    null comment '售者id',
-    unit_price double null comment '单价'
+    unit_price double null comment '单价',
+    state      int    null comment '表示这个出售是否是有效的，0为有效，1为无效(月份更新时，即每月1日0时，置所有state为1.每当新加入记录时，state都为0)'
 )
     comment '在售额度';
 
