@@ -137,4 +137,13 @@ public class TransactionServiceImpl implements TransactionService {
         transactionMapper.deleteById(transaction);
         return CommonResponse.createForSuccess("取消发布交易信息成功");
     }
+
+    public CommonResponse<String> ModifyUnitPrice(int transaction_id,double unit_price) {
+        Transaction transaction = transactionMapper.selectOne(new QueryWrapper<Transaction>().eq("transaction_id", transaction_id));
+        transaction.setUnit_price(unit_price);
+        UpdateWrapper<Transaction> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("transaction_id",transaction_id);
+        transactionMapper.update(transaction,updateWrapper);
+        return CommonResponse.createForSuccess("修改单价成功");
+    }
 }
