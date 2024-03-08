@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.List;
 
 public interface AccountingRecordService {
-    //TODO:（新加）管理员获取所有待审核的碳核算请求
+    //管理员获取所有待审核的碳核算请求
     CommonResponse<List<AccountingRecord>> getAllCarbonAccountingForReview();
-    //TODO:（新加）管理员获取证明材料文件流（未测试）
+    //管理员获取证明材料文件流（未测试）
     ResponseEntity<InputStreamResource> getSupportingMaterial(int id) throws IOException;
 }

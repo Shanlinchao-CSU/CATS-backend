@@ -7,10 +7,7 @@ import com.example.cntsbackend.service.TransactionService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.util.List;
@@ -30,12 +27,33 @@ public class EnterpriseUserController {
     /**
      * 企业查看交易信息
      *
-     * @param id 账号
+     * @param account_name 账号
      * @return 交易信息 List<Transaction>
      */
-    @GetMapping("/enterprise/transaction/{id}")
-    public CommonResponse<List<Transaction>> getTransaction(@PathVariable("id") String id) {
-        return transactionService.getTransactionData(id);
+    @GetMapping("/enterprise/transaction/{account_name}")
+    public CommonResponse<List<Transaction>> getTransaction(@PathVariable("account_name") String account_name) {
+        return transactionService.getTransactionData(account_name);
+    }
+
+    /**
+     * 企业获取所有未完成交易的交易信息(便于额度购买选择)
+     *
+     * @return 交易信息 List<Transaction>
+     */
+    @GetMapping("/enterprise/transaction/unfinished")
+    public CommonResponse<List<Transaction>> getAllUnfinishTransactionDatas() {
+        return transactionService.getAllUnfinishTransactionDatas();
+    }
+
+    /**
+     * 企业获取自己已完成的交易
+     *
+     * @param account_name 账号
+     * @return 交易信息 List<Transaction>
+     */
+    @GetMapping("/enterprise/transaction/finished/{account_name}")
+    public CommonResponse<List<Transaction>> getMyFinishedTransactionDatas(@PathVariable("account_name") String account_name) {
+        return transactionService.getMyFinishedTransactionDatas(account_name);
     }
 
 
@@ -60,12 +78,13 @@ public class EnterpriseUserController {
      * 发布交易信息
      *
      * @param name   账号
-     * @param amount 金额
+     * @param amount 数量
+     * @param unit_price 单价
      * @return 发布结果 CommonResponse<String>
      */
     @PostMapping("/enterprise/transaction")
-    public CommonResponse<String> publishTransaction(@PathParam("name") String name, @PathParam("amount") int amount) {
-        return transactionService.PublishTransaction(name, amount);
+    public CommonResponse<String> publishTransaction(@PathParam("name") String name, @PathParam("amount") int amount, @PathParam("unit_price") int unit_price) {
+        return transactionService.PublishTransaction(name, amount, unit_price);
     }
 
     /**
@@ -78,5 +97,28 @@ public class EnterpriseUserController {
     @PatchMapping("/enterprise/transaction")
     public CommonResponse<String> completeTransaction(@PathParam("name") String name, @PathParam("transaction_id") int transaction_id) {
         return transactionService.CompleteTransaction(name, transaction_id);
+    }
+
+    /**
+     * 修改单价
+     *
+     * @param transaction_id 交易id
+     * @param unit_price 单价
+     * @return 修改结果 CommonResponse<String>
+     */
+    @PatchMapping("/enterprise/transaction/price")
+    public CommonResponse<String> modifyUnitPrice(@PathParam("transaction_id") int transaction_id, @PathParam("unit_price") int unit_price) {
+        return transactionService.ModifyUnitPrice(transaction_id, unit_price);
+    }
+
+    /**
+     * 取消交易
+     *
+     * @param transaction_id 交易id
+     * @return 取消结果 CommonResponse<String>
+     */
+    @DeleteMapping("/enterprise/transaction")
+    public CommonResponse<String> cancelTransaction(@PathParam("transaction_id") int transaction_id) {
+        return transactionService.cancelTransactionData(transaction_id);
     }
 }
