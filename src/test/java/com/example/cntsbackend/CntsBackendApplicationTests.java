@@ -2,6 +2,7 @@ package com.example.cntsbackend;
 
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
+import com.example.cntsbackend.domain.Transaction;
 import com.example.cntsbackend.service.serviceimpl.AccountServiceImpl;
 import com.example.cntsbackend.service.serviceimpl.RegisterApplicationServiceImpl;
 import com.example.cntsbackend.service.serviceimpl.TransactionServiceImpl;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
@@ -48,13 +50,13 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void PublishTransactionTest() {
-        CommonResponse<String> transaction = transactionService.PublishTransaction("aaa", 200);
+        CommonResponse<String> transaction = transactionService.PublishTransaction("aaa", 200,200);
         System.out.println(transaction.getMessage());
     }
 
     @Test
     public void CompleteTransactionTest() {
-        CommonResponse<String> transaction = transactionService.CompleteTransaction("aaa", 1);
+        CommonResponse<String> transaction = transactionService.CompleteTransaction("bbb", 2);
         System.out.println(transaction.getMessage());
     }
     @Test
@@ -98,6 +100,23 @@ class CntsBackendApplicationTests {
         CommonResponse<String> stringCommonResponse = accountService.VerifyNewEmail("2674314843@qq.com");
         System.out.println(stringCommonResponse.getMessage());
         System.out.println(stringCommonResponse.getData());
+    }
+    @Test
+    public void getAllUnfinishTransactionDatasTest(){
+        CommonResponse<List<Transaction>> allUnfinishTransactionDatas = transactionService.getAllUnfinishTransactionDatas();
+        System.out.println(allUnfinishTransactionDatas.getData());
+    }
+
+    @Test
+    public void getMyFinishedTransactionDatasTest(){
+        CommonResponse<List<Transaction>> allUnfinishTransactionDatas = transactionService.getMyFinishedTransactionDatas("aaa");
+        System.out.println(allUnfinishTransactionDatas.getData());
+    }
+
+    @Test
+    public void cancelTransactionDataTest(){
+        CommonResponse<String> stringCommonResponse = transactionService.cancelTransactionData(1);
+        System.out.println(stringCommonResponse.getMessage());
     }
 
 }

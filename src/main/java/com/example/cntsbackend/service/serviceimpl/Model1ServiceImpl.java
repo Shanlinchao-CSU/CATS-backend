@@ -42,15 +42,15 @@ public class Model1ServiceImpl implements Model1Service {
             EF[i] = CC[i] * OF[i] * 44 / 12;
             Eran = Eran + AD1[i] * EF[i] + AD2[i] * EF[i];
         }
-        EE = ADdian * 0.5703;//ADdian、ADre均为前端传值
-        Ere = ADre * 0.11;
+//        EE = ADdian * 0.5703;//ADdian、ADre均为前端传值
+//        Ere = ADre * 0.11;
         //总量 Eran+EE+Ere
         double E = Eran+EE+Ere;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formatedDateTime = format.format(new Date());
         Date timestamp = Timestamp.valueOf(formatedDateTime);
 
-        Model1 model1 = new Model1();//TODO:传进参数
+        Model1 model1 = new Model1();//TODO:传进参数，核算以后碳额度也要一并修改
         model1Mapper.insert(model1);
         return CommonResponse.createForSuccess("计算成功",model1);
     }

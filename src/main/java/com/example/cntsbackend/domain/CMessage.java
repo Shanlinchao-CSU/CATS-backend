@@ -9,11 +9,11 @@ import lombok.Data;
 public class CMessage {
 
     private int account_id;
-    private int climit;
-
-    public CMessage(int account_id, int climit) {
+    private double t_remain;
+    private double t_coin;
+    public CMessage(int account_id, double t_remain) {
         this.account_id = account_id;
-        this.climit = climit;
+        this.t_remain = t_remain;
     }
 
     public CMessage() {
