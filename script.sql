@@ -7,8 +7,10 @@ create table account
     phone           varchar(255) null,
     email           varchar(255) null,
     type            int          null,
+    public_key      varchar(255) null,
+    file            varchar(255) null,
     enterprise_type int          null,
-    file            varchar(255) null
+    secret_key      varchar(255) null
 )
     comment '用户表';
 
