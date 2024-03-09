@@ -53,14 +53,15 @@ create table register_application
 (
     register_application_id int auto_increment
         primary key,
-    account_id              int          null,
+    account_name            varchar(255) null,
     password                varchar(255) null,
     phone                   varchar(255) null,
     email                   varchar(255) null,
     type                    int          null,
     file_address            varchar(255) null,
     enterprise_type         int          null,
-    conductor_id            int          null comment '处理这条申请的管理员的id'
+    conductor_id            int          null comment '处理这条申请的管理员的id',
+    state                   int          null
 )
     comment '注册申请表';
 
@@ -90,4 +91,5 @@ create table update_account
     conductor_id    int          null comment '处理这条申请的管理员的id'
 )
     comment '修改信息申请表';
+
 

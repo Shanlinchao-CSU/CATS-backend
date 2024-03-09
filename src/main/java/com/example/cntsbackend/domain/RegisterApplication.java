@@ -19,9 +19,10 @@ public class RegisterApplication {
     private Integer type;
     private String file_address;
     private Integer enterprise_type;
-    private String enterprise_address;
+    private int conductor_id;
+    private Integer state;
 
-    public RegisterApplication(String account_name, String password, String phone, String email, Integer type, String file_address, Integer enterprise_type, String enterprise_address) {
+    public RegisterApplication(String account_name, String password, String phone, String email, Integer type, String file_address, Integer enterprise_type) {
         this.account_name = account_name;
         this.password = password;
         this.phone = phone;
@@ -29,6 +30,7 @@ public class RegisterApplication {
         this.type = type;
         this.file_address = file_address;
         this.enterprise_type = enterprise_type;
-        this.enterprise_address = enterprise_address;
+        this.conductor_id = 0;
+        this.state = 0;
     }
 }

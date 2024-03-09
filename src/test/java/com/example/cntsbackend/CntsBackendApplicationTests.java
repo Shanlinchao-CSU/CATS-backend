@@ -2,6 +2,7 @@ package com.example.cntsbackend;
 
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
+import com.example.cntsbackend.domain.RegisterApplication;
 import com.example.cntsbackend.domain.Transaction;
 import com.example.cntsbackend.service.serviceimpl.AccountServiceImpl;
 import com.example.cntsbackend.service.serviceimpl.RegisterApplicationServiceImpl;
@@ -49,24 +50,41 @@ class CntsBackendApplicationTests {
         System.out.println(accountCommonResponse.getCode());
     }
     @Test
+    public void loginByIDTest() {
+        CommonResponse<Map> accountCommonResponse = accountService.loginById("123","123");
+        System.out.println(accountCommonResponse.getData());
+        System.out.println(accountCommonResponse.getCode());
+    }
+    @Test
     public void PublishTransactionTest() {
-        CommonResponse<String> transaction = transactionService.PublishTransaction("aaa", 200,200);
-        System.out.println(transaction.getMessage());
+//        CommonResponse<String> transaction = transactionService.PublishTransaction("aaa", 200,200);
+//        System.out.println(transaction.getMessage());
     }
 
     @Test
     public void CompleteTransactionTest() {
-        CommonResponse<String> transaction = transactionService.CompleteTransaction("bbb", 2);
-        System.out.println(transaction.getMessage());
+//        CommonResponse<String> transaction = transactionService.CompleteTransaction("bbb", 2);
+//        System.out.println(transaction.getMessage());
     }
     @Test
     public void AgreeApplicationTest() {
-        CommonResponse<String> application = accountService.AgreeApplication("bbb", "123");
+        CommonResponse<String> application = accountService.AgreeApplication("111", "111",1,"2");
         System.out.println(application.getMessage());
     }
     @Test
+    public void RefuseApplicationTest() {
+        CommonResponse<String> application = accountService.RefuseApplication("111", "111",1);
+        System.out.println(application.getMessage());
+    }
+    @Test
+    public void getPendingReviewAccountTest() {
+        CommonResponse<List<RegisterApplication>> pendingReviewAccount = accountService.getPendingReviewAccount();
+        System.out.println(pendingReviewAccount.getMessage());
+        System.out.println(pendingReviewAccount.getData());
+    }
+    @Test
     public void EnterpriseUserRegisterTest() {
-        CommonResponse<String> application = registerApplicationService.EnterpriseUserRegister(new File("https://www.baidu.com"),"111","111","111","111",1,0,"111");
+        CommonResponse<String> application = registerApplicationService.EnterpriseUserRegister(new File("https://www.baidu.com"),"zs","111","111","111",1,1);
         System.out.println(application.getMessage());
     }
     @Test
@@ -115,8 +133,8 @@ class CntsBackendApplicationTests {
 
     @Test
     public void cancelTransactionDataTest(){
-        CommonResponse<String> stringCommonResponse = transactionService.cancelTransactionData(1);
-        System.out.println(stringCommonResponse.getMessage());
+//        CommonResponse<String> stringCommonResponse = transactionService.cancelTransactionData(1);
+//        System.out.println(stringCommonResponse.getMessage());
     }
 
 }

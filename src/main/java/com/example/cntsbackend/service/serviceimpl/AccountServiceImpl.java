@@ -15,10 +15,7 @@ import com.example.cntsbackend.util.SendPhoneUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -104,7 +101,8 @@ public class AccountServiceImpl implements AccountService {
         if(account!=null){
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
-
+            account.setSecret_key("");
+            account.setPublic_key("");
             map.put("Account",account);
             map.put("token",token);
 
@@ -117,19 +115,26 @@ public class AccountServiceImpl implements AccountService {
         if(account!=null){
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
-
+            account.setSecret_key("");
+            account.setPublic_key("");
             map.put("Account",account);
             map.put("token",token);
 
             return CommonResponse.createForSuccess("手机号码登录成功",map);
         }else return CommonResponse.createForError("手机号码登录失败");
     }
-    public CommonResponse<Map> loginById(String name,String password){
-        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_name", name).eq("password", password));
+    public CommonResponse<Map> loginById(String str,String password){
+        QueryWrapper<Account> queryWrapper = new QueryWrapper<>();
+        queryWrapper.and(wrapper -> wrapper.eq("account_id", str)
+                        .or().eq("email", str)
+                        .or().eq("phone", str))
+                .eq("password", password);
+        Account account = accountMapper.selectOne(queryWrapper);
         if(account!=null){
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
-
+            account.setSecret_key("");
+            account.setPublic_key("");
             map.put("Account",account);
             map.put("token",token);
 
@@ -188,7 +193,7 @@ public class AccountServiceImpl implements AccountService {
         }else return CommonResponse.createForError("用户不存在，修改邮箱失败");
     }
     public CommonResponse<String> updateAccountInfo(Account account){
-        UpdateAccount updateAccount = new UpdateAccount(account.getAccount_name(),account.getPassword(),account.getPhone(),account.getEmail(),account.getType(),account.getEnterprise_type(),account.getEnterprise_address(),account.getFile());
+        UpdateAccount updateAccount = new UpdateAccount(account.getAccount_name(),account.getPassword(),account.getPhone(),account.getEmail(),account.getType(),account.getEnterprise_type(),0,account.getFile());
         updateAccountMapper.insert(updateAccount);
         return CommonResponse.createForSuccess("提交修改信息成功，等待审核");
     }
@@ -222,25 +227,33 @@ public class AccountServiceImpl implements AccountService {
 
     //-------------------------------------------管理员------------------------------------------------------
 
-    public CommonResponse<String> AgreeApplication(String phone ,String email){
+    public CommonResponse<String> AgreeApplication(String phone ,String email, int account_id ,String month){
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone).eq("email", email));
+        registerApplication.setConductor_id(account_id);
+        registerApplication.setState(1);
+        UpdateWrapper<RegisterApplication> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("phone", phone).eq("email", email);
+        registerApplicationMapper.update(registerApplication, updateWrapper);
         String account_name = registerApplication.getAccount_name();
         String password = registerApplication.getPassword();
         int enterprise_type = registerApplication.getEnterprise_type();
         String file_address = registerApplication.getFile_address();
-        String enterprise_address = registerApplication.getEnterprise_address();
         Integer type = registerApplication.getType();
-        accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type, enterprise_address ,file_address));
+        accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type ,file_address));
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone).eq("email", email));
-        int account_id = account.getAccount_id();
-        //TODO:确定cmessage表碳额度的初始值
-        cMessageMapper.insert(new CMessage(account_id,500));
-        registerApplicationMapper.delete(new QueryWrapper<RegisterApplication>().eq("phone",phone).eq("email",email));
+        int account_id1 = account.getAccount_id();
+        //TODO:确定cmessage表碳额度的初始值以及碳币,要与以太坊联系起来
+        cMessageMapper.insert(new CMessage(account_id1,500,month));
         return CommonResponse.createForSuccess("审核成功，同意注册");
     }
 
-    public CommonResponse<String> RefuseApplication(String phone ,String email){
-        registerApplicationMapper.delete(new QueryWrapper<RegisterApplication>().eq("phone",phone).eq("email",email));
+    public CommonResponse<String> RefuseApplication(String phone ,String email, int account_id){
+        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone).eq("email", email));
+        registerApplication.setConductor_id(account_id);
+        registerApplication.setState(2);
+        UpdateWrapper<RegisterApplication> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("phone", phone).eq("email", email);
+        registerApplicationMapper.update(registerApplication, updateWrapper);
         return CommonResponse.createForSuccess("审核成功，拒绝注册");
     }
 
@@ -252,7 +265,6 @@ public class AccountServiceImpl implements AccountService {
             Account account = accountMapper.selectOne(queryWrapper1);
             account.setAccount_name(updateAccount.getAccount_name());
             account.setEnterprise_type(updateAccount.getEnterprise_type());
-            account.setEnterprise_address(updateAccount.getEnterprise_address());
             account.setFile(updateAccount.getFile());
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("phone",phone).eq("email", email);
@@ -266,5 +278,9 @@ public class AccountServiceImpl implements AccountService {
         QueryWrapper<UpdateAccount> queryWrapper = new QueryWrapper<UpdateAccount>().eq("phone", phone).eq("email", email);
         updateAccountMapper.delete(queryWrapper);
         return CommonResponse.createForSuccess("审核成功，拒绝修改信息");
+    }
+    public CommonResponse<List<RegisterApplication>> getPendingReviewAccount(){
+        List<RegisterApplication> registerApplications = registerApplicationMapper.selectList(new QueryWrapper<RegisterApplication>().eq("state", 0));
+        return CommonResponse.createForSuccess("查询未审核申请信息成功",registerApplications);
     }
 }

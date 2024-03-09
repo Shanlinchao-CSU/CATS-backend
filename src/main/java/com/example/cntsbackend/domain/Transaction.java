@@ -14,26 +14,22 @@ import java.util.Date;
 public class Transaction {
     @TableId(type = IdType.AUTO)
     private int transaction_id;
-    private String t_from;
-    private String t_to;
     private double amount;
-    private double unit_price;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date start_time;
+    private int buyer_id;
+    private int sale_id;
+    private double cost;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date complete_time;
-    private Boolean state;
 
-    public Transaction(String t_from, String t_to, double amount, double unit_price, Date start_time, Date complete_time, Boolean state) {
-        this.t_from = t_from;
-        this.t_to = t_to;
+    public Transaction(double amount, int buyer_id, int sale_id, double cost, Date complete_time) {
         this.amount = amount;
-        this.unit_price = unit_price;
-        this.start_time = start_time;
+        this.buyer_id = buyer_id;
+        this.sale_id = sale_id;
+        this.cost = cost;
         this.complete_time = complete_time;
-        this.state = state;
     }
 
     public Transaction() {
     }
+
 }

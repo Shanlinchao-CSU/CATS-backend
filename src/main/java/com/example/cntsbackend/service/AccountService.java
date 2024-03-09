@@ -2,7 +2,9 @@ package com.example.cntsbackend.service;
 
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
+import com.example.cntsbackend.domain.RegisterApplication;
 
+import java.util.List;
 import java.util.Map;
 
 public interface AccountService {
@@ -17,8 +19,8 @@ public interface AccountService {
     public CommonResponse<Map> loginByPhone(String phone);
     //邮箱登录
     public CommonResponse<Map> loginByEmail(String email);
-    //ID+密码登录
-    CommonResponse<Map> loginById(String id,String password);
+    //TODO:(修改)ID或邮箱或手机+密码登录
+    CommonResponse<Map> loginById(String str,String password);
     //修改密码
     CommonResponse<String> changePassword(String phone,String password);
     //验证新手机号并发送验证码(修改手机必须先验证，验证通过并且验证码输入正确后再调用下面的changePhone())
@@ -38,12 +40,14 @@ public interface AccountService {
 
     //-----------------------------------管理员--------------------------------------
 
-    //同意注册
-    CommonResponse<String> AgreeApplication(String phone ,String email);
-    //拒绝注册
-    CommonResponse<String> RefuseApplication(String phone ,String email);
+    //TODO:（改动，需要添加管理人员的id作为参数以及当前日期年-月）同意注册
+    CommonResponse<String> AgreeApplication(String phone ,String email, int account_id,String month);
+    //TODO:（改动，需要添加一个管理人员的id作为参数）拒绝注册
+    CommonResponse<String> RefuseApplication(String phone ,String email, int account_id);
     //同意修改个人信息
     CommonResponse<String> AgreeUpdateAccountInfo(String phone ,String email);
     //拒绝修改个人信息
     CommonResponse<String> RefuseUpdateAccountInfo(String phone ,String email);
+    //TODO:（新加）管理员获取所有还未被审核的注册申请
+    CommonResponse<List<RegisterApplication>> getPendingReviewAccount();
 }
