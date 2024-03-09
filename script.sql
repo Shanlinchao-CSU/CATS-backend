@@ -10,7 +10,8 @@ create table account
     public_key      varchar(255) null,
     file            varchar(255) null,
     enterprise_type int          null,
-    secret_key      varchar(255) null
+    secret_key      varchar(255) null,
+    t_coin          double       null comment '炭币数'
 )
     comment '用户表';
 
@@ -19,7 +20,7 @@ create table accounting_record
     id                  int auto_increment comment '记录的id'
         primary key,
     enterprise_name     int          null comment '对应企业的name',
-    month               int          null comment '该碳核算记录对应的月份',
+    month               varchar(64)  null comment '该碳核算记录对应的月份',
     time                timestamp    null comment '生成该记录的具体时间',
     state               int          null comment '0表示通过审核，1表示等待审核，2表示被拒绝',
     variable_json       varchar(800) null comment '用来描述计算过程所需参数的json字符串',
@@ -31,20 +32,20 @@ create table accounting_record
 
 create table cmessage
 (
-    account_id int    not null
+    account_id int         not null
         primary key,
-    t_remain   double null,
-    t_coin     double null
+    t_remain   double      null,
+    month      varchar(64) null
 );
 
 create table quota_sale
 (
     id         int auto_increment
         primary key,
-    quota      double null comment '出售的额度',
-    seller_id  int    null comment '售者id',
-    unit_price double null comment '单价',
-    state      int    null comment '表示这个出售是否是有效的，0为有效，1为无效(月份更新时，即每月1日0时，置所有state为1.每当新加入记录时，state都为0)'
+    quota      double      null comment '出售的额度',
+    seller_id  int         null comment '售者id',
+    unit_price double      null comment '单价',
+    month      varchar(64) null
 )
     comment '在售额度';
 
