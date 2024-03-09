@@ -33,6 +33,8 @@ public interface AccountService {
     CommonResponse<String> updateAccountInfo(Account account);
     //找回密码(使用手机号或邮箱号)
     CommonResponse<String> findPassword(String str,String password);
+    //验证数字签名
+    CommonResponse<Boolean> verifyDigitalSignature(String signature, String message, String address);
 
     //-----------------------------------管理员--------------------------------------
 

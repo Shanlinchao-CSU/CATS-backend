@@ -44,9 +44,12 @@ public class MetaMaskUtil {
         // This prevents misuse where a malicious DApp can sign arbitrary data (e.g. transaction) and use the signature to
         // impersonate the victim.
         String prefix = PERSONAL_MESSAGE_PREFIX + message.length();
+
         byte[] msgHash = Hash.sha3((prefix + message).getBytes());
 
+
         byte[] signatureBytes = Numeric.hexStringToByteArray(signature);
+
         byte v = signatureBytes[64];
         if (v < 27) {
             v += 27;
@@ -76,6 +79,7 @@ public class MetaMaskUtil {
                 }
             }
         }
+        System.out.println("match: " + match);
         return match;
     }
 }
