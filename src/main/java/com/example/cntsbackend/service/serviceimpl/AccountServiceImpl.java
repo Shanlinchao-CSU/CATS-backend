@@ -15,6 +15,8 @@ import com.example.cntsbackend.util.SendPhoneUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -227,7 +229,7 @@ public class AccountServiceImpl implements AccountService {
 
     //-------------------------------------------管理员------------------------------------------------------
 
-    public CommonResponse<String> AgreeApplication(String phone ,String email, int account_id ,String month){
+    public CommonResponse<String> AgreeApplication(String phone ,String email, int account_id){
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone).eq("email", email));
         registerApplication.setConductor_id(account_id);
         registerApplication.setState(1);
@@ -242,6 +244,13 @@ public class AccountServiceImpl implements AccountService {
         accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type ,file_address));
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone).eq("email", email));
         int account_id1 = account.getAccount_id();
+        // 获取当前年月
+        YearMonth yearMonth = YearMonth.now();
+        // 定义日期时间格式化器
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+        // 格式化为指定格式的字符串
+        String month = yearMonth.format(formatter);
+
         //TODO:确定cmessage表碳额度的初始值以及碳币,要与以太坊联系起来
         cMessageMapper.insert(new CMessage(account_id1,500,month));
         return CommonResponse.createForSuccess("审核成功，同意注册");

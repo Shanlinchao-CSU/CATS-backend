@@ -40,8 +40,8 @@ public interface AccountService {
 
     //-----------------------------------管理员--------------------------------------
 
-    //TODO:（改动，需要添加管理人员的id作为参数以及当前日期年-月）同意注册
-    CommonResponse<String> AgreeApplication(String phone ,String email, int account_id,String month);
+    //TODO:（改动，需要添加管理人员的id作为参数）同意注册
+    CommonResponse<String> AgreeApplication(String phone ,String email, int account_id);
     //TODO:（改动，需要添加一个管理人员的id作为参数）拒绝注册
     CommonResponse<String> RefuseApplication(String phone ,String email, int account_id);
     //同意修改个人信息
