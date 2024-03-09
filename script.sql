@@ -19,7 +19,7 @@ create table accounting_record
 (
     id                  int auto_increment comment '记录的id'
         primary key,
-    enterprise_name     int          null comment '对应企业的name',
+    enterprise_id       int          null comment '对应企业的id',
     month               varchar(64)  null comment '该碳核算记录对应的月份',
     time                timestamp    null comment '生成该记录的具体时间',
     state               int          null comment '0表示通过审核，1表示等待审核，2表示被拒绝',
@@ -53,7 +53,7 @@ create table register_application
 (
     register_application_id int auto_increment
         primary key,
-    account_name            varchar(255) null,
+    account_id              int          null,
     password                varchar(255) null,
     phone                   varchar(255) null,
     email                   varchar(255) null,
