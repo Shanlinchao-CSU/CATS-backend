@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * EnterpriseUser 企业用户controller
  */
-@Controller
+@RestController
 public class EnterpriseUserController {
 
     @Autowired

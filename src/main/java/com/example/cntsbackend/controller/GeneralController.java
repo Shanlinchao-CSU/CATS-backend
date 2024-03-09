@@ -6,11 +6,8 @@ import com.example.cntsbackend.domain.Signature;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import com.example.cntsbackend.service.AccountService;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
@@ -18,7 +15,7 @@ import java.util.Map;
  * General 通用controller
  * 减少重复代码
  */
-@Controller
+@RestController
 public class GeneralController {
 
     @Autowired
