@@ -53,7 +53,7 @@ create table register_application
 (
     register_application_id int auto_increment
         primary key,
-    account_id              int          null,
+    account_name            varchar(255) null,
     password                varchar(255) null,
     phone                   varchar(255) null,
     email                   varchar(255) null,
