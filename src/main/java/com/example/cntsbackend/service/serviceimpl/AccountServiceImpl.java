@@ -9,6 +9,7 @@ import com.example.cntsbackend.persistence.CMessageMapper;
 import com.example.cntsbackend.persistence.RegisterApplicationMapper;
 import com.example.cntsbackend.persistence.UpdateAccountMapper;
 import com.example.cntsbackend.service.AccountService;
+import com.example.cntsbackend.util.MetaMaskUtil;
 import com.example.cntsbackend.util.SendMailUtil;
 import com.example.cntsbackend.util.SendPhoneUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -203,8 +204,18 @@ public class AccountServiceImpl implements AccountService {
         }else return CommonResponse.createForError("手机号或邮箱不存在");
     }
 
-
-
+    /**
+     * 验证数字签名
+     * @param signature 数字签名
+     * @param message 消息
+     * @param address 钱包地址
+     * @return 是否验证成功
+     */
+    public CommonResponse<Boolean> verifyDigitalSignature(String signature, String message, String address){
+        return MetaMaskUtil.validate(signature, message, address)
+                ? CommonResponse.createForSuccess("验证成功", true)
+                : CommonResponse.createForSuccess("验证失败", false);
+    }
 
 
 

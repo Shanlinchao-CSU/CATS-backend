@@ -2,12 +2,14 @@ package com.example.cntsbackend.controller;
 
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
+import com.example.cntsbackend.domain.Signature;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.example.cntsbackend.service.AccountService;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
@@ -98,6 +100,17 @@ public class GeneralController {
     @GetMapping("/general/phone")
     public CommonResponse<Map> loginByPhone(@PathParam("phone") String phone) {
         return accountService.loginByPhone(phone);
+    }
+
+    /**
+     * 验证数字签名
+     *
+     * @param signature 数字签名体
+     * @return 验证结果 CommonResponse<Boolean>
+     */
+    @PostMapping("/general/signature")
+    public CommonResponse<Boolean> verifyDigitalSignature(@RequestBody Signature signature) {
+        return accountService.verifyDigitalSignature(signature.getSignature(), signature.getMessage(), signature.getAddress());
     }
 
     /**
