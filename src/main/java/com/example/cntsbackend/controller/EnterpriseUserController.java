@@ -24,16 +24,6 @@ public class EnterpriseUserController {
     private TransactionService transactionService;
 
 
-    /**
-     * 企业查看交易信息
-     *
-     * @param account_name 账号
-     * @return 交易信息 List<Transaction>
-     */
-    @GetMapping("/enterprise/transaction/{account_name}")
-    public CommonResponse<List<Transaction>> getTransaction(@PathVariable("account_name") String account_name) {
-        return transactionService.getTransactionData(account_name);
-    }
 
     /**
      * 企业获取所有未完成交易的交易信息(便于额度购买选择)
@@ -70,55 +60,8 @@ public class EnterpriseUserController {
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/enterprise/info")
-    public CommonResponse<String> register(@PathParam("file") File file, @PathParam("name") String name, @PathParam("password") String password, @PathParam("phone") String phone, @PathParam("email") String email, @PathParam("enterprise_type") int enterprise_type, @PathParam("type") int type, @PathParam("enterprise_address") String enterprise_address) {
-        return registerApplicationService.EnterpriseUserRegister(file, name, password, phone, email, enterprise_type, type, enterprise_address);
+    public CommonResponse<String> register(@PathParam("file") File file, @PathParam("name") String name, @PathParam("password") String password, @PathParam("phone") String phone, @PathParam("email") String email, @PathParam("enterprise_type") int enterprise_type, @PathParam("type") int type) {
+        return registerApplicationService.EnterpriseUserRegister(file, name, password, phone, email, enterprise_type, type);
     }
 
-    /**
-     * 发布交易信息
-     *
-     * @param name   账号
-     * @param amount 数量
-     * @param unit_price 单价
-     * @return 发布结果 CommonResponse<String>
-     */
-    @PostMapping("/enterprise/transaction")
-    public CommonResponse<String> publishTransaction(@PathParam("name") String name, @PathParam("amount") int amount, @PathParam("unit_price") int unit_price) {
-        return transactionService.PublishTransaction(name, amount, unit_price);
-    }
-
-    /**
-     * 完成交易
-     *
-     * @param name          账号
-     * @param transaction_id 交易id
-     * @return 完成结果 CommonResponse<String>
-     */
-    @PatchMapping("/enterprise/transaction")
-    public CommonResponse<String> completeTransaction(@PathParam("name") String name, @PathParam("transaction_id") int transaction_id) {
-        return transactionService.CompleteTransaction(name, transaction_id);
-    }
-
-    /**
-     * 修改单价
-     *
-     * @param transaction_id 交易id
-     * @param unit_price 单价
-     * @return 修改结果 CommonResponse<String>
-     */
-    @PatchMapping("/enterprise/transaction/price")
-    public CommonResponse<String> modifyUnitPrice(@PathParam("transaction_id") int transaction_id, @PathParam("unit_price") int unit_price) {
-        return transactionService.ModifyUnitPrice(transaction_id, unit_price);
-    }
-
-    /**
-     * 取消交易
-     *
-     * @param transaction_id 交易id
-     * @return 取消结果 CommonResponse<String>
-     */
-    @DeleteMapping("/enterprise/transaction")
-    public CommonResponse<String> cancelTransaction(@PathParam("transaction_id") int transaction_id) {
-        return transactionService.cancelTransactionData(transaction_id);
-    }
 }

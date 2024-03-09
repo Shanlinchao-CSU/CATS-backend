@@ -19,7 +19,7 @@ public interface AccountService {
     public CommonResponse<Map> loginByPhone(String phone);
     //邮箱登录
     public CommonResponse<Map> loginByEmail(String email);
-    //TODO:(修改)ID或邮箱或手机+密码登录
+    //ID或邮箱或手机+密码登录
     CommonResponse<Map> loginById(String str,String password);
     //修改密码
     CommonResponse<String> changePassword(String phone,String password);
@@ -40,14 +40,14 @@ public interface AccountService {
 
     //-----------------------------------管理员--------------------------------------
 
-    //TODO:（改动，需要添加管理人员的id作为参数）同意注册
+    //同意注册
     CommonResponse<String> AgreeApplication(String phone ,String email, int account_id);
-    //TODO:（改动，需要添加一个管理人员的id作为参数）拒绝注册
+    //拒绝注册
     CommonResponse<String> RefuseApplication(String phone ,String email, int account_id);
     //同意修改个人信息
     CommonResponse<String> AgreeUpdateAccountInfo(String phone ,String email);
     //拒绝修改个人信息
     CommonResponse<String> RefuseUpdateAccountInfo(String phone ,String email);
-    //TODO:（新加）管理员获取所有还未被审核的注册申请
+    //管理员获取所有还未被审核的注册申请
     CommonResponse<List<RegisterApplication>> getPendingReviewAccount();
 }

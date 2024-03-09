@@ -6,7 +6,6 @@ import com.example.cntsbackend.domain.Transaction;
 import java.util.List;
 
 public interface TransactionService {
-    //TODO：删除：原企业发布交易信息函数、原企业取消已发布的交易信息函数、原企业修改单价函数、原企业查看自己发布的交易信息函数
 
     //第三方监管机构和管理员查看交易信息
     CommonResponse<List<Transaction>> getAllTransactionDatas();

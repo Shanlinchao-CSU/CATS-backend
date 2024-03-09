@@ -2,6 +2,7 @@ package com.example.cntsbackend.controller;
 
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.AccountingRecord;
+import com.example.cntsbackend.domain.RegisterApplication;
 import com.example.cntsbackend.domain.Transaction;
 import com.example.cntsbackend.service.AccountService;
 import com.example.cntsbackend.service.AccountingRecordService;
@@ -66,15 +67,26 @@ public class AdministratorController {
     }
 
     /**
+     * 管理员获取所有还未被审核的注册申请
+     *
+     * @return 未审核的注册申请 List<RegisterApplication>
+     */
+    @GetMapping("/administrator/application/review")
+    public CommonResponse<List<RegisterApplication>> getPendingReviewAccount() {
+        return accountService.getPendingReviewAccount();
+    }
+
+    /**
      * 同意注册
      *
      * @param phone 手机号
      * @param email 邮箱
+     * @param account_id 管理人员的id
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/administrator/application")
-    public CommonResponse<String> AgreeApplication(@PathParam("phone") String phone, @PathParam("email") String email) {
-        return accountService.AgreeApplication(phone, email);
+    public CommonResponse<String> AgreeApplication(@PathParam("phone") String phone, @PathParam("email") String email, @PathParam("account_id") int account_id) {
+        return accountService.AgreeApplication(phone, email, account_id);
     }
 
     /**
@@ -95,11 +107,12 @@ public class AdministratorController {
      *
      * @param phone 手机号
      * @param email 邮箱
+     * @param account_id 管理人员的id
      * @return 注册结果 CommonResponse<String>
      */
     @DeleteMapping("/administrator/application")
-    public CommonResponse<String> RefuseApplication(@PathParam("phone") String phone, @PathParam("email") String email) {
-        return accountService.RefuseApplication(phone, email);
+    public CommonResponse<String> RefuseApplication(@PathParam("phone") String phone, @PathParam("email") String email, @PathParam("account_id") int account_id) {
+        return accountService.RefuseApplication(phone, email, account_id);
     }
 
 
