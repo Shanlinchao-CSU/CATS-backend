@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  * ThirdPartyRegulators 第三方监管机构controller
  */
 
-@Controller
+@RestController
 public class ThirdPartyRegulatorsController {
 
     @Autowired
