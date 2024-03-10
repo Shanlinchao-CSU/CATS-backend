@@ -1,7 +1,11 @@
 package com.example.cntsbackend.controller;
 
 import com.example.cntsbackend.common.CommonResponse;
+import com.example.cntsbackend.domain.QuotaSale;
 import com.example.cntsbackend.domain.Transaction;
+import com.example.cntsbackend.dto.QuotaSaleDto;
+import com.example.cntsbackend.dto.TransactionDto;
+import com.example.cntsbackend.service.QuotaSaleService;
 import com.example.cntsbackend.service.RegisterApplicationService;
 import com.example.cntsbackend.service.TransactionService;
 import jakarta.websocket.server.PathParam;
@@ -22,28 +26,65 @@ public class EnterpriseUserController {
     private RegisterApplicationService registerApplicationService;
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private QuotaSaleService quotaSaleService;
 
-
-
-    /**
-     * 企业获取所有未完成交易的交易信息(便于额度购买选择)
-     *
-     * @return 交易信息 List<Transaction>
-     */
-    @GetMapping("/enterprise/transaction/unfinished")
-    public CommonResponse<List<Transaction>> getAllUnfinishTransactionDatas() {
-        return transactionService.getAllUnfinishTransactionDatas();
-    }
 
     /**
      * 企业获取自己已完成的交易
      *
-     * @param account_name 账号
+     * @param account_id 账号ID
      * @return 交易信息 List<Transaction>
      */
-    @GetMapping("/enterprise/transaction/finished/{account_name}")
-    public CommonResponse<List<Transaction>> getMyFinishedTransactionDatas(@PathVariable("account_name") String account_name) {
-        return transactionService.getMyFinishedTransactionDatas(account_name);
+    @GetMapping("/enterprise/transaction/finished/{account_id}")
+    public CommonResponse<List<TransactionDto>> getMyFinishedTransactionDatas(@PathVariable("account_id") int account_id) {
+        return transactionService.getMyFinishedTransactionDatas(account_id);
+    }
+
+    /**
+     * 企业查看上月额度剩余（未卖出）
+     *
+     * @param account_id 账号ID
+     * @return 剩余额度 CommonResponse<QuotaSale>
+     */
+    @GetMapping("/enterprise/transaction/remain/{account_id}")
+    public CommonResponse<QuotaSale> getRemain(@PathVariable("account_id") int account_id) {
+        return quotaSaleService.getRemain(account_id);
+    }
+
+    /**
+     * 获取所有企业上月额度剩余（用于购买展示）
+     *
+     * @return 所有企业上月额度剩余 CommonResponse<List<QuotaSaleDto>>
+     */
+    @GetMapping("/enterprise/transaction/remain")
+    public CommonResponse<List<QuotaSaleDto>> getAllRemain() {
+        return quotaSaleService.getAllRemain();
+    }
+
+    /**
+     * 企业修改单价(id为发布信息的id)
+     *
+     * @param id          交易信息ID
+     * @param unit_price        单价
+     * @return 修改结果 CommonResponse<String>
+     */
+    @PatchMapping("/enterprise/transaction/price")
+    public CommonResponse<String> ModifyUnitPrice(@PathParam("id") int id, @PathParam("unit_price") double unit_price) {
+        return quotaSaleService.ModifyUnitPrice(id, unit_price);
+    }
+
+    /**
+     * 额度购买，第一个参数为买家id，第二个参数为额度发布信息的id，第三个参数为要买的额度
+     *
+     * @param account_id    买家ID
+     * @param quotaSale_id  额度发布信息ID
+     * @param amount        要买的额度
+     * @return 购买结果 CommonResponse<String>
+     */
+    @PatchMapping("/enterprise/transaction/amount")
+    public CommonResponse<String> CompleteTransaction(@PathParam("account_id") int account_id, @PathParam("quotaSale_id") int quotaSale_id, @PathParam("amount") double amount) {
+        return transactionService.CompleteTransaction(account_id, quotaSale_id, amount);
     }
 
 
@@ -54,14 +95,37 @@ public class EnterpriseUserController {
      * @param name            账号
      * @param password        密码
      * @param phone           电话
-     * @param email           邮箱
      * @param enterprise_type 企业类型
      * @param type            类型
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/enterprise/info")
-    public CommonResponse<String> register(@PathParam("file") File file, @PathParam("name") String name, @PathParam("password") String password, @PathParam("phone") String phone, @PathParam("email") String email, @PathParam("enterprise_type") int enterprise_type, @PathParam("type") int type) {
-        return registerApplicationService.EnterpriseUserRegister(file, name, password, phone, email, enterprise_type, type);
+    public CommonResponse<String> register(@PathParam("file") File file, @PathParam("name") String name, @PathParam("password") String password, @PathParam("phone") String phone, @PathParam("enterprise_type") int enterprise_type, @PathParam("type") int type) {
+        return registerApplicationService.EnterpriseUserRegister(file, name, password, phone, enterprise_type, type);
+    }
+
+    /**
+     * 企业发布交易信息
+     *
+     * @param account_id 企业账号ID
+     * @param quota      额度
+     * @param unit_price 单价
+     * @return 发布结果 CommonResponse<String>
+     */
+    @PostMapping("/enterprise/transaction/publish")
+    public CommonResponse<String> publishTransaction(@PathParam("account_id") int account_id, @PathParam("quota") double quota, @PathParam("unit_price") double unit_price) {
+        return quotaSaleService.PublishTransaction(account_id, quota, unit_price);
+    }
+
+    /**
+     * 企业取消已发布的交易信息
+     *
+     * @param id 交易信息ID
+     * @return 取消结果 CommonResponse<String>
+     */
+    @DeleteMapping("/enterprise/transaction/{id}")
+    public CommonResponse<String> cancelTransactionData(@PathVariable("id") int id) {
+        return quotaSaleService.cancelTransactionData(id);
     }
 
 }

@@ -4,6 +4,7 @@ import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.AccountingRecord;
 import com.example.cntsbackend.domain.RegisterApplication;
 import com.example.cntsbackend.domain.Transaction;
+import com.example.cntsbackend.dto.TransactionDto;
 import com.example.cntsbackend.service.AccountService;
 import com.example.cntsbackend.service.AccountingRecordService;
 import com.example.cntsbackend.service.TransactionService;
@@ -41,7 +42,7 @@ public class AdministratorController {
      * @return 交易信息 List<Transaction>
      */
     @GetMapping("/administrator/transaction")
-    public CommonResponse<List<Transaction>> getAllTransactionDatas() {
+    public CommonResponse<List<TransactionDto>> getAllTransactionDatas() {
         return transactionService.getAllTransactionDatas();
     }
 
@@ -78,15 +79,13 @@ public class AdministratorController {
 
     /**
      * 同意注册
-     *
-     * @param phone 手机号
-     * @param email 邮箱
+     * @param register_application_id 注册表的id
      * @param account_id 管理人员的id
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/administrator/application")
-    public CommonResponse<String> AgreeApplication(@PathParam("phone") String phone, @PathParam("email") String email, @PathParam("account_id") int account_id) {
-        return accountService.AgreeApplication(phone, email, account_id);
+    public CommonResponse<String> AgreeApplication(@PathParam("register_application_id") int register_application_id, @PathParam("account_id") int account_id) {
+        return accountService.AgreeApplication(register_application_id, account_id);
     }
 
     /**
@@ -104,15 +103,13 @@ public class AdministratorController {
 
     /**
      * 拒绝注册
-     *
-     * @param phone 手机号
-     * @param email 邮箱
+     * @param register_application_id 注册表的id
      * @param account_id 管理人员的id
      * @return 注册结果 CommonResponse<String>
      */
     @DeleteMapping("/administrator/application")
-    public CommonResponse<String> RefuseApplication(@PathParam("phone") String phone, @PathParam("email") String email, @PathParam("account_id") int account_id) {
-        return accountService.RefuseApplication(phone, email, account_id);
+    public CommonResponse<String> RefuseApplication(@PathParam("register_application_id") int register_application_id, @PathParam("account_id") int account_id) {
+        return accountService.RefuseApplication(register_application_id, account_id);
     }
 
 

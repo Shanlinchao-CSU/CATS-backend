@@ -2,6 +2,7 @@ package com.example.cntsbackend.controller;
 
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Transaction;
+import com.example.cntsbackend.dto.TransactionDto;
 import com.example.cntsbackend.service.RegisterApplicationService;
 import com.example.cntsbackend.service.TransactionService;
 import jakarta.websocket.server.PathParam;
@@ -33,7 +34,7 @@ public class ThirdPartyRegulatorsController {
      * @return 交易信息 List<Transaction>
      */
     @GetMapping("/thirdParty/transaction")
-    public CommonResponse<List<Transaction>> getAllTransactionDatas() {
+    public CommonResponse<List<TransactionDto>> getAllTransactionDatas() {
         return transactionService.getAllTransactionDatas();
     }
 
@@ -43,14 +44,13 @@ public class ThirdPartyRegulatorsController {
      * @param file     文件
      * @param name     名字
      * @param password 密码
-     * @param email    邮箱
      * @param phone    电话
      * @param type     类型
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/thirdParty/info")
-    public CommonResponse<String> register(@PathParam("file") File file, @PathParam("name") String name, @PathParam("password") String password, @PathParam("email") String email, @PathParam("phone") String phone, @PathParam("type") int type) {
-        return registerApplicationService.ThirdPartyRegulatorsRegister(file, name, password, phone, email, type);
+    public CommonResponse<String> register(@PathParam("file") File file, @PathParam("name") String name, @PathParam("password") String password, @PathParam("phone") String phone, @PathParam("type") int type) {
+        return registerApplicationService.ThirdPartyRegulatorsRegister(file, name, password, phone, type);
     }
 
 }

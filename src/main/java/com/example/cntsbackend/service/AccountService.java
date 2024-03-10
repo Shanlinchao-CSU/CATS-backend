@@ -42,9 +42,9 @@ public interface AccountService {
 
     //-----------------------------------管理员--------------------------------------
 
-    //TODO:(修改，需要两个参数，一个为注册表的id，一个为管理员的id)同意注册
+    //同意注册
     CommonResponse<String> AgreeApplication(int register_application_id, int account_id);
-    //TODO:(修改，需要两个参数，一个为注册表的id，一个为管理员的id)拒绝注册
+    //拒绝注册
     CommonResponse<String> RefuseApplication(int register_application_id, int account_id);
     //同意修改个人信息
     CommonResponse<String> AgreeUpdateAccountInfo(String phone ,String email);
