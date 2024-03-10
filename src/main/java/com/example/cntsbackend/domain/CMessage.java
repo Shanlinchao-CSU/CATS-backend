@@ -1,13 +1,15 @@
 package com.example.cntsbackend.domain;
 
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
 @TableName(value = "cmessage")
 public class CMessage {
-
+    @TableId(type = IdType.AUTO)
     private int account_id;
     private double t_remain;
     private String month;

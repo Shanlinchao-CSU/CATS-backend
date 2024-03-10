@@ -32,6 +32,9 @@ public class CommonResponse<T> {
     public static <T> CommonResponse<T> createForSuccess(String message,T data){
         return new CommonResponse<>(ResponseCode.SUCCESS.getCode(),message, data);
     }
+    public static <T> CommonResponse<T> createForSuccess(int code, String message){
+        return new CommonResponse<>(code,message);
+    }
 
     public static <T> CommonResponse<T> createForError(){
         return new CommonResponse<>(ResponseCode.ERROR.getCode(),ResponseCode.ERROR.getDesc());

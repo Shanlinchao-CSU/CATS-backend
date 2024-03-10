@@ -2,9 +2,14 @@ package com.example.cntsbackend;
 
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
+import com.example.cntsbackend.domain.QuotaSale;
 import com.example.cntsbackend.domain.RegisterApplication;
 import com.example.cntsbackend.domain.Transaction;
+import com.example.cntsbackend.dto.QuotaSaleDto;
+import com.example.cntsbackend.dto.TransactionDto;
+import com.example.cntsbackend.service.QuotaSaleService;
 import com.example.cntsbackend.service.serviceimpl.AccountServiceImpl;
+import com.example.cntsbackend.service.serviceimpl.QuotaSaleServiceImpl;
 import com.example.cntsbackend.service.serviceimpl.RegisterApplicationServiceImpl;
 import com.example.cntsbackend.service.serviceimpl.TransactionServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -26,6 +31,8 @@ class CntsBackendApplicationTests {
     private TransactionServiceImpl transactionService;
     @Autowired
     private RegisterApplicationServiceImpl registerApplicationService;
+    @Autowired
+    private QuotaSaleServiceImpl quotaSaleService;
 
     @Test
     void contextLoads() {
@@ -44,6 +51,12 @@ class CntsBackendApplicationTests {
         System.out.println(accountCommonResponse.getCode());
     }
     @Test
+    public void VerifyCodeTest() {
+//        CommonResponse<String> stringCommonResponse = accountService.VerifyCode("8830");
+//        System.out.println(stringCommonResponse.getMessage());
+//        System.out.println(stringCommonResponse.getCode());
+    }
+    @Test
     public void loginByPhoneTest() {
         CommonResponse<Map> accountCommonResponse = accountService.loginByPhone("123");
         System.out.println(accountCommonResponse.getData());
@@ -55,25 +68,15 @@ class CntsBackendApplicationTests {
         System.out.println(accountCommonResponse.getData());
         System.out.println(accountCommonResponse.getCode());
     }
-    @Test
-    public void PublishTransactionTest() {
-//        CommonResponse<String> transaction = transactionService.PublishTransaction("aaa", 200,200);
-//        System.out.println(transaction.getMessage());
-    }
 
     @Test
-    public void CompleteTransactionTest() {
-//        CommonResponse<String> transaction = transactionService.CompleteTransaction("bbb", 2);
-//        System.out.println(transaction.getMessage());
-    }
-    @Test
     public void AgreeApplicationTest() {
-//        CommonResponse<String> application = accountService.AgreeApplication("111", "111",1);
-//        System.out.println(application.getMessage());
+        CommonResponse<String> application = accountService.AgreeApplication(2, 1);
+        System.out.println(application.getMessage());
     }
     @Test
     public void RefuseApplicationTest() {
-        CommonResponse<String> application = accountService.RefuseApplication("111", "111",1);
+        CommonResponse<String> application = accountService.RefuseApplication(2,1);
         System.out.println(application.getMessage());
     }
     @Test
@@ -84,7 +87,7 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void EnterpriseUserRegisterTest() {
-        CommonResponse<String> application = registerApplicationService.EnterpriseUserRegister(new File("https://www.baidu.com"),"zs","111","111","111",1,1);
+        CommonResponse<String> application = registerApplicationService.EnterpriseUserRegister(new File("https://www.baidu.com"),"zs","111","111",1,1);
         System.out.println(application.getMessage());
     }
     @Test
@@ -120,21 +123,52 @@ class CntsBackendApplicationTests {
         System.out.println(stringCommonResponse.getData());
     }
     @Test
-    public void getAllUnfinishTransactionDatasTest(){
-        CommonResponse<List<Transaction>> allUnfinishTransactionDatas = transactionService.getAllUnfinishTransactionDatas();
-        System.out.println(allUnfinishTransactionDatas.getData());
+    public void PublishTransactionTest() {
+        CommonResponse<String> transaction = quotaSaleService.PublishTransaction(1, 200,200);
+        System.out.println(transaction.getMessage());
+    }
+
+    @Test
+    public void CompleteTransactionTest() {
+        CommonResponse<String> stringCommonResponse = transactionService.CompleteTransaction(6, 2, 100);
+        System.out.println(stringCommonResponse.getMessage());
+    }
+    @Test
+    public void getAllTransactionDatasTest(){
+        CommonResponse<List<TransactionDto>> allTransactionDatas = transactionService.getAllTransactionDatas();
+        System.out.println(allTransactionDatas.getData());
+        TransactionDto transactionDto = allTransactionDatas.getData().get(0);
+        System.out.println(transactionDto.getBuyer_account_name());
     }
 
     @Test
     public void getMyFinishedTransactionDatasTest(){
-        CommonResponse<List<Transaction>> allUnfinishTransactionDatas = transactionService.getMyFinishedTransactionDatas("aaa");
-        System.out.println(allUnfinishTransactionDatas.getData());
+        CommonResponse<List<TransactionDto>> myFinishedTransactionDatas = transactionService.getMyFinishedTransactionDatas(1);
+        System.out.println(myFinishedTransactionDatas.getData());
     }
 
     @Test
     public void cancelTransactionDataTest(){
-//        CommonResponse<String> stringCommonResponse = transactionService.cancelTransactionData(1);
-//        System.out.println(stringCommonResponse.getMessage());
+        CommonResponse<String> stringCommonResponse = quotaSaleService.cancelTransactionData(1);
+        System.out.println(stringCommonResponse.getMessage());
+    }
+    @Test
+    public void ModifyUnitPriceTest(){
+        CommonResponse<String> stringCommonResponse = quotaSaleService.ModifyUnitPrice(2,100);
+        System.out.println(stringCommonResponse.getMessage());
+    }
+    @Test
+    public void getRemainTest(){
+        CommonResponse<QuotaSale> remain = quotaSaleService.getRemain(1);
+        System.out.println(remain.getMessage());
+        System.out.println(remain.getData());
+    }
+    @Test
+    public void getAllRemainTest(){
+        CommonResponse<List<QuotaSaleDto>> allRemain = quotaSaleService.getAllRemain();
+        System.out.println(allRemain.getMessage());
+        QuotaSaleDto quotaSaleDto = allRemain.getData().get(0);
+        System.out.println(quotaSaleDto.getQuota());
     }
 
 }

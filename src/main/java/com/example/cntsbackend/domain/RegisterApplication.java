@@ -22,11 +22,10 @@ public class RegisterApplication {
     private int conductor_id;
     private Integer state;
 
-    public RegisterApplication(String account_name, String password, String phone, String email, Integer type, String file_address, Integer enterprise_type) {
+    public RegisterApplication(String account_name, String password, String phone, Integer type, String file_address, Integer enterprise_type) {
         this.account_name = account_name;
         this.password = password;
         this.phone = phone;
-        this.email = email;
         this.type = type;
         this.file_address = file_address;
         this.enterprise_type = enterprise_type;

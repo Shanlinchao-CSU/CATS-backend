@@ -7,6 +7,7 @@ import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.CMessage;
 import com.example.cntsbackend.domain.QuotaSale;
 import com.example.cntsbackend.domain.Transaction;
+import com.example.cntsbackend.dto.QuotaSaleDto;
 import com.example.cntsbackend.persistence.AccountMapper;
 import com.example.cntsbackend.persistence.CMessageMapper;
 import com.example.cntsbackend.persistence.QuotaSaleMapper;
@@ -16,7 +17,11 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class QuotaSaleServiceImpl implements QuotaSaleService {
@@ -31,8 +36,14 @@ public class QuotaSaleServiceImpl implements QuotaSaleService {
         CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", account_id));
         double t_remain = cMessage.getT_remain();
         if(t_remain>=quota){
+            // 获取当前时间的上个月份
+            YearMonth currentYearMonth = YearMonth.now();
+            YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
+            // 格式化为"yyyy-MM"的字符串
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+            String previousMonthString = previousYearMonth.format(formatter);
             //数据库增添一行数据
-            QuotaSale quotaSale = new QuotaSale(quota,account_id,unit_price);
+            QuotaSale quotaSale = new QuotaSale(quota,account_id,unit_price,previousMonthString);
             quotaSaleMapper.insert(quotaSale);
             //CMessage更新数据
             t_remain = t_remain - quota;
@@ -70,10 +81,31 @@ public class QuotaSaleServiceImpl implements QuotaSaleService {
         return CommonResponse.createForSuccess("修改单价成功");
     }
 
-    public CommonResponse<Double> getRemain(int account_id){
-        QuotaSale quotaSale = quotaSaleMapper.selectOne(new QueryWrapper<QuotaSale>().eq("seller_id", account_id));
-        double quota = quotaSale.getQuota();//TODO:修改
-        return CommonResponse.createForSuccess("查询上月额度成功",quota);
+    public CommonResponse<QuotaSale> getRemain(int account_id){
+        // 获取当前时间的上个月份
+        YearMonth currentYearMonth = YearMonth.now();
+        YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
+        // 格式化为"yyyy-MM"的字符串
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+        String previousMonthString = previousYearMonth.format(formatter);
+        QuotaSale quotaSale = quotaSaleMapper.selectOne(new QueryWrapper<QuotaSale>().eq("seller_id", account_id).eq("month",previousMonthString));
+        return CommonResponse.createForSuccess("查询上月额度成功",quotaSale);
+    }
+
+    public CommonResponse<List<QuotaSaleDto>> getAllRemain(){
+        // 获取当前时间的上个月份
+        YearMonth currentYearMonth = YearMonth.now();
+        YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
+        // 格式化为"yyyy-MM"的字符串
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+        String previousMonthString = previousYearMonth.format(formatter);
+        List<QuotaSale> quotaSaleList = quotaSaleMapper.selectList(new QueryWrapper<QuotaSale>().eq("month",previousMonthString));
+        List<QuotaSaleDto> quotaSaleDtoList = new ArrayList<>();
+        for (int i = 0; i < quotaSaleList.size(); i++) {
+            QuotaSaleDto quotaSaleWithAccount = quotaSaleMapper.getQuotaSaleWithAccount(quotaSaleList.get(i).getSeller_id());
+            quotaSaleDtoList.add(quotaSaleWithAccount);
+        }
+        return CommonResponse.createForSuccess("获取所有用户余额成功",quotaSaleDtoList);
     }
 
 }

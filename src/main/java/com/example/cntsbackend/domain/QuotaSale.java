@@ -13,13 +13,13 @@ public class QuotaSale {
     private double quota;
     private int seller_id;
     private double unit_price;
-    private int state;
+    private String month;
 
-    public QuotaSale(double quota, int seller_id, double unit_price) {
+    public QuotaSale(double quota, int seller_id, double unit_price,String month) {
         this.quota = quota;
         this.seller_id = seller_id;
         this.unit_price = unit_price;
-        this.state = 1;
+        this.month = month;
     }
 
     public QuotaSale() {

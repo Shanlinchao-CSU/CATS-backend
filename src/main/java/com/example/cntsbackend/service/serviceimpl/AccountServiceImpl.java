@@ -13,6 +13,7 @@ import com.example.cntsbackend.util.MetaMaskUtil;
 import com.example.cntsbackend.util.SendMailUtil;
 import com.example.cntsbackend.util.SendPhoneUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.stereotype.Service;
 
 import java.time.YearMonth;
@@ -57,9 +58,10 @@ public class AccountServiceImpl implements AccountService {
             // 生成四位包括数字、小写字母和大写字母的随机验证码
             String verificationCode = generateVerificationCode();
             SendPhoneUtil.sendSMS(phoneNumber,verificationCode);
+
             return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
         }else{
-            return CommonResponse.createForError("0");
+            return CommonResponse.createForError(1,"手机号不存在");
         }
     }
     public CommonResponse<String> sendVerificationCodeByChangePhone(String phoneNumber){
@@ -75,7 +77,7 @@ public class AccountServiceImpl implements AccountService {
             SendMailUtil.sendQQEmail(email, Integer.parseInt(verificationCode));
             return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
         }else{
-            return CommonResponse.createForError("ERROR","0");
+            return CommonResponse.createForError(1,"邮箱不存在");
         }
     }
     public CommonResponse<String> sendVerificationCodeByChangeEmail(String email){
@@ -224,25 +226,37 @@ public class AccountServiceImpl implements AccountService {
                 : CommonResponse.createForSuccess("验证失败", false);
     }
 
+//    public CommonResponse<String> VerifyCode(String code){
+//        System.out.println(verificationCode);
+//        System.out.println(code);
+//        if(code.equals(verificationCode)){
+//            return CommonResponse.createForSuccess("输入验证码正确");
+//        }else{
+//            return CommonResponse.createForError("输入验证码错误");
+//        }
+//    }
+
 
 
 
     //-------------------------------------------管理员------------------------------------------------------
 
-    public CommonResponse<String> AgreeApplication(String phone ,String email, int account_id){
-        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone).eq("email", email));
+    public CommonResponse<String> AgreeApplication(int register_application_id, int account_id){
+        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("register_application_id", register_application_id));
         registerApplication.setConductor_id(account_id);
         registerApplication.setState(1);
         UpdateWrapper<RegisterApplication> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("phone", phone).eq("email", email);
+        updateWrapper.eq("register_application_id", register_application_id);
         registerApplicationMapper.update(registerApplication, updateWrapper);
         String account_name = registerApplication.getAccount_name();
         String password = registerApplication.getPassword();
+        String phone = registerApplication.getPhone();
+        String email = registerApplication.getEmail();
         int enterprise_type = registerApplication.getEnterprise_type();
         String file_address = registerApplication.getFile_address();
         Integer type = registerApplication.getType();
         accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type ,file_address));
-        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone).eq("email", email));
+        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         int account_id1 = account.getAccount_id();
         // 获取当前年月
         YearMonth yearMonth = YearMonth.now();
@@ -256,12 +270,12 @@ public class AccountServiceImpl implements AccountService {
         return CommonResponse.createForSuccess("审核成功，同意注册");
     }
 
-    public CommonResponse<String> RefuseApplication(String phone ,String email, int account_id){
-        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone).eq("email", email));
+    public CommonResponse<String> RefuseApplication(int register_application_id, int account_id){
+        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("register_application_id", register_application_id));
         registerApplication.setConductor_id(account_id);
         registerApplication.setState(2);
         UpdateWrapper<RegisterApplication> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("phone", phone).eq("email", email);
+        updateWrapper.eq("register_application_id", register_application_id);
         registerApplicationMapper.update(registerApplication, updateWrapper);
         return CommonResponse.createForSuccess("审核成功，拒绝注册");
     }

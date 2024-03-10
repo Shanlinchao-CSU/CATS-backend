@@ -37,13 +37,15 @@ public interface AccountService {
     CommonResponse<String> findPassword(String str,String password);
     //验证数字签名
     CommonResponse<Boolean> verifyDigitalSignature(String signature, String message, String address);
+    //TODO:(新加)验证输入的验证码是否正确
+//    CommonResponse<String> VerifyCode(String code);
 
     //-----------------------------------管理员--------------------------------------
 
-    //同意注册
-    CommonResponse<String> AgreeApplication(String phone ,String email, int account_id);
-    //拒绝注册
-    CommonResponse<String> RefuseApplication(String phone ,String email, int account_id);
+    //TODO:(修改，需要两个参数，一个为注册表的id，一个为管理员的id)同意注册
+    CommonResponse<String> AgreeApplication(int register_application_id, int account_id);
+    //TODO:(修改，需要两个参数，一个为注册表的id，一个为管理员的id)拒绝注册
+    CommonResponse<String> RefuseApplication(int register_application_id, int account_id);
     //同意修改个人信息
     CommonResponse<String> AgreeUpdateAccountInfo(String phone ,String email);
     //拒绝修改个人信息
