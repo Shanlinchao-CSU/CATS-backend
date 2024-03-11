@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;
@@ -49,7 +51,7 @@ public class ThirdPartyRegulatorsController {
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/thirdParty/info")
-    public CommonResponse<String> register(@PathParam("file") File file, @PathParam("name") String name, @PathParam("password") String password, @PathParam("phone") String phone, @PathParam("type") int type) {
+    public CommonResponse<String> register(@RequestParam("file") MultipartFile file, @RequestParam("name") String name, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("type") int type) {
         return registerApplicationService.ThirdPartyRegulatorsRegister(file, name, password, phone, type);
     }
 

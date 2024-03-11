@@ -12,6 +12,7 @@ import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;
@@ -100,7 +101,11 @@ public class EnterpriseUserController {
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/enterprise/info")
-    public CommonResponse<String> register(@PathParam("file") File file, @PathParam("name") String name, @PathParam("password") String password, @PathParam("phone") String phone, @PathParam("enterprise_type") int enterprise_type, @PathParam("type") int type) {
+    public CommonResponse<String> register(@RequestParam("file") MultipartFile file, @RequestParam("name") String name, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("enterprise_type") int enterprise_type, @RequestParam("type") int type) {
+        System.out.println("file:" + file);
+        System.out.println("name:" + name);
+        System.out.println("password:" + password);
+        System.out.println("phone:" + phone);
         return registerApplicationService.EnterpriseUserRegister(file, name, password, phone, enterprise_type, type);
     }
 
