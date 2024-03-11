@@ -57,15 +57,8 @@ public class ThirdPartyRegulatorsController {
         File f = MultipartFileToFileConverter.convert(file);
         if (f == null) {
             return CommonResponse.createForSuccess("传输错误，请重新上传后重试");
-        }else {
-            String etag = MultipartFileToFileConverter.etag(f);
-            Boolean result = MultipartFileToFileConverter.etag(f, etag);
-            if (!result) {
-                return CommonResponse.createForSuccess("传输错误，请重新上传后重试");
-            }else
-                return registerApplicationService.ThirdPartyRegulatorsRegister(f, name, password, phone, type);
         }
-
+        return registerApplicationService.ThirdPartyRegulatorsRegister(f, name, password, phone, type);
     }
 
 }

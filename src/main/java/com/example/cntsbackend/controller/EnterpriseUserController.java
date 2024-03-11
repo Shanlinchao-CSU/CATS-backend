@@ -107,14 +107,8 @@ public class EnterpriseUserController {
         File f = MultipartFileToFileConverter.convert(file);
         if (f == null) {
             return CommonResponse.createForSuccess("文件已存在，请重新上传后重试");
-        }else {
-            String etag = MultipartFileToFileConverter.etag(f);
-            Boolean result = MultipartFileToFileConverter.etag(f, etag);
-            if (!result) {
-                return CommonResponse.createForSuccess("传输错误，请重新上传后重试");
-            }else
-                return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type);
         }
+        return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type);
     }
 
     /**
