@@ -53,10 +53,10 @@ public class EnterpriseUserController {
      * 企业查看上月额度剩余（未卖出）
      *
      * @param account_id 账号ID
-     * @return 剩余额度 CommonResponse<QuotaSale>
+     * @return 剩余额度 CommonResponse<List<QuotaSale>>
      */
     @GetMapping("/enterprise/transaction/remain/{account_id}")
-    public CommonResponse<QuotaSale> getRemain(
+    public CommonResponse<List<QuotaSale>> getRemain(
             @PathVariable("account_id") int account_id) {
         return quotaSaleService.getRemain(account_id);
     }
