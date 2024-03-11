@@ -35,7 +35,8 @@ create table cmessage
     account_id int         not null
         primary key,
     t_remain   double      null,
-    month      varchar(64) null
+    month      varchar(64) null,
+    `limit`    double      null comment '额度'
 );
 
 create table quota_sale

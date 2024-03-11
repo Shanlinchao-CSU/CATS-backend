@@ -7,6 +7,7 @@ import com.example.cntsbackend.persistence.RegisterApplicationMapper;
 import com.example.cntsbackend.service.RegisterApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
@@ -14,7 +15,7 @@ import java.io.File;
 public class RegisterApplicationServiceImpl implements RegisterApplicationService {
     @Autowired
     private RegisterApplicationMapper registerApplicationMapper;
-    public CommonResponse<String> EnterpriseUserRegister(File file ,String account_name ,String password ,String phone ,int enterprise_type ,int type ){
+    public CommonResponse<String> EnterpriseUserRegister(MultipartFile file , String account_name , String password , String phone , int enterprise_type , int type ){
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone));
         String str= String.valueOf(file);
         // 保存文件到路径
@@ -27,7 +28,7 @@ public class RegisterApplicationServiceImpl implements RegisterApplicationServic
             return CommonResponse.createForSuccess("SUCCESS");
         }
     }
-    public CommonResponse<String> ThirdPartyRegulatorsRegister(File file ,String account_name ,String password ,String phone ,int type ){
+    public CommonResponse<String> ThirdPartyRegulatorsRegister(MultipartFile file ,String account_name ,String password ,String phone ,int type ){
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone));
         String str= String.valueOf(file);
         //100为企业类型之外的编号
