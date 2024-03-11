@@ -13,7 +13,7 @@ public interface QuotaSaleService {
     CommonResponse<String> cancelTransactionData(int id);
     //企业修改单价(id为发布信息的id)
     CommonResponse<String> ModifyUnitPrice(int id,double unit_price);
-    //TODO:(修改返回值)企业查看上月额度剩余（未卖出）
+    //企业查看上月额度剩余（未卖出）
     CommonResponse<List<QuotaSale>> getRemain(int account_id);
     //获取所有企业上月额度剩余（用于购买展示）
     CommonResponse<List<QuotaSaleDto>> getAllRemain();
