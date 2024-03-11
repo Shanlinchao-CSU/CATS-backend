@@ -1,6 +1,7 @@
 package com.example.cntsbackend.service.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.AccountingRecord;
 import com.example.cntsbackend.dto.AccountingRecordDto;
@@ -175,6 +176,36 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
             accountingRecordDTOList.add(accountingRecordsWithAccountName);
         }
         return CommonResponse.createForSuccess(accountingRecordDTOList);
+    }
+    public CommonResponse<String> CancelMyCarbonAccounting(int id){
+        AccountingRecord accountingRecord = accountingRecordMapper.selectOne(new QueryWrapper<AccountingRecord>().eq("id", id));
+        if(accountingRecord != null){
+            int state = accountingRecord.getState();
+            if(state == 1){
+                accountingRecordMapper.deleteById(id);
+                return CommonResponse.createForSuccess("取消碳核算记录成功");
+            }else return CommonResponse.createForError("该碳核算记录已被处理,取消失败");
+        }else return CommonResponse.createForError("该碳核算记录不存在");
+    }
+
+    public CommonResponse<String> ModifyMyCarbonAccounting(int id,AccountingRecord accountingRecord){
+        AccountingRecord accountingRecord1 = accountingRecordMapper.selectOne(new QueryWrapper<AccountingRecord>().eq("id", id));
+        int state = accountingRecord1.getState();
+        if(state ==1){
+            accountingRecord1.setMonth(accountingRecord.getMonth());
+            accountingRecord1.setResult(accountingRecord.getResult());
+            accountingRecord1.setSupporting_material(accountingRecord.getSupporting_material());
+            accountingRecord1.setVariable_json(accountingRecord.getVariable_json());
+            //获取当前时间
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String formatedDateTime = format.format(new Date());
+            Date timestamp = Timestamp.valueOf(formatedDateTime);
+            accountingRecord1.setTime(timestamp);
+            UpdateWrapper<AccountingRecord> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("id",id);
+            accountingRecordMapper.update(accountingRecord1,updateWrapper);
+            return CommonResponse.createForSuccess("修改碳核算记录成功");
+        }else return CommonResponse.createForError("该碳核算记录已被处理,修改失败");
     }
 
 }

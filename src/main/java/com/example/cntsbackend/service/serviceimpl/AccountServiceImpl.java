@@ -266,7 +266,7 @@ public class AccountServiceImpl implements AccountService {
         String month = yearMonth.format(formatter);
 
         //TODO:确定cmessage表碳额度的初始值以及碳币,要与以太坊联系起来
-        cMessageMapper.insert(new CMessage(account_id1,500,month));
+        cMessageMapper.insert(new CMessage(account_id1,500,month,500));
         return CommonResponse.createForSuccess("审核成功，同意注册");
     }
 

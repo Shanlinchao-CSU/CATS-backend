@@ -156,9 +156,9 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void getRemainTest(){
-        CommonResponse<QuotaSale> remain = quotaSaleService.getRemain(1);
-        System.out.println(remain.getMessage());
+        CommonResponse<List<QuotaSale>> remain = quotaSaleService.getRemain(1);
         System.out.println(remain.getData());
+        System.out.println(remain.getData().get(0).toString());
     }
     @Test
     public void getAllRemainTest(){
@@ -182,10 +182,14 @@ class CntsBackendApplicationTests {
         System.out.println(allCarbonAccountingForReview.getData().get(0).getEnterprise_type());
     }
     @Test
-    public void getMyCarbonAccountingTest(){
-        CommonResponse<List<AccountingRecordDto>> myCarbonAccounting = accountingRecordService.getMyCarbonAccounting(1);
-        System.out.println(myCarbonAccounting.getData().get(0));
-        System.out.println(myCarbonAccounting.getData().get(0).getEnterprise_type());
+    public void CancelMyCarbonAccountingTest(){
+        CommonResponse<String> stringCommonResponse = accountingRecordService.CancelMyCarbonAccounting(1);
+        System.out.println(stringCommonResponse.getMessage());
+    }
+    @Test
+    public void ModifyMyCarbonAccountingTest(){
+        CommonResponse<String> stringCommonResponse = accountingRecordService.ModifyMyCarbonAccounting(1, new AccountingRecord("111","111","111"));
+        System.out.println(stringCommonResponse.getMessage());
     }
 
     @Test

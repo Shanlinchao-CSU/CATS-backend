@@ -36,5 +36,11 @@ public class AccountingRecord {
 
     public AccountingRecord() {
     }
+
+    public AccountingRecord(String variable_json, String result, String supporting_material) {
+        this.variable_json = variable_json;
+        this.result = result;
+        this.supporting_material = supporting_material;
+    }
 }
 
