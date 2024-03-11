@@ -1,22 +1,15 @@
 package com.example.cntsbackend.service.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.cntsbackend.common.CommonResponse;
-import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.AccountingRecord;
-import com.example.cntsbackend.dto.AccountingRecordDTO;
+import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.persistence.AccountMapper;
 import com.example.cntsbackend.persistence.AccountingRecordMapper;
 import com.example.cntsbackend.service.AccountingRecordService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -37,11 +30,11 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
     @Autowired
     private AccountMapper accountMapper;
 
-    public CommonResponse<List<AccountingRecordDTO>> getAllCarbonAccountingForReview() {
+    public CommonResponse<List<AccountingRecordDto>> getAllCarbonAccountingForReview() {
         List<AccountingRecord> accountingRecordList = accountingRecordMapper.selectList(new QueryWrapper<AccountingRecord>().eq("state", 1));
-        List<AccountingRecordDTO> accountingRecordDTOList = new ArrayList<>();
+        List<AccountingRecordDto> accountingRecordDTOList = new ArrayList<>();
         for (AccountingRecord accountingRecord : accountingRecordList) {
-            AccountingRecordDTO accountingRecordsWithAccountName = accountingRecordMapper.getAccountingRecordsWithAccountName(accountingRecord.getEnterprise_id());
+            AccountingRecordDto accountingRecordsWithAccountName = accountingRecordMapper.getAccountingRecordsWithAccountName(accountingRecord.getEnterprise_id());
             String enterprise_type = accountingRecordsWithAccountName.getEnterprise_type();
             switch (enterprise_type) {
                 case "1" -> accountingRecordsWithAccountName.setEnterprise_type("发电企业");
@@ -60,11 +53,11 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
         return CommonResponse.createForSuccess("获取所有待审核的碳核算请求成功",accountingRecordDTOList);
     }
 
-    public CommonResponse<List<AccountingRecordDTO>> getAllCarbonAccounting(){
+    public CommonResponse<List<AccountingRecordDto>> getAllCarbonAccounting(){
         List<AccountingRecord> accountingRecordList = accountingRecordMapper.selectList(null);
-        List<AccountingRecordDTO> accountingRecordDTOList = new ArrayList<>();
+        List<AccountingRecordDto> accountingRecordDTOList = new ArrayList<>();
         for (AccountingRecord accountingRecord : accountingRecordList) {
-            AccountingRecordDTO accountingRecordsWithAccountName = accountingRecordMapper.getAccountingRecordsWithAccountName(accountingRecord.getEnterprise_id());
+            AccountingRecordDto accountingRecordsWithAccountName = accountingRecordMapper.getAccountingRecordsWithAccountName(accountingRecord.getEnterprise_id());
             String enterprise_type = accountingRecordsWithAccountName.getEnterprise_type();
             switch (enterprise_type) {
                 case "1" -> accountingRecordsWithAccountName.setEnterprise_type("发电企业");
@@ -161,11 +154,11 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
         return CommonResponse.createForSuccess("用户提交碳核算请求成功");
     }
 
-    public CommonResponse<List<AccountingRecordDTO>> getMyCarbonAccounting(int enterprise_id){
+    public CommonResponse<List<AccountingRecordDto>> getMyCarbonAccounting(int enterprise_id){
         List<AccountingRecord> accountingRecordList = accountingRecordMapper.selectList(new QueryWrapper<AccountingRecord>().eq("enterprise_id", enterprise_id));
-        List<AccountingRecordDTO> accountingRecordDTOList = new ArrayList<>();
+        List<AccountingRecordDto> accountingRecordDTOList = new ArrayList<>();
         for (int i = 0; i < accountingRecordList.size(); i++) {
-            AccountingRecordDTO accountingRecordsWithAccountName = accountingRecordMapper.getAccountingRecordsWithAccountName(accountingRecordList.get(i).getEnterprise_id());
+            AccountingRecordDto accountingRecordsWithAccountName = accountingRecordMapper.getAccountingRecordsWithAccountName(accountingRecordList.get(i).getEnterprise_id());
             String enterprise_type = accountingRecordsWithAccountName.getEnterprise_type();
             switch (enterprise_type) {
                 case "1" -> accountingRecordsWithAccountName.setEnterprise_type("发电企业");

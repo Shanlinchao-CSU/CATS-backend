@@ -1,4 +1,4 @@
-package com.example.cntsbackend.common;
+package com.example.cntsbackend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

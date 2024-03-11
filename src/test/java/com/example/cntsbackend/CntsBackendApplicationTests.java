@@ -2,10 +2,9 @@ package com.example.cntsbackend;
 
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.*;
-import com.example.cntsbackend.dto.AccountingRecordDTO;
+import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.dto.QuotaSaleDto;
 import com.example.cntsbackend.dto.TransactionDto;
-import com.example.cntsbackend.service.QuotaSaleService;
 import com.example.cntsbackend.service.serviceimpl.*;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -170,20 +168,20 @@ class CntsBackendApplicationTests {
 
     @Test
     public void getAllCarbonAccountingForReviewTest(){
-        CommonResponse<List<AccountingRecordDTO>> allCarbonAccountingForReview = accountingRecordService.getAllCarbonAccountingForReview();
+        CommonResponse<List<AccountingRecordDto>> allCarbonAccountingForReview = accountingRecordService.getAllCarbonAccountingForReview();
         System.out.println(allCarbonAccountingForReview.getData().get(0));
         System.out.println(allCarbonAccountingForReview.getData().get(0).getAccount_name());
     }
 
     @Test
     public void getAllCarbonAccountingTest(){
-        CommonResponse<List<AccountingRecordDTO>> allCarbonAccountingForReview = accountingRecordService.getAllCarbonAccounting();
+        CommonResponse<List<AccountingRecordDto>> allCarbonAccountingForReview = accountingRecordService.getAllCarbonAccounting();
         System.out.println(allCarbonAccountingForReview.getData().get(0));
         System.out.println(allCarbonAccountingForReview.getData().get(0).getEnterprise_type());
     }
     @Test
     public void getMyCarbonAccountingTest(){
-        CommonResponse<List<AccountingRecordDTO>> myCarbonAccounting = accountingRecordService.getMyCarbonAccounting(1);
+        CommonResponse<List<AccountingRecordDto>> myCarbonAccounting = accountingRecordService.getMyCarbonAccounting(1);
         System.out.println(myCarbonAccounting.getData().get(0));
         System.out.println(myCarbonAccounting.getData().get(0).getEnterprise_type());
     }

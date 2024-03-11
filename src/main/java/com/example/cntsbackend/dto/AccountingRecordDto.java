@@ -5,7 +5,7 @@ import lombok.Data;
 
 import java.util.Date;
 @Data
-public class AccountingRecordDTO {
+public class AccountingRecordDto {
     private int id;
     private int enterprise_id;
     private String month;

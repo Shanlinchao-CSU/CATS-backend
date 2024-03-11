@@ -28,7 +28,8 @@ public class GeneralController {
      * @return 验证码 CommonResponse<String>
      */
     @GetMapping("/general/code/phone")
-    public CommonResponse<String> sendPhoneCode(@PathParam("phone") String phone) {
+    public CommonResponse<String> sendPhoneCode(
+            @PathParam("phone") String phone) {
         return accountService.sendVerificationCodeByPhone(phone);
     }
 
@@ -39,7 +40,8 @@ public class GeneralController {
      * @return 验证码 CommonResponse<String>
      */
     @GetMapping("/general/code/email")
-    public CommonResponse<String> setEmailCode(@PathParam("email") String email) {
+    public CommonResponse<String> setEmailCode(
+            @PathParam("email") String email) {
         return accountService.sendVerificationCodeByEmail(email);
     }
 
@@ -50,7 +52,8 @@ public class GeneralController {
      * @return 验证结果 CommonResponse<String>
      */
     @GetMapping("/general/verify/phone")
-    public CommonResponse<String> verifyNewPhone(@PathParam("phone") String phone) {
+    public CommonResponse<String> verifyNewPhone(
+            @PathParam("phone") String phone) {
         return accountService.VerifyNewPhone(phone);
     }
 
@@ -61,7 +64,8 @@ public class GeneralController {
      * @return 验证结果 CommonResponse<String>
      */
     @GetMapping("/general/verify/email")
-    public CommonResponse<String> verifyNewEmail(@PathParam("email") String email) {
+    public CommonResponse<String> verifyNewEmail(
+            @PathParam("email") String email) {
         return accountService.VerifyNewEmail(email);
     }
 
@@ -73,7 +77,9 @@ public class GeneralController {
      * @return 登录结果 CommonResponse<Map>
      */
     @GetMapping("/general/id")
-    public CommonResponse<Map> loginById(@PathParam("id") String id, @PathParam("password") String password) {
+    public CommonResponse<Map> loginById(
+            @PathParam("id") String id,
+            @PathParam("password") String password) {
         return accountService.loginById(id, password);
     }
 
@@ -84,7 +90,8 @@ public class GeneralController {
      * @return 登录结果 CommonResponse<Map>
      */
     @GetMapping("/general/email")
-    public CommonResponse<Map> loginByEmail(@PathParam("email") String email) {
+    public CommonResponse<Map> loginByEmail(
+            @PathParam("email") String email) {
         return accountService.loginByEmail(email);
     }
 
@@ -95,7 +102,8 @@ public class GeneralController {
      * @return 登录结果 CommonResponse<Map>
      */
     @GetMapping("/general/phone")
-    public CommonResponse<Map> loginByPhone(@PathParam("phone") String phone) {
+    public CommonResponse<Map> loginByPhone(
+            @PathParam("phone") String phone) {
         return accountService.loginByPhone(phone);
     }
 
@@ -106,7 +114,8 @@ public class GeneralController {
      * @return 验证结果 CommonResponse<Boolean>
      */
     @PostMapping("/general/signature")
-    public CommonResponse<Boolean> verifyDigitalSignature(@RequestBody Signature signature) {
+    public CommonResponse<Boolean> verifyDigitalSignature(
+            @RequestBody Signature signature) {
         return accountService.verifyDigitalSignature(signature.getSignature(), signature.getMessage(), signature.getAddress());
     }
 
@@ -118,7 +127,9 @@ public class GeneralController {
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/general/password")
-    public CommonResponse<String> changePassword(@PathParam("phone") String phone, @PathParam("password") String password) {
+    public CommonResponse<String> changePassword(
+            @PathParam("phone") String phone,
+            @PathParam("password") String password) {
         return accountService.changePassword(phone, password);
     }
 
@@ -130,7 +141,9 @@ public class GeneralController {
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/general/phone")
-    public CommonResponse<String> changePhone(@PathParam("email") String email, @PathParam("phone") String phone) {
+    public CommonResponse<String> changePhone(
+            @PathParam("email") String email,
+            @PathParam("phone") String phone) {
         return accountService.changePhone(email, phone);
     }
 
@@ -142,7 +155,9 @@ public class GeneralController {
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/general/email")
-    public CommonResponse<String> changeEmail(@PathParam("phone") String phone, @PathParam("email") String email) {
+    public CommonResponse<String> changeEmail(
+            @PathParam("phone") String phone,
+            @PathParam("email") String email) {
         return accountService.changeEmail(phone, email);
     }
 
@@ -153,7 +168,8 @@ public class GeneralController {
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/general/account_info")
-    public CommonResponse<String> updateAccountInfo(@RequestBody Account account) {
+    public CommonResponse<String> updateAccountInfo(
+            @RequestBody Account account) {
         return accountService.updateAccountInfo(account);
     }
 
@@ -165,7 +181,9 @@ public class GeneralController {
      * @return 找回结果 CommonResponse<String>
      */
     @PatchMapping("/general/str/password")
-    public CommonResponse<String> findPassword(@PathParam("str") String str, @PathParam("password") String password) {
+    public CommonResponse<String> findPassword(
+            @PathParam("str") String str,
+            @PathParam("password") String password) {
         return accountService.findPassword(str, password);
     }
 

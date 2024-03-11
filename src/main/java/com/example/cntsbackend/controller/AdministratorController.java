@@ -1,9 +1,8 @@
 package com.example.cntsbackend.controller;
 
 import com.example.cntsbackend.common.CommonResponse;
-import com.example.cntsbackend.domain.AccountingRecord;
 import com.example.cntsbackend.domain.RegisterApplication;
-import com.example.cntsbackend.domain.Transaction;
+import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.dto.TransactionDto;
 import com.example.cntsbackend.service.AccountService;
 import com.example.cntsbackend.service.AccountingRecordService;
@@ -12,7 +11,6 @@ import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,12 +47,23 @@ public class AdministratorController {
     /**
      * 获取所有待审核的碳核算请求
      *
-     * @return 待审核的碳核算请求 List<AccountingRecord>
+     * @return 待审核的碳核算请求 List<AccountingRecordDto>
      */
     @GetMapping("/administrator/accounting_record/review")
-    public CommonResponse<List<AccountingRecord>> getAllCarbonAccountingForReview() {
+    public CommonResponse<List<AccountingRecordDto>> getAllCarbonAccountingForReview() {
         return accountingRecordService.getAllCarbonAccountingForReview();
     }
+
+    /**
+     * 获取所有碳核算请求
+     *
+     * @return 碳核算请求 List<AccountingRecordDto>
+     */
+    @GetMapping("/administrator/accounting_record")
+    public CommonResponse<List<AccountingRecordDto>> getAllCarbonAccounting() {
+        return accountingRecordService.getAllCarbonAccounting();
+    }
+
 
     /**
      * 管理员获取证明材料文件流
@@ -63,7 +72,8 @@ public class AdministratorController {
      * @return 证明材料文件流 ResponseEntity<InputStreamResource>
      */
     @GetMapping("/administrator/accounting_record/file")
-    public ResponseEntity<InputStreamResource> getSupportingMaterial(@PathParam("id") int id) throws IOException {
+    public ResponseEntity<InputStreamResource> getSupportingMaterial(
+            @PathParam("id") int id) throws IOException {
         return accountingRecordService.getSupportingMaterial(id);
     }
 
@@ -84,7 +94,9 @@ public class AdministratorController {
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/administrator/application")
-    public CommonResponse<String> AgreeApplication(@PathParam("register_application_id") int register_application_id, @PathParam("account_id") int account_id) {
+    public CommonResponse<String> AgreeApplication(
+            @PathParam("register_application_id") int register_application_id,
+            @PathParam("account_id") int account_id) {
         return accountService.AgreeApplication(register_application_id, account_id);
     }
 
@@ -97,7 +109,9 @@ public class AdministratorController {
      */
 
     @PostMapping("/administrator/update/account_info")
-    public CommonResponse<String> AgreeUpdateAccountInfo(@PathParam("phone") String phone, @PathParam("email") String email) {
+    public CommonResponse<String> AgreeUpdateAccountInfo(
+            @PathParam("phone") String phone,
+            @PathParam("email") String email) {
         return accountService.AgreeUpdateAccountInfo(phone, email);
     }
 
@@ -108,7 +122,9 @@ public class AdministratorController {
      * @return 注册结果 CommonResponse<String>
      */
     @DeleteMapping("/administrator/application")
-    public CommonResponse<String> RefuseApplication(@PathParam("register_application_id") int register_application_id, @PathParam("account_id") int account_id) {
+    public CommonResponse<String> RefuseApplication(
+            @PathParam("register_application_id") int register_application_id,
+            @PathParam("account_id") int account_id) {
         return accountService.RefuseApplication(register_application_id, account_id);
     }
 
@@ -121,7 +137,9 @@ public class AdministratorController {
      * @return 修改结果 CommonResponse<String>
      */
     @DeleteMapping("/administrator/update/account_info")
-    public CommonResponse<String> RefuseUpdateAccountInfo(@PathParam("phone") String phone, @PathParam("email") String email) {
+    public CommonResponse<String> RefuseUpdateAccountInfo(
+            @PathParam("phone") String phone,
+            @PathParam("email") String email) {
         return accountService.RefuseUpdateAccountInfo(phone, email);
     }
 
