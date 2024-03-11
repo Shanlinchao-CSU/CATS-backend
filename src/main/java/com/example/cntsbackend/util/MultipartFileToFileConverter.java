@@ -8,13 +8,21 @@ import java.io.*;
 public class MultipartFileToFileConverter {
 
     public static File convert(MultipartFile multipartFile) throws IOException {
+        // 生成临时文件
+        File tempFile = new File(multipartFile.getOriginalFilename());
+        try (OutputStream os = new FileOutputStream(tempFile)) {
+            os.write(multipartFile.getBytes());
+        }
+        String etag = Etag.file(tempFile);
+        // 删除临时文件
+        tempFile.delete();
         // 文件保存路径
         String prefix = System.getProperty("user.dir") + "/data/upload/";
         // 查看文件夹下是否有重名文件
-        if(checkFile(prefix, multipartFile.getOriginalFilename())){
+        if(checkFile(prefix, etag)){
             return null;
         }else {
-            File file = new File(prefix + multipartFile.getOriginalFilename());
+            File file = new File(prefix + etag + getSuffix(multipartFile.getOriginalFilename()));
             try (OutputStream os = new FileOutputStream(file)) {
                 os.write(multipartFile.getBytes());
             }
@@ -81,5 +89,20 @@ public class MultipartFileToFileConverter {
         String fileName = file.getName();
         String[] fileNameArray = fileName.split("\\.");
         return fileNameArray[0];
+    }
+
+    /**
+     * 获取文件后缀名
+     *
+     * @param filename 文件名
+     * @return 后缀名
+     */
+    public static String getSuffix(String filename) {
+        String[] fileNameArray = filename.split("\\.");
+        StringBuilder suffix = new StringBuilder();
+        for (int i = 1; i < fileNameArray.length; i++) {
+            suffix.append("."+fileNameArray[i]);
+        }
+        return suffix.toString();
     }
 }

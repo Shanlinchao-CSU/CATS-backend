@@ -1,24 +1,17 @@
 package com.example.cntsbackend;
 
 import com.example.cntsbackend.common.CommonResponse;
-import com.example.cntsbackend.domain.Account;
-import com.example.cntsbackend.domain.QuotaSale;
-import com.example.cntsbackend.domain.RegisterApplication;
-import com.example.cntsbackend.domain.Transaction;
+import com.example.cntsbackend.domain.*;
+import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.dto.QuotaSaleDto;
 import com.example.cntsbackend.dto.TransactionDto;
-import com.example.cntsbackend.service.QuotaSaleService;
-import com.example.cntsbackend.service.serviceimpl.AccountServiceImpl;
-import com.example.cntsbackend.service.serviceimpl.QuotaSaleServiceImpl;
-import com.example.cntsbackend.service.serviceimpl.RegisterApplicationServiceImpl;
-import com.example.cntsbackend.service.serviceimpl.TransactionServiceImpl;
+import com.example.cntsbackend.service.serviceimpl.*;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +26,10 @@ class CntsBackendApplicationTests {
     private RegisterApplicationServiceImpl registerApplicationService;
     @Autowired
     private QuotaSaleServiceImpl quotaSaleService;
+    @Autowired
+    private AccountingRecordServiceImpl accountingRecordService;
+    @Autowired
+    private RedisServerImpl redisServer;
 
     @Test
     void contextLoads() {
@@ -159,9 +156,9 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void getRemainTest(){
-        CommonResponse<QuotaSale> remain = quotaSaleService.getRemain(1);
-        System.out.println(remain.getMessage());
+        CommonResponse<List<QuotaSale>> remain = quotaSaleService.getRemain(1);
         System.out.println(remain.getData());
+        System.out.println(remain.getData().get(0).toString());
     }
     @Test
     public void getAllRemainTest(){
@@ -169,6 +166,62 @@ class CntsBackendApplicationTests {
         System.out.println(allRemain.getMessage());
         QuotaSaleDto quotaSaleDto = allRemain.getData().get(0);
         System.out.println(quotaSaleDto.getQuota());
+    }
+
+    @Test
+    public void getAllCarbonAccountingForReviewTest(){
+        CommonResponse<List<AccountingRecordDto>> allCarbonAccountingForReview = accountingRecordService.getAllCarbonAccountingForReview();
+        System.out.println(allCarbonAccountingForReview.getData().get(0));
+        System.out.println(allCarbonAccountingForReview.getData().get(0).getAccount_name());
+    }
+
+    @Test
+    public void getAllCarbonAccountingTest(){
+        CommonResponse<List<AccountingRecordDto>> allCarbonAccountingForReview = accountingRecordService.getAllCarbonAccounting();
+        System.out.println(allCarbonAccountingForReview.getData().get(0));
+        System.out.println(allCarbonAccountingForReview.getData().get(0).getEnterprise_type());
+    }
+    @Test
+    public void CancelMyCarbonAccountingTest(){
+        CommonResponse<String> stringCommonResponse = accountingRecordService.CancelMyCarbonAccounting(1);
+        System.out.println(stringCommonResponse.getMessage());
+    }
+    @Test
+    public void ModifyMyCarbonAccountingTest(){
+        CommonResponse<String> stringCommonResponse = accountingRecordService.ModifyMyCarbonAccounting(1, new AccountingRecord("111","111","111"));
+        System.out.println(stringCommonResponse.getMessage());
+    }
+
+    @Test
+    public void setTest(){
+        redisServer.set("test","test");
+    }
+
+    @Test
+    public void getTest(){
+        Object test = redisServer.get("test");
+        System.out.println(test);
+    }
+
+    @Test
+    public void deleteTest(){
+        redisServer.delete("test");
+    }
+
+    @Test
+    public void hasKeyTest(){
+        boolean test = redisServer.hasKey("test");
+        System.out.println(test);
+    }
+
+    @Test
+    public void setWithExpireTest(){
+        redisServer.setWithExpire("test","test",100);
+    }
+
+    @Test
+    public void setExpireTest(){
+        redisServer.setExpire("test",10);
     }
 
 }

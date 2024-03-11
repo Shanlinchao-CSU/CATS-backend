@@ -3,8 +3,10 @@ package com.example.cntsbackend.controller;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.QuotaSale;
 import com.example.cntsbackend.domain.Transaction;
+import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.dto.QuotaSaleDto;
 import com.example.cntsbackend.dto.TransactionDto;
+import com.example.cntsbackend.service.AccountingRecordService;
 import com.example.cntsbackend.service.QuotaSaleService;
 import com.example.cntsbackend.service.RegisterApplicationService;
 import com.example.cntsbackend.service.TransactionService;
@@ -31,6 +33,8 @@ public class EnterpriseUserController {
     private TransactionService transactionService;
     @Autowired
     private QuotaSaleService quotaSaleService;
+    @Autowired
+    private AccountingRecordService accountingRecordService;
 
 
     /**
@@ -40,7 +44,8 @@ public class EnterpriseUserController {
      * @return 交易信息 List<Transaction>
      */
     @GetMapping("/enterprise/transaction/finished/{account_id}")
-    public CommonResponse<List<TransactionDto>> getMyFinishedTransactionDatas(@PathVariable("account_id") int account_id) {
+    public CommonResponse<List<TransactionDto>> getMyFinishedTransactionDatas(
+            @PathVariable("account_id") int account_id) {
         return transactionService.getMyFinishedTransactionDatas(account_id);
     }
 
@@ -51,7 +56,8 @@ public class EnterpriseUserController {
      * @return 剩余额度 CommonResponse<QuotaSale>
      */
     @GetMapping("/enterprise/transaction/remain/{account_id}")
-    public CommonResponse<QuotaSale> getRemain(@PathVariable("account_id") int account_id) {
+    public CommonResponse<QuotaSale> getRemain(
+            @PathVariable("account_id") int account_id) {
         return quotaSaleService.getRemain(account_id);
     }
 
@@ -66,27 +72,44 @@ public class EnterpriseUserController {
     }
 
     /**
+     * 企业查看以往自己的碳核算记录
+     *
+     * @param enterprise_id 企业ID
+     * @return 碳核算记录 CommonResponse<List<AccountingRecordDto>>
+     */
+    @GetMapping("/enterprise/accounting_record/{enterprise_id}")
+    public CommonResponse<List<AccountingRecordDto>> getMyCarbonAccounting(
+            @PathVariable("enterprise_id") int enterprise_id) {
+        return accountingRecordService.getMyCarbonAccounting(enterprise_id);
+    }
+
+    /**
      * 企业修改单价(id为发布信息的id)
      *
-     * @param id          交易信息ID
-     * @param unit_price        单价
+     * @param id         交易信息ID
+     * @param unit_price 单价
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/enterprise/transaction/price")
-    public CommonResponse<String> ModifyUnitPrice(@PathParam("id") int id, @PathParam("unit_price") double unit_price) {
+    public CommonResponse<String> ModifyUnitPrice(
+            @PathParam("id") int id,
+            @PathParam("unit_price") double unit_price) {
         return quotaSaleService.ModifyUnitPrice(id, unit_price);
     }
 
     /**
      * 额度购买，第一个参数为买家id，第二个参数为额度发布信息的id，第三个参数为要买的额度
      *
-     * @param account_id    买家ID
-     * @param quotaSale_id  额度发布信息ID
-     * @param amount        要买的额度
+     * @param account_id   买家ID
+     * @param quotaSale_id 额度发布信息ID
+     * @param amount       要买的额度
      * @return 购买结果 CommonResponse<String>
      */
     @PatchMapping("/enterprise/transaction/amount")
-    public CommonResponse<String> CompleteTransaction(@PathParam("account_id") int account_id, @PathParam("quotaSale_id") int quotaSale_id, @PathParam("amount") double amount) {
+    public CommonResponse<String> CompleteTransaction(
+            @PathParam("account_id") int account_id,
+            @PathParam("quotaSale_id") int quotaSale_id,
+            @PathParam("amount") double amount) {
         return transactionService.CompleteTransaction(account_id, quotaSale_id, amount);
     }
 
@@ -103,18 +126,18 @@ public class EnterpriseUserController {
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/enterprise/info")
-    public CommonResponse<String> register(@RequestParam("file") MultipartFile file, @RequestParam("name") String name, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("enterprise_type") int enterprise_type, @RequestParam("type") int type) throws IOException {
+    public CommonResponse<String> register(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("name") String name,
+            @RequestParam("password") String password,
+            @RequestParam("phone") String phone,
+            @RequestParam("enterprise_type") int enterprise_type,
+            @RequestParam("type") int type) throws IOException {
         File f = MultipartFileToFileConverter.convert(file);
         if (f == null) {
             return CommonResponse.createForSuccess("文件已存在，请重新上传后重试");
-        }else {
-            String etag = MultipartFileToFileConverter.etag(f);
-            Boolean result = MultipartFileToFileConverter.etag(f, etag);
-            if (!result) {
-                return CommonResponse.createForSuccess("传输错误，请重新上传后重试");
-            }else
-                return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type);
         }
+        return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type);
     }
 
     /**
@@ -126,8 +149,33 @@ public class EnterpriseUserController {
      * @return 发布结果 CommonResponse<String>
      */
     @PostMapping("/enterprise/transaction/publish")
-    public CommonResponse<String> publishTransaction(@PathParam("account_id") int account_id, @PathParam("quota") double quota, @PathParam("unit_price") double unit_price) {
+    public CommonResponse<String> publishTransaction(
+            @PathParam("account_id") int account_id,
+            @PathParam("quota") double quota,
+            @PathParam("unit_price") double unit_price) {
         return quotaSaleService.PublishTransaction(account_id, quota, unit_price);
+    }
+
+    /**
+     * 企业提交碳核算
+     *
+     * @param enterprise_id 企业ID
+     * @param variable_json 变量JSON
+     * @param result        结果
+     * @param file          文件
+     * @return 提交结果 CommonResponse<String>
+     */
+    @PostMapping("/enterprise/accounting_record")
+    public CommonResponse<String> SubmitCarbonAccounting(
+            @RequestParam("enterprise_id") int enterprise_id,
+            @RequestParam("variable_json") String variable_json,
+            @RequestParam("result") String result,
+            @RequestParam("file") MultipartFile file) throws IOException {
+        File f = MultipartFileToFileConverter.convert(file);
+        if (f == null) {
+            return CommonResponse.createForSuccess("文件已存在，请重新上传后重试");
+        }
+        return accountingRecordService.SubmitCarbonAccounting(enterprise_id, variable_json, result, f);
     }
 
     /**
@@ -137,7 +185,8 @@ public class EnterpriseUserController {
      * @return 取消结果 CommonResponse<String>
      */
     @DeleteMapping("/enterprise/transaction/{id}")
-    public CommonResponse<String> cancelTransactionData(@PathVariable("id") int id) {
+    public CommonResponse<String> cancelTransactionData(
+            @PathVariable("id") int id) {
         return quotaSaleService.cancelTransactionData(id);
     }
 

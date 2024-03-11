@@ -13,10 +13,13 @@ public class CMessage {
     private int account_id;
     private double t_remain;
     private String month;
-    public CMessage(int account_id, double t_remain,String month) {
+    private double limit;
+
+    public CMessage(int account_id, double t_remain, String month, double limit) {
         this.account_id = account_id;
         this.t_remain = t_remain;
         this.month = month;
+        this.limit = limit;
     }
 
     public CMessage() {

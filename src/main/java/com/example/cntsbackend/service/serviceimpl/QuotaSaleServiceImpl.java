@@ -81,15 +81,15 @@ public class QuotaSaleServiceImpl implements QuotaSaleService {
         return CommonResponse.createForSuccess("修改单价成功");
     }
 
-    public CommonResponse<QuotaSale> getRemain(int account_id){
+    public CommonResponse<List<QuotaSale>> getRemain(int account_id){
         // 获取当前时间的上个月份
         YearMonth currentYearMonth = YearMonth.now();
         YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
         // 格式化为"yyyy-MM"的字符串
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
         String previousMonthString = previousYearMonth.format(formatter);
-        QuotaSale quotaSale = quotaSaleMapper.selectOne(new QueryWrapper<QuotaSale>().eq("seller_id", account_id).eq("month",previousMonthString));
-        return CommonResponse.createForSuccess("查询上月额度成功",quotaSale);
+        List<QuotaSale> quotaSaleList = quotaSaleMapper.selectList(new QueryWrapper<QuotaSale>().eq("seller_id", account_id).eq("month", previousMonthString));
+        return CommonResponse.createForSuccess("查询上月额度成功",quotaSaleList);
     }
 
     public CommonResponse<List<QuotaSaleDto>> getAllRemain(){

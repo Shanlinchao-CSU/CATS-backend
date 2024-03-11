@@ -53,19 +53,17 @@ public class ThirdPartyRegulatorsController {
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/thirdParty/info")
-    public CommonResponse<String> register(@RequestParam("file") MultipartFile file, @RequestParam("name") String name, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("type") int type) throws IOException {
+    public CommonResponse<String> register(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("name") String name,
+            @RequestParam("password") String password,
+            @RequestParam("phone") String phone,
+            @RequestParam("type") int type) throws IOException {
         File f = MultipartFileToFileConverter.convert(file);
         if (f == null) {
             return CommonResponse.createForSuccess("传输错误，请重新上传后重试");
-        }else {
-            String etag = MultipartFileToFileConverter.etag(f);
-            Boolean result = MultipartFileToFileConverter.etag(f, etag);
-            if (!result) {
-                return CommonResponse.createForSuccess("传输错误，请重新上传后重试");
-            }else
-                return registerApplicationService.ThirdPartyRegulatorsRegister(f, name, password, phone, type);
         }
-
+        return registerApplicationService.ThirdPartyRegulatorsRegister(f, name, password, phone, type);
     }
 
 }
