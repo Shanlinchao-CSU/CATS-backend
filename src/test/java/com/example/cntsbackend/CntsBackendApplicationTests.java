@@ -28,6 +28,8 @@ class CntsBackendApplicationTests {
     private QuotaSaleServiceImpl quotaSaleService;
     @Autowired
     private AccountingRecordServiceImpl accountingRecordService;
+    @Autowired
+    private RedisServerImpl redisServer;
 
     @Test
     void contextLoads() {
@@ -186,6 +188,36 @@ class CntsBackendApplicationTests {
         System.out.println(myCarbonAccounting.getData().get(0).getEnterprise_type());
     }
 
+    @Test
+    public void setTest(){
+        redisServer.set("test","test");
+    }
 
+    @Test
+    public void getTest(){
+        Object test = redisServer.get("test");
+        System.out.println(test);
+    }
+
+    @Test
+    public void deleteTest(){
+        redisServer.delete("test");
+    }
+
+    @Test
+    public void hasKeyTest(){
+        boolean test = redisServer.hasKey("test");
+        System.out.println(test);
+    }
+
+    @Test
+    public void setWithExpireTest(){
+        redisServer.setWithExpire("test","test",100);
+    }
+
+    @Test
+    public void setExpireTest(){
+        redisServer.setExpire("test",10);
+    }
 
 }
