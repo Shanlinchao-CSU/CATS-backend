@@ -8,6 +8,7 @@ import com.example.cntsbackend.dto.TransactionDto;
 import com.example.cntsbackend.service.QuotaSaleService;
 import com.example.cntsbackend.service.RegisterApplicationService;
 import com.example.cntsbackend.service.TransactionService;
+import com.example.cntsbackend.util.MultipartFileToFileConverter;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -101,12 +103,18 @@ public class EnterpriseUserController {
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/enterprise/info")
-    public CommonResponse<String> register(@RequestParam("file") MultipartFile file, @RequestParam("name") String name, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("enterprise_type") int enterprise_type, @RequestParam("type") int type) {
-        System.out.println("file:" + file);
-        System.out.println("name:" + name);
-        System.out.println("password:" + password);
-        System.out.println("phone:" + phone);
-        return registerApplicationService.EnterpriseUserRegister(file, name, password, phone, enterprise_type, type);
+    public CommonResponse<String> register(@RequestParam("file") MultipartFile file, @RequestParam("name") String name, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("enterprise_type") int enterprise_type, @RequestParam("type") int type) throws IOException {
+        File f = MultipartFileToFileConverter.convert(file);
+        if (f == null) {
+            return CommonResponse.createForSuccess("文件已存在，请重新上传后重试");
+        }else {
+            String etag = MultipartFileToFileConverter.etag(f);
+            Boolean result = MultipartFileToFileConverter.etag(f, etag);
+            if (!result) {
+                return CommonResponse.createForSuccess("传输错误，请重新上传后重试");
+            }else
+                return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type);
+        }
     }
 
     /**

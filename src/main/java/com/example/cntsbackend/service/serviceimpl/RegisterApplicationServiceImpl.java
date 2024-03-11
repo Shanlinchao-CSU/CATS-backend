@@ -17,6 +17,8 @@ public class RegisterApplicationServiceImpl implements RegisterApplicationServic
     public CommonResponse<String> EnterpriseUserRegister(File file ,String account_name ,String password ,String phone ,int enterprise_type ,int type ){
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone));
         String str= String.valueOf(file);
+        // 保存文件到路径
+
         RegisterApplication registerApplication1 = new RegisterApplication(account_name,password,phone,type,str,enterprise_type);
         if(registerApplication!=null){
             return CommonResponse.createForError();
