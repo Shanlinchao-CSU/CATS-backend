@@ -7,6 +7,7 @@ import com.example.cntsbackend.dto.TransactionDto;
 import com.example.cntsbackend.service.AccountService;
 import com.example.cntsbackend.service.AccountingRecordService;
 import com.example.cntsbackend.service.TransactionService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -69,12 +70,12 @@ public class AdministratorController {
      * 管理员获取证明材料文件流
      *
      * @param id 碳核算请求id
-     * @return 证明材料文件流 ResponseEntity<InputStreamResource>
      */
     @GetMapping("/administrator/accounting_record/file")
-    public ResponseEntity<InputStreamResource> getSupportingMaterial(
-            @PathParam("id") int id) throws IOException {
-        return accountingRecordService.getSupportingMaterial(id);
+    public void getSupportingMaterial(
+            @PathParam("id") int id,
+            HttpServletResponse response) throws Exception {
+        accountingRecordService.getSupportingMaterial(id,response);
     }
 
     /**

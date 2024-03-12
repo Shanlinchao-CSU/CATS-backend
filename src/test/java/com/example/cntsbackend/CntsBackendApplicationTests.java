@@ -44,14 +44,14 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void sendVerificationCodeByEmailTest() {
-        CommonResponse<String> accountCommonResponse = accountService.sendVerificationCodeByEmail("2674314843@qq.com");
+        CommonResponse<String> accountCommonResponse = accountService.sendVerificationCodeByEmail("1821166153@qq.com");
         System.out.println(accountCommonResponse.getData());
         System.out.println(accountCommonResponse.getCode());
     }
     @Test
     public void VerifyEmailCodeTest() {
-//        redisServer.setWithExpire("2674314843@qq.com","9717",100);
-        CommonResponse<Boolean> stringCommonResponse = accountService.VerifyEmailCode("2674314843@qq.com","9717");
+        redisServer.setWithExpire("2674314843@qq.com","9717",100);
+        CommonResponse<Boolean> stringCommonResponse = accountService.VerifyEmailCode("1821166153@qq.com","6850");
         System.out.println(stringCommonResponse.getMessage());
         System.out.println(stringCommonResponse.getCode());
     }
@@ -117,7 +117,7 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void VerifyNewEmailTest() {
-        CommonResponse<String> stringCommonResponse = accountService.VerifyNewEmail("2674314843@qq.com");
+        CommonResponse<String> stringCommonResponse = accountService.VerifyNewEmail("1821166153@qq.com");
         System.out.println(stringCommonResponse.getMessage());
         System.out.println(stringCommonResponse.getData());
     }
