@@ -29,7 +29,7 @@ class CntsBackendApplicationTests {
     @Autowired
     private AccountingRecordServiceImpl accountingRecordService;
     @Autowired
-    private RedisServerImpl redisServer;
+    private RedisServiceImpl redisServer;
 
     @Test
     void contextLoads() {

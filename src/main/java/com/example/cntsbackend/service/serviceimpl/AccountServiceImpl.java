@@ -3,17 +3,20 @@ package com.example.cntsbackend.service.serviceimpl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.cntsbackend.common.CommonResponse;
-import com.example.cntsbackend.domain.*;
+import com.example.cntsbackend.domain.Account;
+import com.example.cntsbackend.domain.CMessage;
+import com.example.cntsbackend.domain.RegisterApplication;
+import com.example.cntsbackend.domain.UpdateAccount;
 import com.example.cntsbackend.persistence.AccountMapper;
 import com.example.cntsbackend.persistence.CMessageMapper;
 import com.example.cntsbackend.persistence.RegisterApplicationMapper;
 import com.example.cntsbackend.persistence.UpdateAccountMapper;
 import com.example.cntsbackend.service.AccountService;
+import com.example.cntsbackend.service.RedisService;
 import com.example.cntsbackend.util.MetaMaskUtil;
 import com.example.cntsbackend.util.SendMailUtil;
 import com.example.cntsbackend.util.SendPhoneUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.stereotype.Service;
 
 import java.time.YearMonth;
@@ -30,6 +33,8 @@ public class AccountServiceImpl implements AccountService {
     private CMessageMapper cMessageMapper;
     @Autowired
     private UpdateAccountMapper updateAccountMapper;
+    @Autowired
+    private RedisService redisService;
     private static final String CHARACTERS = "0123456789";
     private static final int CODE_LENGTH = 4;
 
@@ -105,11 +110,11 @@ public class AccountServiceImpl implements AccountService {
         if(account!=null){
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
-            account.setSecret_key("");
-            account.setPublic_key("");
-            map.put("Account",account);
-            map.put("token",token);
-
+//            account.setSecret_key("");
+//            account.setPublic_key("");
+//            map.put("Account",account);
+//            map.put("token",token);
+            redisService.setToken(token,account.getAccount_id());
             return CommonResponse.createForSuccess("邮箱登录成功",map);
         }else return CommonResponse.createForError("邮箱登录失败");
     }
@@ -119,11 +124,11 @@ public class AccountServiceImpl implements AccountService {
         if(account!=null){
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
-            account.setSecret_key("");
-            account.setPublic_key("");
-            map.put("Account",account);
-            map.put("token",token);
-
+//            account.setSecret_key("");
+//            account.setPublic_key("");
+//            map.put("Account",account);
+//            map.put("token",token);
+            redisService.setToken(token,account.getAccount_id());
             return CommonResponse.createForSuccess("手机号码登录成功",map);
         }else return CommonResponse.createForError("手机号码登录失败");
     }
@@ -137,11 +142,11 @@ public class AccountServiceImpl implements AccountService {
         if(account!=null){
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
-            account.setSecret_key("");
-            account.setPublic_key("");
-            map.put("Account",account);
-            map.put("token",token);
-
+//            account.setSecret_key("");
+//            account.setPublic_key("");
+//            map.put("Account",account);
+//            map.put("token",token);
+            redisService.setToken(token,account.getAccount_id());
             return CommonResponse.createForSuccess("id+密码登录成功",map);
         }else return CommonResponse.createForError("id+密码登录失败");
     }

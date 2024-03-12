@@ -1,6 +1,7 @@
 package com.example.cntsbackend.controller;
 
 import com.example.cntsbackend.common.CommonResponse;
+import com.example.cntsbackend.domain.AccountingRecord;
 import com.example.cntsbackend.domain.QuotaSale;
 import com.example.cntsbackend.domain.Transaction;
 import com.example.cntsbackend.dto.AccountingRecordDto;
@@ -113,6 +114,24 @@ public class EnterpriseUserController {
         return transactionService.CompleteTransaction(account_id, quotaSale_id, amount);
     }
 
+    /**
+     * 用户修改碳核算记录(未被审核)
+     * @param id 碳核算记录ID
+     * @param variable_json 碳核算数据
+     * @param result 碳核算结果
+     * @param supporting_material 证明材料
+     * @return 修改结果 CommonResponse<String>
+     */
+    @PatchMapping("/enterprise/accounting_record")
+    public CommonResponse<String> ModifyMyCarbonAccounting(
+            @PathParam("id") int id,
+            @PathParam("variable_json") String variable_json,
+            @PathParam("result") String result,
+            @PathParam("supporting_material") String supporting_material) {
+
+        return accountingRecordService.ModifyMyCarbonAccounting(id,new AccountingRecord(variable_json,result,supporting_material));
+    }
+
 
     /**
      * 企业用户注册
@@ -188,6 +207,18 @@ public class EnterpriseUserController {
     public CommonResponse<String> cancelTransactionData(
             @PathVariable("id") int id) {
         return quotaSaleService.cancelTransactionData(id);
+    }
+
+    /**
+     * 用户取消碳核算记录(未被审核)
+     *
+     * @param id 碳核算记录ID
+     * @return 取消结果 CommonResponse<String>
+     */
+    @DeleteMapping("/enterprise/accounting_record/{id}")
+    public CommonResponse<String> CancelMyCarbonAccounting(
+            @PathVariable("id") int id) {
+        return accountingRecordService.CancelMyCarbonAccounting(id);
     }
 
 }
