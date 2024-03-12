@@ -129,10 +129,10 @@ public class AccountServiceImpl implements AccountService {
         if(account!=null){
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
-//            account.setSecret_key("");
-//            account.setPublic_key("");
-//            map.put("Account",account);
-//            map.put("token",token);
+            account.setSecret_key("");
+            account.setPublic_key("");
+            map.put("Account",account);
+            map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
             return CommonResponse.createForSuccess("邮箱登录成功",map);
         }else return CommonResponse.createForError("邮箱登录失败");
@@ -143,10 +143,10 @@ public class AccountServiceImpl implements AccountService {
         if(account!=null){
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
-//            account.setSecret_key("");
-//            account.setPublic_key("");
-//            map.put("Account",account);
-//            map.put("token",token);
+            account.setSecret_key("");
+            account.setPublic_key("");
+            map.put("Account",account);
+            map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
             return CommonResponse.createForSuccess("手机号码登录成功",map);
         }else return CommonResponse.createForError("手机号码登录失败");
@@ -161,10 +161,10 @@ public class AccountServiceImpl implements AccountService {
         if(account!=null){
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
-//            account.setSecret_key("");
-//            account.setPublic_key("");
-//            map.put("Account",account);
-//            map.put("token",token);
+            account.setSecret_key("");
+            account.setPublic_key("");
+            map.put("Account",account);
+            map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
             return CommonResponse.createForSuccess("id+密码登录成功",map);
         }else return CommonResponse.createForError("id+密码登录失败");
