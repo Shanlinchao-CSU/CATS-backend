@@ -24,7 +24,7 @@ public class AuthConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(initAuthInterceptor())
-//                .addPathPatterns("/**")
+//                .addPathPatterns("/**")    TODO 为了方便测试，先注释掉，后续需要放开进行拦截
                 .addPathPatterns("/general/account_info")
                 .addPathPatterns("/general/password")
                 .addPathPatterns("/general/phone")

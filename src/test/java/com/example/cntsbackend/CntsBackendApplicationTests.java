@@ -49,7 +49,7 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void VerifyEmailCodeTest() {
-        CommonResponse<String> stringCommonResponse = accountService.VerifyEmailCode("2674314843@qq.com","9717");
+        CommonResponse<Boolean> stringCommonResponse = accountService.VerifyEmailCode("2674314843@qq.com","9717");
         System.out.println(stringCommonResponse.getMessage());
         System.out.println(stringCommonResponse.getCode());
     }

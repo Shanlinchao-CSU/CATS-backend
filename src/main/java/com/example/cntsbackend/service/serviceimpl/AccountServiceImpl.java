@@ -250,18 +250,18 @@ public class AccountServiceImpl implements AccountService {
                 : CommonResponse.createForSuccess("验证失败", false);
     }
 
-    public CommonResponse<String> VerifyPhoneCode(String phoneNumber,String code){
+    public CommonResponse<Boolean> VerifyPhoneCode(String phoneNumber,String code){
         Object o = redisService.get(phoneNumber);
         if(code.equals(o)){
-            return CommonResponse.createForSuccess("验证码正确");
-        }else return CommonResponse.createForError("验证码错误");
+            return CommonResponse.createForSuccess("验证成功",true);
+        }else return CommonResponse.createForSuccess("验证失败",false);
     }
 
-    public CommonResponse<String> VerifyEmailCode(String email,String code){
+    public CommonResponse<Boolean> VerifyEmailCode(String email,String code){
         Object o = redisService.get(email);
         if(code.equals(o)){
-            return CommonResponse.createForSuccess("验证码正确");
-        }else return CommonResponse.createForError("验证码错误");
+            return CommonResponse.createForSuccess("验证成功",true);
+        }else return CommonResponse.createForSuccess("验证失败",false);
     }
 
 

@@ -3,6 +3,7 @@ package com.example.cntsbackend.service;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.RegisterApplication;
+import org.web3j.abi.datatypes.Bool;
 
 import java.util.List;
 import java.util.Map;
@@ -37,10 +38,10 @@ public interface AccountService {
     CommonResponse<String> findPassword(String str,String password);
     //验证数字签名
     CommonResponse<Boolean> verifyDigitalSignature(String signature, String message, String address);
-    //TODO:(新加)验证输入的手机验证码是否正确
-    CommonResponse<String> VerifyPhoneCode(String phoneNumber,String code);
-    //TODO:(新加)验证输入的邮箱验证码是否正确
-    CommonResponse<String> VerifyEmailCode(String email,String code);
+    //验证输入的手机验证码是否正确
+    CommonResponse<Boolean> VerifyPhoneCode(String phoneNumber,String code);
+    //验证输入的邮箱验证码是否正确
+    CommonResponse<Boolean> VerifyEmailCode(String email, String code);
 
     //-----------------------------------管理员--------------------------------------
 
