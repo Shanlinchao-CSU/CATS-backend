@@ -5,6 +5,7 @@ import com.example.cntsbackend.domain.*;
 import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.dto.QuotaSaleDto;
 import com.example.cntsbackend.dto.TransactionDto;
+import com.example.cntsbackend.service.RedisService;
 import com.example.cntsbackend.service.serviceimpl.*;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
@@ -49,6 +50,7 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void VerifyEmailCodeTest() {
+//        redisServer.setWithExpire("2674314843@qq.com","9717",100);
         CommonResponse<Boolean> stringCommonResponse = accountService.VerifyEmailCode("2674314843@qq.com","9717");
         System.out.println(stringCommonResponse.getMessage());
         System.out.println(stringCommonResponse.getCode());
