@@ -251,15 +251,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public CommonResponse<Boolean> VerifyPhoneCode(String phoneNumber,String code){
-        Object o = redisService.get(phoneNumber);
-        if(code.equals(o)){
+        if(redisService.hasKey(phoneNumber)){
             return CommonResponse.createForSuccess("验证成功",true);
         }else return CommonResponse.createForSuccess("验证失败",false);
     }
 
     public CommonResponse<Boolean> VerifyEmailCode(String email,String code){
-        Object o = redisService.get(email);
-        if(code.equals(o)){
+        if(redisService.hasKey(email)){
             return CommonResponse.createForSuccess("验证成功",true);
         }else return CommonResponse.createForSuccess("验证失败",false);
     }

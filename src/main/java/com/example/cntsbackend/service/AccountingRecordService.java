@@ -26,6 +26,6 @@ public interface AccountingRecordService {
 
     //(id为碳核算记录的id)用户取消碳核算记录(未被审核)
     CommonResponse<String> CancelMyCarbonAccounting(int id);
-    //TODO:(新增,id为碳核算记录的id)用户修改碳核算记录(未被审核)
+    //(id为碳核算记录的id)用户修改碳核算记录(未被审核)
     CommonResponse<String> ModifyMyCarbonAccounting(int id, AccountingRecord accountingRecord);
 }
