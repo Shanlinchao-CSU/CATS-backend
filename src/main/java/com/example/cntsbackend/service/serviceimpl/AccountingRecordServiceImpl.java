@@ -9,6 +9,7 @@ import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.persistence.AccountMapper;
 import com.example.cntsbackend.persistence.AccountingRecordMapper;
 import com.example.cntsbackend.service.AccountingRecordService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -70,16 +71,17 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
             Integer enterprise_type = account.getEnterprise_type();
             AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),accountingRecord.getState(),accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
             switch (enterprise_type) {
-                case 1 -> accountingRecordDto.setEnterprise_type("发电企业");
-                case 2 -> accountingRecordDto.setEnterprise_type("电网企业");
-                case 3 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
-                case 4 -> accountingRecordDto.setEnterprise_type("化工生产企业");
-                case 5 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
-                case 6 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
-                case 7 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
-                case 8 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
-                case 9 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
-                case 10 -> accountingRecordDto.setEnterprise_type("民航企业");
+                case 0 -> accountingRecordDto.setEnterprise_type("发电企业");
+                case 1 -> accountingRecordDto.setEnterprise_type("电网企业");
+                case 2 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
+                case 3 -> accountingRecordDto.setEnterprise_type("化工生产企业");
+                case 4 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
+                case 5 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
+                case 6 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
+                case 7 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
+                case 8 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
+                case 9 -> accountingRecordDto.setEnterprise_type("民航企业");
+                case 10 -> accountingRecordDto.setEnterprise_type("其它企业");
             }
             accountingRecordDTOList.add(accountingRecordDto);
         }
@@ -88,27 +90,26 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
 
 
 
-    public ResponseEntity<InputStreamResource> getSupportingMaterial(int id) throws IOException {
+    public void getSupportingMaterial(int id, HttpServletResponse response) throws Exception {
         AccountingRecord accountingRecord = accountingRecordMapper.selectOne(new QueryWrapper<AccountingRecord>().eq("id", id));
         String supportingMaterial = accountingRecord.getSupporting_material();
-        // 1. 将字符串内容写入临时文件
-        File tempFile = File.createTempFile("temp", ".txt");
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-            writer.write(supportingMaterial);
+        String fileName = supportingMaterial.substring(supportingMaterial.lastIndexOf("/") + 1);
+        try (FileInputStream inputStream = new FileInputStream(supportingMaterial);
+             OutputStream outputStream = response.getOutputStream()) {
+            byte[] data = new byte[9216];
+            // 全文件类型（传什么文件返回什么文件流）
+            response.setContentType("application/x-msdownload");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+            response.setHeader("Accept-Ranges", "bytes");
+            int read;
+            while ((read = inputStream.read(data)) != -1) {
+                outputStream.write(data, 0, read);
+            }
+            // 将缓存区数据进行输出
+            outputStream.flush();
+        } catch (IOException e) {
+            System.out.println("失败"+e);
         }
-
-        // 2. 创建文件输入流
-        FileInputStream fileInputStream = new FileInputStream(tempFile);
-
-        // 3. 将文件输入流传递给前端
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=temp.txt");
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
-
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .body(new InputStreamResource(fileInputStream));
     }
 
 //    public CommonResponse<String> CarbonAccounting(int id,int account_id) throws JsonProcessingException {
@@ -173,16 +174,17 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
             Integer enterprise_type = account.getEnterprise_type();
             AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),accountingRecord.getState(),accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
             switch (enterprise_type) {
-                case 1 -> accountingRecordDto.setEnterprise_type("发电企业");
-                case 2 -> accountingRecordDto.setEnterprise_type("电网企业");
-                case 3 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
-                case 4 -> accountingRecordDto.setEnterprise_type("化工生产企业");
-                case 5 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
-                case 6 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
-                case 7 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
-                case 8 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
-                case 9 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
-                case 10 -> accountingRecordDto.setEnterprise_type("民航企业");
+                case 0 -> accountingRecordDto.setEnterprise_type("发电企业");
+                case 1 -> accountingRecordDto.setEnterprise_type("电网企业");
+                case 2 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
+                case 3 -> accountingRecordDto.setEnterprise_type("化工生产企业");
+                case 4 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
+                case 5 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
+                case 6 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
+                case 7 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
+                case 8 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
+                case 9 -> accountingRecordDto.setEnterprise_type("民航企业");
+                case 10 -> accountingRecordDto.setEnterprise_type("其它企业");
             }
             accountingRecordDTOList.add(accountingRecordDto);
         }

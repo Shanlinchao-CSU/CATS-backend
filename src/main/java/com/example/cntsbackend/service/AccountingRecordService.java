@@ -3,6 +3,7 @@ package com.example.cntsbackend.service;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.AccountingRecord;
 import com.example.cntsbackend.dto.AccountingRecordDto;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 
@@ -15,8 +16,8 @@ public interface AccountingRecordService {
     CommonResponse<List<AccountingRecordDto>> getAllCarbonAccountingForReview();
     //管理员获取所有碳核算请求
     CommonResponse<List<AccountingRecordDto>> getAllCarbonAccounting();
-    //管理员获取证明材料文件流（未测试）
-    ResponseEntity<InputStreamResource> getSupportingMaterial(int id) throws IOException;
+    //TODO:(修改,id为核算记录的id)管理员获取证明材料文件流
+    void getSupportingMaterial(int id, HttpServletResponse response) throws Exception;
     //用户提交碳核算
     CommonResponse<String> SubmitCarbonAccounting(int enterprise_id, String variable_json, String result, File file);
     //用户查看以往自己的碳核算记录
