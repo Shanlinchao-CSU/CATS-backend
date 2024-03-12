@@ -43,16 +43,17 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
             Integer enterprise_type = account.getEnterprise_type();
             AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),accountingRecord.getState(),accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
             switch (enterprise_type) {
-                case 1 -> accountingRecordDto.setEnterprise_type("发电企业");
-                case 2 -> accountingRecordDto.setEnterprise_type("电网企业");
-                case 3 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
-                case 4 -> accountingRecordDto.setEnterprise_type("化工生产企业");
-                case 5 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
-                case 6 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
-                case 7 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
-                case 8 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
-                case 9 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
-                case 10 -> accountingRecordDto.setEnterprise_type("民航企业");
+                case 0 -> accountingRecordDto.setEnterprise_type("发电企业");
+                case 1 -> accountingRecordDto.setEnterprise_type("电网企业");
+                case 2 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
+                case 3 -> accountingRecordDto.setEnterprise_type("化工生产企业");
+                case 4 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
+                case 5 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
+                case 6 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
+                case 7 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
+                case 8 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
+                case 9 -> accountingRecordDto.setEnterprise_type("民航企业");
+                case 10 -> accountingRecordDto.setEnterprise_type("其它企业");
             }
             accountingRecordDTOList.add(accountingRecordDto);
         }
