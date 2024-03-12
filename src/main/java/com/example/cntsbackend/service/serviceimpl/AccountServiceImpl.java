@@ -63,7 +63,11 @@ public class AccountServiceImpl implements AccountService {
             // 生成四位包括数字、小写字母和大写字母的随机验证码
             String verificationCode = generateVerificationCode();
             SendPhoneUtil.sendSMS(phoneNumber,verificationCode);
-
+            boolean b = redisService.hasKey(phoneNumber);
+            if(b){
+                redisService.delete(phoneNumber);
+            }
+            redisService.setWithExpire(phoneNumber,verificationCode,600);
             return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
         }else{
             return CommonResponse.createForError(1,"手机号不存在");
@@ -72,6 +76,11 @@ public class AccountServiceImpl implements AccountService {
     public CommonResponse<String> sendVerificationCodeByChangePhone(String phoneNumber){
         String verificationCode = generateVerificationCode();
         SendPhoneUtil.sendSMS(phoneNumber,verificationCode);
+        boolean b = redisService.hasKey(phoneNumber);
+        if(b){
+            redisService.delete(phoneNumber);
+        }
+        redisService.setWithExpire(phoneNumber,verificationCode,600);
         return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
     }
     //发送邮箱验证码
@@ -80,6 +89,11 @@ public class AccountServiceImpl implements AccountService {
             // 生成四位包括数字、小写字母和大写字母的随机验证码
             String verificationCode = generateVerificationCode();
             SendMailUtil.sendQQEmail(email, Integer.parseInt(verificationCode));
+            boolean b = redisService.hasKey(email);
+            if(b){
+                redisService.delete(email);
+            }
+            redisService.setWithExpire(email,verificationCode,600);
             return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
         }else{
             return CommonResponse.createForError(1,"邮箱不存在");
@@ -88,6 +102,11 @@ public class AccountServiceImpl implements AccountService {
     public CommonResponse<String> sendVerificationCodeByChangeEmail(String email){
         String verificationCode = generateVerificationCode();
         SendMailUtil.sendQQEmail(email, Integer.parseInt(verificationCode));
+        boolean b = redisService.hasKey(email);
+        if(b){
+            redisService.delete(email);
+        }
+        redisService.setWithExpire(email,verificationCode,600);
         return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
     }
     //生成四位验证码
@@ -231,16 +250,19 @@ public class AccountServiceImpl implements AccountService {
                 : CommonResponse.createForSuccess("验证失败", false);
     }
 
-//    public CommonResponse<String> VerifyCode(String code){
-//        System.out.println(verificationCode);
-//        System.out.println(code);
-//        if(code.equals(verificationCode)){
-//            return CommonResponse.createForSuccess("输入验证码正确");
-//        }else{
-//            return CommonResponse.createForError("输入验证码错误");
-//        }
-//    }
+    public CommonResponse<String> VerifyPhoneCode(String phoneNumber,String code){
+        Object o = redisService.get(phoneNumber);
+        if(code.equals(o)){
+            return CommonResponse.createForSuccess("验证码正确");
+        }else return CommonResponse.createForError("验证码错误");
+    }
 
+    public CommonResponse<String> VerifyEmailCode(String email,String code){
+        Object o = redisService.get(email);
+        if(code.equals(o)){
+            return CommonResponse.createForSuccess("验证码正确");
+        }else return CommonResponse.createForError("验证码错误");
+    }
 
 
 

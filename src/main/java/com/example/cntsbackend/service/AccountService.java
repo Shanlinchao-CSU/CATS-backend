@@ -37,8 +37,10 @@ public interface AccountService {
     CommonResponse<String> findPassword(String str,String password);
     //验证数字签名
     CommonResponse<Boolean> verifyDigitalSignature(String signature, String message, String address);
-    //TODO:(新加)验证输入的验证码是否正确(未实现)
-//    CommonResponse<String> VerifyCode(String code);
+    //TODO:(新加)验证输入的手机验证码是否正确
+    CommonResponse<String> VerifyPhoneCode(String phoneNumber,String code);
+    //TODO:(新加)验证输入的邮箱验证码是否正确
+    CommonResponse<String> VerifyEmailCode(String email,String code);
 
     //-----------------------------------管理员--------------------------------------
 

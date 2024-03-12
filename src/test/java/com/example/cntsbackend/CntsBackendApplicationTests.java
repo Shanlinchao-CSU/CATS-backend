@@ -48,10 +48,10 @@ class CntsBackendApplicationTests {
         System.out.println(accountCommonResponse.getCode());
     }
     @Test
-    public void VerifyCodeTest() {
-//        CommonResponse<String> stringCommonResponse = accountService.VerifyCode("8830");
-//        System.out.println(stringCommonResponse.getMessage());
-//        System.out.println(stringCommonResponse.getCode());
+    public void VerifyEmailCodeTest() {
+        CommonResponse<String> stringCommonResponse = accountService.VerifyEmailCode("2674314843@qq.com","9717");
+        System.out.println(stringCommonResponse.getMessage());
+        System.out.println(stringCommonResponse.getCode());
     }
     @Test
     public void loginByPhoneTest() {
