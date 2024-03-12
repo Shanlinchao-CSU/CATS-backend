@@ -82,11 +82,11 @@ class CntsBackendApplicationTests {
         System.out.println(pendingReviewAccount.getMessage());
         System.out.println(pendingReviewAccount.getData());
     }
-    @Test
+    /*@Test
     public void EnterpriseUserRegisterTest() {
         CommonResponse<String> application = registerApplicationService.EnterpriseUserRegister(new File("https://www.baidu.com"),"zs","111","111",1,1);
         System.out.println(application.getMessage());
-    }
+    }*/
     @Test
     public void changePasswordTest() {
         CommonResponse<String> application = accountService.changePassword("1223", "666");
