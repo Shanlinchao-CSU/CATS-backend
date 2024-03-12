@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import com.example.cntsbackend.service.AccountService;
+import org.web3j.abi.datatypes.Bool;
 
 import java.util.Map;
 
@@ -87,24 +88,62 @@ public class GeneralController {
      * 邮箱 登录
      *
      * @param email 邮箱
+     * @param code 验证码
      * @return 登录结果 CommonResponse<Map>
      */
     @GetMapping("/general/email")
     public CommonResponse<Map> loginByEmail(
-            @PathParam("email") String email) {
-        return accountService.loginByEmail(email);
+            @PathParam("email") String email,
+            @PathParam("code")String code) {
+        if (accountService.VerifyEmailCode(email, code).getData())
+            return accountService.loginByEmail(email);
+        else
+            return CommonResponse.createForError("验证码错误");
+    }
+
+    /**
+     * 验证手机验证码是否正确
+     *
+     * @param phoneNumber 手机号
+     * @param code 验证码
+     * @return 验证结果 CommonResponse<String>
+     */
+    @GetMapping("/general/verify/phone/code")
+    public CommonResponse<Boolean> verifyPhoneCode(
+            @PathParam("phoneNumber") String phoneNumber,
+            @PathParam("code") String code) {
+        return accountService.VerifyPhoneCode(phoneNumber, code);
+    }
+
+    /**
+     * 验证邮箱验证码是否正确
+     *
+     * @param email 邮箱
+     * @param code 验证码
+     * @return 验证结果 CommonResponse<String>
+     */
+    @GetMapping("/general/verify/email/code")
+    public CommonResponse<Boolean> verifyEmailCode(
+            @PathParam("email") String email,
+            @PathParam("code") String code) {
+        return accountService.VerifyEmailCode(email, code);
     }
 
     /**
      * 手机 登录
      *
      * @param phone 手机
+     * @param code 验证码
      * @return 登录结果 CommonResponse<Map>
      */
     @GetMapping("/general/phone")
     public CommonResponse<Map> loginByPhone(
-            @PathParam("phone") String phone) {
-        return accountService.loginByPhone(phone);
+            @PathParam("phone") String phone,
+            @PathParam("code") String code) {
+        if (accountService.VerifyPhoneCode(phone, code).getData())
+            return accountService.loginByPhone(phone);
+        else
+            return CommonResponse.createForError("验证码错误");
     }
 
     /**
@@ -138,13 +177,18 @@ public class GeneralController {
      *
      * @param email 邮箱
      * @param phone 手机
+     * @param code 验证码
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/general/phone")
     public CommonResponse<String> changePhone(
             @PathParam("email") String email,
-            @PathParam("phone") String phone) {
-        return accountService.changePhone(email, phone);
+            @PathParam("phone") String phone,
+            @PathParam("code") String code) {
+        if (accountService.VerifyPhoneCode(phone, code).getData())
+            return accountService.changePhone(email, phone);
+        else
+            return CommonResponse.createForError("验证码错误");
     }
 
     /**
@@ -152,13 +196,18 @@ public class GeneralController {
      *
      * @param phone 手机
      * @param email 邮箱
+     * @param code 验证码
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/general/email")
     public CommonResponse<String> changeEmail(
             @PathParam("phone") String phone,
-            @PathParam("email") String email) {
-        return accountService.changeEmail(phone, email);
+            @PathParam("email") String email,
+            @PathParam("code") String code) {
+        if (accountService.VerifyEmailCode(email, code).getData())
+            return accountService.changeEmail(phone, email);
+        else
+            return CommonResponse.createForError("验证码错误");
     }
 
     /**
@@ -178,13 +227,18 @@ public class GeneralController {
      *
      * @param str   手机号 或 邮箱
      * @param password 密码
+     * @param code 验证码
      * @return 找回结果 CommonResponse<String>
      */
     @PatchMapping("/general/str/password")
     public CommonResponse<String> findPassword(
             @PathParam("str") String str,
-            @PathParam("password") String password) {
-        return accountService.findPassword(str, password);
+            @PathParam("password") String password,
+            @PathParam("code") String code) {
+        if (accountService.VerifyPhoneCode(str, code).getData() || accountService.VerifyEmailCode(str, code).getData())
+            return accountService.findPassword(str, password);
+        else
+            return CommonResponse.createForError("验证码错误");
     }
 
 

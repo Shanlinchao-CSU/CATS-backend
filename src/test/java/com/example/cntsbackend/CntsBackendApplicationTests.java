@@ -29,7 +29,7 @@ class CntsBackendApplicationTests {
     @Autowired
     private AccountingRecordServiceImpl accountingRecordService;
     @Autowired
-    private RedisServerImpl redisServer;
+    private RedisServiceImpl redisServer;
 
     @Test
     void contextLoads() {
@@ -48,10 +48,10 @@ class CntsBackendApplicationTests {
         System.out.println(accountCommonResponse.getCode());
     }
     @Test
-    public void VerifyCodeTest() {
-//        CommonResponse<String> stringCommonResponse = accountService.VerifyCode("8830");
-//        System.out.println(stringCommonResponse.getMessage());
-//        System.out.println(stringCommonResponse.getCode());
+    public void VerifyEmailCodeTest() {
+        CommonResponse<Boolean> stringCommonResponse = accountService.VerifyEmailCode("2674314843@qq.com","9717");
+        System.out.println(stringCommonResponse.getMessage());
+        System.out.println(stringCommonResponse.getCode());
     }
     @Test
     public void loginByPhoneTest() {
@@ -171,14 +171,14 @@ class CntsBackendApplicationTests {
     @Test
     public void getAllCarbonAccountingForReviewTest(){
         CommonResponse<List<AccountingRecordDto>> allCarbonAccountingForReview = accountingRecordService.getAllCarbonAccountingForReview();
-        System.out.println(allCarbonAccountingForReview.getData().get(0));
+        System.out.println(allCarbonAccountingForReview.getData());
         System.out.println(allCarbonAccountingForReview.getData().get(0).getAccount_name());
     }
 
     @Test
     public void getAllCarbonAccountingTest(){
         CommonResponse<List<AccountingRecordDto>> allCarbonAccountingForReview = accountingRecordService.getAllCarbonAccounting();
-        System.out.println(allCarbonAccountingForReview.getData().get(0));
+        System.out.println(allCarbonAccountingForReview.getData());
         System.out.println(allCarbonAccountingForReview.getData().get(0).getEnterprise_type());
     }
     @Test

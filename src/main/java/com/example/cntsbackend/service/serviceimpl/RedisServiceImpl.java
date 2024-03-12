@@ -1,17 +1,20 @@
 package com.example.cntsbackend.service.serviceimpl;
 
-import com.example.cntsbackend.service.RedisServer;
+import com.example.cntsbackend.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class RedisServerImpl implements RedisServer {
+public class RedisServiceImpl implements RedisService {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+    @Value("${redis.expire.time}")
+    private int expireTime;
 
     /**
      * 设置key-value
@@ -71,4 +74,53 @@ public class RedisServerImpl implements RedisServer {
         redisTemplate.expire(key, expire, TimeUnit.SECONDS);
     }
 
+
+    /**
+     * 存入Token
+     *
+     * @param key  键
+     * @param value  值
+     */
+    public void setToken(String key, Object value) {
+        redisTemplate.opsForValue().set(key, value, expireTime, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 获取Token
+     *
+     * @param key  键
+     * @return  值
+     */
+    public Object getToken(String key) {
+        return redisTemplate.opsForValue().get(key);
+    }
+
+    /**
+     * 删除Token
+     *
+     * @param key  键
+     */
+    public void deleteToken(String key) {
+        redisTemplate.delete(key);
+    }
+
+    /**
+     * 判断Token是否存在
+     *
+     * @param key  键
+     * @return  是否存在
+     */
+    public boolean hasToken(String key) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+
+    /**
+     * Token续期
+     *
+     * @param key  键
+     * @return  是否成功
+     */
+    public boolean renewToken(String key) {
+        return Boolean.TRUE.equals(redisTemplate.expire(key, expireTime, TimeUnit.SECONDS));
+    }
 }
