@@ -171,14 +171,14 @@ class CntsBackendApplicationTests {
     @Test
     public void getAllCarbonAccountingForReviewTest(){
         CommonResponse<List<AccountingRecordDto>> allCarbonAccountingForReview = accountingRecordService.getAllCarbonAccountingForReview();
-        System.out.println(allCarbonAccountingForReview.getData().get(0));
+        System.out.println(allCarbonAccountingForReview.getData());
         System.out.println(allCarbonAccountingForReview.getData().get(0).getAccount_name());
     }
 
     @Test
     public void getAllCarbonAccountingTest(){
         CommonResponse<List<AccountingRecordDto>> allCarbonAccountingForReview = accountingRecordService.getAllCarbonAccounting();
-        System.out.println(allCarbonAccountingForReview.getData().get(0));
+        System.out.println(allCarbonAccountingForReview.getData());
         System.out.println(allCarbonAccountingForReview.getData().get(0).getEnterprise_type());
     }
     @Test

@@ -3,6 +3,7 @@ package com.example.cntsbackend.service.serviceimpl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.cntsbackend.common.CommonResponse;
+import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.AccountingRecord;
 import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.persistence.AccountMapper;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.web3j.protocol.admin.methods.response.NewAccountIdentifier;
 
 import java.io.*;
 import java.sql.Timestamp;
@@ -35,21 +37,24 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
         List<AccountingRecord> accountingRecordList = accountingRecordMapper.selectList(new QueryWrapper<AccountingRecord>().eq("state", 1));
         List<AccountingRecordDto> accountingRecordDTOList = new ArrayList<>();
         for (AccountingRecord accountingRecord : accountingRecordList) {
-            AccountingRecordDto accountingRecordsWithAccountName = accountingRecordMapper.getAccountingRecordsWithAccountName(accountingRecord.getEnterprise_id());
-            String enterprise_type = accountingRecordsWithAccountName.getEnterprise_type();
+            int enterprise_id = accountingRecord.getEnterprise_id();
+            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
+            String account_name = account.getAccount_name();
+            Integer enterprise_type = account.getEnterprise_type();
+            AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),accountingRecord.getState(),accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
             switch (enterprise_type) {
-                case "1" -> accountingRecordsWithAccountName.setEnterprise_type("发电企业");
-                case "2" -> accountingRecordsWithAccountName.setEnterprise_type("电网企业");
-                case "3" -> accountingRecordsWithAccountName.setEnterprise_type("钢铁生产企业");
-                case "4" -> accountingRecordsWithAccountName.setEnterprise_type("化工生产企业");
-                case "5" -> accountingRecordsWithAccountName.setEnterprise_type("电解铝生产企业企业");
-                case "6" -> accountingRecordsWithAccountName.setEnterprise_type("镁冶炼企业");
-                case "7" -> accountingRecordsWithAccountName.setEnterprise_type("平板玻璃生产企业");
-                case "8" -> accountingRecordsWithAccountName.setEnterprise_type("水泥生产企业");
-                case "9" -> accountingRecordsWithAccountName.setEnterprise_type("陶瓷生产企业");
-                case "10" -> accountingRecordsWithAccountName.setEnterprise_type("民航企业");
+                case 1 -> accountingRecordDto.setEnterprise_type("发电企业");
+                case 2 -> accountingRecordDto.setEnterprise_type("电网企业");
+                case 3 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
+                case 4 -> accountingRecordDto.setEnterprise_type("化工生产企业");
+                case 5 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
+                case 6 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
+                case 7 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
+                case 8 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
+                case 9 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
+                case 10 -> accountingRecordDto.setEnterprise_type("民航企业");
             }
-            accountingRecordDTOList.add(accountingRecordsWithAccountName);
+            accountingRecordDTOList.add(accountingRecordDto);
         }
         return CommonResponse.createForSuccess("获取所有待审核的碳核算请求成功",accountingRecordDTOList);
     }
@@ -58,21 +63,24 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
         List<AccountingRecord> accountingRecordList = accountingRecordMapper.selectList(null);
         List<AccountingRecordDto> accountingRecordDTOList = new ArrayList<>();
         for (AccountingRecord accountingRecord : accountingRecordList) {
-            AccountingRecordDto accountingRecordsWithAccountName = accountingRecordMapper.getAccountingRecordsWithAccountName(accountingRecord.getEnterprise_id());
-            String enterprise_type = accountingRecordsWithAccountName.getEnterprise_type();
+            int enterprise_id = accountingRecord.getEnterprise_id();
+            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
+            String account_name = account.getAccount_name();
+            Integer enterprise_type = account.getEnterprise_type();
+            AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),accountingRecord.getState(),accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
             switch (enterprise_type) {
-                case "1" -> accountingRecordsWithAccountName.setEnterprise_type("发电企业");
-                case "2" -> accountingRecordsWithAccountName.setEnterprise_type("电网企业");
-                case "3" -> accountingRecordsWithAccountName.setEnterprise_type("钢铁生产企业");
-                case "4" -> accountingRecordsWithAccountName.setEnterprise_type("化工生产企业");
-                case "5" -> accountingRecordsWithAccountName.setEnterprise_type("电解铝生产企业企业");
-                case "6" -> accountingRecordsWithAccountName.setEnterprise_type("镁冶炼企业");
-                case "7" -> accountingRecordsWithAccountName.setEnterprise_type("平板玻璃生产企业");
-                case "8" -> accountingRecordsWithAccountName.setEnterprise_type("水泥生产企业");
-                case "9" -> accountingRecordsWithAccountName.setEnterprise_type("陶瓷生产企业");
-                case "10" -> accountingRecordsWithAccountName.setEnterprise_type("民航企业");
+                case 1 -> accountingRecordDto.setEnterprise_type("发电企业");
+                case 2 -> accountingRecordDto.setEnterprise_type("电网企业");
+                case 3 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
+                case 4 -> accountingRecordDto.setEnterprise_type("化工生产企业");
+                case 5 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
+                case 6 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
+                case 7 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
+                case 8 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
+                case 9 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
+                case 10 -> accountingRecordDto.setEnterprise_type("民航企业");
             }
-            accountingRecordDTOList.add(accountingRecordsWithAccountName);
+            accountingRecordDTOList.add(accountingRecordDto);
         }
         return CommonResponse.createForSuccess("获取所有碳核算请求成功",accountingRecordDTOList);
     }
@@ -158,22 +166,24 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
     public CommonResponse<List<AccountingRecordDto>> getMyCarbonAccounting(int enterprise_id){
         List<AccountingRecord> accountingRecordList = accountingRecordMapper.selectList(new QueryWrapper<AccountingRecord>().eq("enterprise_id", enterprise_id));
         List<AccountingRecordDto> accountingRecordDTOList = new ArrayList<>();
-        for (int i = 0; i < accountingRecordList.size(); i++) {
-            AccountingRecordDto accountingRecordsWithAccountName = accountingRecordMapper.getAccountingRecordsWithAccountName(accountingRecordList.get(i).getEnterprise_id());
-            String enterprise_type = accountingRecordsWithAccountName.getEnterprise_type();
+        for (AccountingRecord accountingRecord : accountingRecordList) {
+            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
+            String account_name = account.getAccount_name();
+            Integer enterprise_type = account.getEnterprise_type();
+            AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),accountingRecord.getState(),accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
             switch (enterprise_type) {
-                case "1" -> accountingRecordsWithAccountName.setEnterprise_type("发电企业");
-                case "2" -> accountingRecordsWithAccountName.setEnterprise_type("电网企业");
-                case "3" -> accountingRecordsWithAccountName.setEnterprise_type("钢铁生产企业");
-                case "4" -> accountingRecordsWithAccountName.setEnterprise_type("化工生产企业");
-                case "5" -> accountingRecordsWithAccountName.setEnterprise_type("电解铝生产企业企业");
-                case "6" -> accountingRecordsWithAccountName.setEnterprise_type("镁冶炼企业");
-                case "7" -> accountingRecordsWithAccountName.setEnterprise_type("平板玻璃生产企业");
-                case "8" -> accountingRecordsWithAccountName.setEnterprise_type("水泥生产企业");
-                case "9" -> accountingRecordsWithAccountName.setEnterprise_type("陶瓷生产企业");
-                case "10" -> accountingRecordsWithAccountName.setEnterprise_type("民航企业");
+                case 1 -> accountingRecordDto.setEnterprise_type("发电企业");
+                case 2 -> accountingRecordDto.setEnterprise_type("电网企业");
+                case 3 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
+                case 4 -> accountingRecordDto.setEnterprise_type("化工生产企业");
+                case 5 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
+                case 6 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
+                case 7 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
+                case 8 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
+                case 9 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
+                case 10 -> accountingRecordDto.setEnterprise_type("民航企业");
             }
-            accountingRecordDTOList.add(accountingRecordsWithAccountName);
+            accountingRecordDTOList.add(accountingRecordDto);
         }
         return CommonResponse.createForSuccess(accountingRecordDTOList);
     }
