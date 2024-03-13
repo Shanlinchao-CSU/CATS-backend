@@ -7,6 +7,7 @@ import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.CMessage;
 import com.example.cntsbackend.domain.RegisterApplication;
 import com.example.cntsbackend.domain.UpdateAccount;
+import com.example.cntsbackend.dto.AccountDto;
 import com.example.cntsbackend.persistence.AccountMapper;
 import com.example.cntsbackend.persistence.CMessageMapper;
 import com.example.cntsbackend.persistence.RegisterApplicationMapper;
@@ -127,11 +128,14 @@ public class AccountServiceImpl implements AccountService {
     public CommonResponse<Map> loginByEmail(String email){
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
         if(account!=null){
+            Integer enterprise_type = account.getEnterprise_type();
+            String cnType = getCNType(enterprise_type);
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
             account.setSecret_key("");
             account.setPublic_key("");
-            map.put("Account",account);
+            AccountDto accountDto = new AccountDto(account.getAccount_name(),account.getPassword(),account.getPhone(),account.getEmail(),account.getType(),account.getFile(),account.getT_coin(),cnType);
+            map.put("Account",accountDto);
             map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
             return CommonResponse.createForSuccess("邮箱登录成功",map);
@@ -141,11 +145,14 @@ public class AccountServiceImpl implements AccountService {
     public CommonResponse<Map> loginByPhone(String phone){
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         if(account!=null){
+            Integer enterprise_type = account.getEnterprise_type();
+            String cnType = getCNType(enterprise_type);
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
             account.setSecret_key("");
             account.setPublic_key("");
-            map.put("Account",account);
+            AccountDto accountDto = new AccountDto(account.getAccount_name(),account.getPassword(),account.getPhone(),account.getEmail(),account.getType(),account.getFile(),account.getT_coin(),cnType);
+            map.put("Account",accountDto);
             map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
             return CommonResponse.createForSuccess("手机号码登录成功",map);
@@ -159,11 +166,14 @@ public class AccountServiceImpl implements AccountService {
                 .eq("password", password);
         Account account = accountMapper.selectOne(queryWrapper);
         if(account!=null){
+            Integer enterprise_type = account.getEnterprise_type();
+            String cnType = getCNType(enterprise_type);
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
             account.setSecret_key("");
             account.setPublic_key("");
-            map.put("Account",account);
+            AccountDto accountDto = new AccountDto(account.getAccount_name(),account.getPassword(),account.getPhone(),account.getEmail(),account.getType(),account.getFile(),account.getT_coin(),cnType);
+            map.put("Account",accountDto);
             map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
             return CommonResponse.createForSuccess("id+密码登录成功",map);
@@ -264,6 +274,23 @@ public class AccountServiceImpl implements AccountService {
         }else return CommonResponse.createForSuccess("验证失败",false);
     }
 
+    public String getCNType(int enterprise_type){
+        String cnType = "";
+        switch (enterprise_type) {
+            case 0 -> cnType="发电企业";
+            case 1 -> cnType="电网企业";
+            case 2 -> cnType="钢铁生产企业";
+            case 3 -> cnType="化工生产企业";
+            case 4 -> cnType="电解铝生产企业企业";
+            case 5 -> cnType="镁冶炼企业";
+            case 6 -> cnType="平板玻璃生产企业";
+            case 7 -> cnType="水泥生产企业";
+            case 8 -> cnType="陶瓷生产企业";
+            case 9 -> cnType="民航企业";
+            case 10 -> cnType="其它企业";
+        }
+        return cnType;
+    }
 
 
     //-------------------------------------------管理员------------------------------------------------------

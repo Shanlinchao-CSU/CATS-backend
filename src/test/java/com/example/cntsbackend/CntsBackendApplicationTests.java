@@ -225,5 +225,10 @@ class CntsBackendApplicationTests {
     public void setExpireTest(){
         redisServer.setExpire("test",10);
     }
-
+    @Test
+    public void DataAuditorsGetMyCarbonAccountingTest(){
+        CommonResponse<List<AccountingRecordDto>> listCommonResponse = accountingRecordService.DataAuditorsGetMyCarbonAccounting(1);
+        System.out.println(listCommonResponse.getData());
+        System.out.println(listCommonResponse.getData().get(0).getEnterprise_type());
+    }
 }
