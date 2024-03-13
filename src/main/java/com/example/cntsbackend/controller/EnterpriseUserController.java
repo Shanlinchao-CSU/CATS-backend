@@ -7,10 +7,7 @@ import com.example.cntsbackend.domain.Transaction;
 import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.dto.QuotaSaleDto;
 import com.example.cntsbackend.dto.TransactionDto;
-import com.example.cntsbackend.service.AccountingRecordService;
-import com.example.cntsbackend.service.QuotaSaleService;
-import com.example.cntsbackend.service.RegisterApplicationService;
-import com.example.cntsbackend.service.TransactionService;
+import com.example.cntsbackend.service.*;
 import com.example.cntsbackend.util.MultipartFileToFileConverter;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +33,8 @@ public class EnterpriseUserController {
     private QuotaSaleService quotaSaleService;
     @Autowired
     private AccountingRecordService accountingRecordService;
+    @Autowired
+    private AccountService accountService;
 
 
     /**
@@ -142,6 +141,7 @@ public class EnterpriseUserController {
      * @param phone           电话
      * @param enterprise_type 企业类型
      * @param type            类型
+     * @param code            验证码
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/enterprise/info")
@@ -151,12 +151,16 @@ public class EnterpriseUserController {
             @RequestParam("password") String password,
             @RequestParam("phone") String phone,
             @RequestParam("enterprise_type") int enterprise_type,
-            @RequestParam("type") int type) throws IOException {
+            @RequestParam("type") int type,
+            @RequestParam("code") String code) throws IOException {
         File f = MultipartFileToFileConverter.convert(file);
         if (f == null) {
-            return CommonResponse.createForSuccess("文件已存在，请重新上传后重试");
+            return CommonResponse.createForError("文件已存在，请重新上传后重试","3");
         }
-        return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type);
+        if (accountService.VerifyPhoneCode(phone, code).getData())
+            return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type);
+        else
+            return CommonResponse.createForError("验证码错误","2");
     }
 
     /**

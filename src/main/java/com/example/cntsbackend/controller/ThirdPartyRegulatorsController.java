@@ -3,6 +3,7 @@ package com.example.cntsbackend.controller;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Transaction;
 import com.example.cntsbackend.dto.TransactionDto;
+import com.example.cntsbackend.service.AccountService;
 import com.example.cntsbackend.service.RegisterApplicationService;
 import com.example.cntsbackend.service.TransactionService;
 import com.example.cntsbackend.util.MultipartFileToFileConverter;
@@ -31,6 +32,8 @@ public class ThirdPartyRegulatorsController {
 
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private AccountService  accountService;
 
     /**
      * 第三方监管机构查看交易信息
@@ -50,6 +53,7 @@ public class ThirdPartyRegulatorsController {
      * @param password 密码
      * @param phone    电话
      * @param type     类型
+     * @param code     验证码
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/thirdParty/info")
@@ -58,12 +62,17 @@ public class ThirdPartyRegulatorsController {
             @RequestParam("name") String name,
             @RequestParam("password") String password,
             @RequestParam("phone") String phone,
-            @RequestParam("type") int type) throws IOException {
+            @RequestParam("type") int type,
+            @RequestParam("code") String code) throws IOException {
+
         File f = MultipartFileToFileConverter.convert(file);
         if (f == null) {
-            return CommonResponse.createForSuccess("传输错误，请重新上传后重试");
+            return CommonResponse.createForError("传输错误，请重新上传后重试","3");
         }
-        return registerApplicationService.ThirdPartyRegulatorsRegister(f, name, password, phone, type);
+        if (accountService.VerifyPhoneCode(phone, code).getData())
+            return registerApplicationService.ThirdPartyRegulatorsRegister(f, name, password, phone, type);
+        else
+            return CommonResponse.createForError("验证码错误","2");
     }
 
 }
