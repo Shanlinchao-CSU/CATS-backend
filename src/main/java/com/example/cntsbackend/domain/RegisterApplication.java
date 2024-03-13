@@ -32,4 +32,7 @@ public class RegisterApplication {
         this.conductor_id = 0;
         this.state = 0;
     }
+
+    public RegisterApplication() {
+    }
 }
