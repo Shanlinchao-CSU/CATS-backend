@@ -6,6 +6,7 @@ import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.dto.TransactionDto;
 import com.example.cntsbackend.service.AccountService;
 import com.example.cntsbackend.service.AccountingRecordService;
+import com.example.cntsbackend.service.RegisterApplicationService;
 import com.example.cntsbackend.service.TransactionService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.websocket.server.PathParam;
@@ -34,6 +35,9 @@ public class AdministratorController {
 
     @Autowired
     private AccountingRecordService accountingRecordService;
+
+    @Autowired
+    private RegisterApplicationService registerApplicationService;
 
     /**
      * 第三方监管机构和管理员查看交易信息
@@ -76,6 +80,18 @@ public class AdministratorController {
             @PathParam("id") int id,
             HttpServletResponse response) throws Exception {
         accountingRecordService.getSupportingMaterial(id,response);
+    }
+
+    /**
+     * 管理员获取注册申请的文件流
+     *
+     * @param id 注册申请id
+     */
+    @GetMapping("/administrator/application/file")
+    public void getRegisterSupportingMaterial(
+            @PathParam("id") int id,
+            HttpServletResponse response) throws Exception {
+        registerApplicationService.getRegisterSupportingMaterial(id,response);
     }
 
     /**
