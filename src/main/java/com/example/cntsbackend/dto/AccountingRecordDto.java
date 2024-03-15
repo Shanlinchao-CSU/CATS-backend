@@ -11,14 +11,14 @@ public class AccountingRecordDto {
     private String month;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date time;
-    private int state;
+    private String state;
     private String variable_json;
     private String result;
     private int conductor_id;
     private String account_name;
     private String enterprise_type;
 
-    public AccountingRecordDto(int id, int enterprise_id, String month, Date time, int state, String variable_json, String result, int conductor_id, String account_name, String enterprise_type) {
+    public AccountingRecordDto(int id, int enterprise_id, String month, Date time, String state, String variable_json, String result, int conductor_id, String account_name, String enterprise_type) {
         this.id = id;
         this.enterprise_id = enterprise_id;
         this.month = month;

@@ -42,7 +42,8 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
             Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
             String account_name = account.getAccount_name();
             Integer enterprise_type = account.getEnterprise_type();
-            AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),accountingRecord.getState(),accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
+            String s = "待审核";
+            AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(), s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
             switch (enterprise_type) {
                 case 0 -> accountingRecordDto.setEnterprise_type("发电企业");
                 case 1 -> accountingRecordDto.setEnterprise_type("电网企业");
@@ -69,7 +70,13 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
             Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
             String account_name = account.getAccount_name();
             Integer enterprise_type = account.getEnterprise_type();
-            AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),accountingRecord.getState(),accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
+            String s = String.valueOf(accountingRecord.getState());
+            if(s.equals("0")){
+                s = "通过";
+            }else if(s.equals("2")){
+                s = "拒绝";
+            }else s = "待审核";
+            AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
             switch (enterprise_type) {
                 case 0 -> accountingRecordDto.setEnterprise_type("发电企业");
                 case 1 -> accountingRecordDto.setEnterprise_type("电网企业");
@@ -174,7 +181,13 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
             Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
             String account_name = account.getAccount_name();
             Integer enterprise_type = account.getEnterprise_type();
-            AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),accountingRecord.getState(),accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
+            String s = String.valueOf(accountingRecord.getState());
+            if(s.equals("0")){
+                s = "通过";
+            }else if(s.equals("2")){
+                s = "拒绝";
+            }else s = "待审核";
+            AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
             switch (enterprise_type) {
                 case 0 -> accountingRecordDto.setEnterprise_type("发电企业");
                 case 1 -> accountingRecordDto.setEnterprise_type("电网企业");
@@ -231,7 +244,11 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
             Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
             String account_name = account.getAccount_name();
             Integer enterprise_type = account.getEnterprise_type();
-            AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),accountingRecord.getState(),accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
+            String s = String.valueOf(accountingRecord.getState());
+            if(s.equals("0")){
+                s = "通过";
+            }else s = "拒绝";
+            AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
             switch (enterprise_type) {
                 case 0 -> accountingRecordDto.setEnterprise_type("发电企业");
                 case 1 -> accountingRecordDto.setEnterprise_type("电网企业");
