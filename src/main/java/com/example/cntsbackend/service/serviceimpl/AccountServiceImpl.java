@@ -14,6 +14,7 @@ import com.example.cntsbackend.persistence.RegisterApplicationMapper;
 import com.example.cntsbackend.persistence.UpdateAccountMapper;
 import com.example.cntsbackend.service.AccountService;
 import com.example.cntsbackend.service.RedisService;
+import com.example.cntsbackend.util.MD5Util;
 import com.example.cntsbackend.util.MetaMaskUtil;
 import com.example.cntsbackend.util.SendMailUtil;
 import com.example.cntsbackend.util.SendPhoneUtil;
@@ -126,6 +127,7 @@ public class AccountServiceImpl implements AccountService {
 
     //邮箱登录
     public CommonResponse<Map> loginByEmail(String email){
+        email = MD5Util.encrypt(email);
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
         if(account!=null){
             Integer enterprise_type = account.getEnterprise_type();
@@ -143,6 +145,7 @@ public class AccountServiceImpl implements AccountService {
     }
     //手机号码登录
     public CommonResponse<Map> loginByPhone(String phone){
+        phone = MD5Util.encrypt(phone);
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         if(account!=null){
             Integer enterprise_type = account.getEnterprise_type();
@@ -159,10 +162,12 @@ public class AccountServiceImpl implements AccountService {
         }else return CommonResponse.createForError("手机号码登录失败");
     }
     public CommonResponse<Map> loginById(String str,String password){
+        String encrypt = MD5Util.encrypt(str);
+        password = MD5Util.encrypt(password);
         QueryWrapper<Account> queryWrapper = new QueryWrapper<>();
         queryWrapper.and(wrapper -> wrapper.eq("account_id", str)
-                        .or().eq("email", str)
-                        .or().eq("phone", str))
+                        .or().eq("email", encrypt)
+                        .or().eq("phone", encrypt))
                 .eq("password", password);
         Account account = accountMapper.selectOne(queryWrapper);
         if(account!=null){
@@ -181,8 +186,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public CommonResponse<String> changePassword(String phone,String password){
+        phone = MD5Util.encrypt(phone);
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         if(account!=null){
+            password = MD5Util.encrypt(password);
             account.setPassword(password);
 
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
@@ -200,8 +207,10 @@ public class AccountServiceImpl implements AccountService {
         }
     }
     public CommonResponse<String> changePhone(String phone,String email){
+        email = MD5Util.encrypt(email);
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
         if(account!=null){
+            phone = MD5Util.encrypt(phone);
             account.setPhone(phone);
 
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
@@ -219,8 +228,10 @@ public class AccountServiceImpl implements AccountService {
         }
     }
     public CommonResponse<String> changeEmail(String phone,String email){
+        phone = MD5Util.encrypt(phone);
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         if(account!=null){
+            email = MD5Util.encrypt(email);
             account.setEmail(email);
 
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
@@ -237,8 +248,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public CommonResponse<String> findPassword(String str,String password){
+        str = MD5Util.encrypt(str);
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", str).or().eq("email", str));
         if(account!=null) {
+            password = MD5Util.encrypt(password);
             account.setPassword(password);
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("phone", str).or().eq("email", str);
@@ -309,6 +322,9 @@ public class AccountServiceImpl implements AccountService {
         int enterprise_type = registerApplication.getEnterprise_type();
         String file_address = registerApplication.getFile_address();
         Integer type = registerApplication.getType();
+        password = MD5Util.encrypt(password);
+        phone = MD5Util.encrypt(phone);
+        email = MD5Util.encrypt(email);
         accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type ,file_address));
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         int account_id1 = account.getAccount_id();

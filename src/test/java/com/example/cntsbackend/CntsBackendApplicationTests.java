@@ -63,14 +63,14 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void loginByIDTest() {
-        CommonResponse<Map> accountCommonResponse = accountService.loginById("123","123");
+        CommonResponse<Map> accountCommonResponse = accountService.loginById("12345","123");
         System.out.println(accountCommonResponse.getData());
         System.out.println(accountCommonResponse.getCode());
     }
 
     @Test
     public void AgreeApplicationTest() {
-        CommonResponse<String> application = accountService.AgreeApplication(2, 1);
+        CommonResponse<String> application = accountService.AgreeApplication(3, 1);
         System.out.println(application.getMessage());
     }
     @Test
@@ -96,7 +96,7 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void changeEmailTest() {
-        CommonResponse<String> application = accountService.changeEmail("123", "2674314843@qq.com");
+        CommonResponse<String> application = accountService.changeEmail("12345", "4314843@qq.com");
         System.out.println(application.getMessage());
     }
     @Test

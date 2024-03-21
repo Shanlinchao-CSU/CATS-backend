@@ -8,9 +8,9 @@ import java.io.File;
 
 public interface RegisterApplicationService {
     //企业注册
-    CommonResponse<String> EnterpriseUserRegister(File file , String account_name , String password , String phone , int enterprise_type , int type );
+    CommonResponse<String> EnterpriseUserRegister(File file , String account_name , String password , String email , int enterprise_type , int type );
     //第三方注册
-    CommonResponse<String> ThirdPartyRegulatorsRegister(File file , String account_name , String password ,  String phone ,  int type );
+    CommonResponse<String> ThirdPartyRegulatorsRegister(File file , String account_name , String password ,  String email ,  int type );
     //TODO:(新加)管理员获取注册申请的文件流
     void getRegisterSupportingMaterial(int id, HttpServletResponse response) throws Exception;
 
