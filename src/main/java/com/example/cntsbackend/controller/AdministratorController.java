@@ -1,6 +1,7 @@
 package com.example.cntsbackend.controller;
 
 import com.example.cntsbackend.common.CommonResponse;
+import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.RegisterApplication;
 import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.dto.TransactionDto;
@@ -102,6 +103,16 @@ public class AdministratorController {
     @GetMapping("/administrator/application/review")
     public CommonResponse<List<RegisterApplication>> getPendingReviewAccount() {
         return accountService.getPendingReviewAccount();
+    }
+
+    /**
+     * 管理员获取所有企业用户
+     *
+     * @return 所有企业用户 List<Account>
+     */
+    @GetMapping("/administrator/enterprise/accounts")
+    public CommonResponse<List<Account>> getAllEnterpriseUsers() {
+        return accountService.getAllEnterpriseUsers();
     }
 
     /**

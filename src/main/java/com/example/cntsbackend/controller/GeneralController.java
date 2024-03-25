@@ -147,6 +147,40 @@ public class GeneralController {
     }
 
     /**
+     * 后端获取区块链相关信息(公钥密钥,如果存在,直接return,不存在则会添加到数据库中)
+     *
+     * @param account_id 账号ID
+     * @param public_key 公钥
+     * @param secret_key 密钥
+     * @return 获取结果 CommonResponse<String>
+     */
+    @GetMapping("/general/block/key")
+    public CommonResponse<String> getInfo(
+            @PathParam("account_id") int account_id,
+            @PathParam("public_key") String public_key,
+            @PathParam("secret_key") String secret_key) {
+        return accountService.getInfo(account_id, public_key, secret_key);
+    }
+
+    /**
+     * 后端获取区块链相关信息(碳币、碳额度、剩余额度,每次登录都要进行数据更新)
+     *
+     * @param account_id 账号ID
+     * @param t_coin 碳币
+     * @param t_remain 剩余额度
+     * @param t_limit 碳额度
+     * @return 获取结果 CommonResponse<String>
+     */
+    @GetMapping("/general/block/info/update")
+    public CommonResponse<String> getT_coinAndT_limit(
+            @PathParam("account_id") int account_id,
+            @PathParam("t_coin") double t_coin,
+            @PathParam("t_remain") double t_remain,
+            @PathParam("t_limit") double t_limit) {
+        return accountService.getT_coinAndT_limit(account_id, t_coin, t_remain, t_limit);
+    }
+
+    /**
      * 验证数字签名
      *
      * @param signature 数字签名体
