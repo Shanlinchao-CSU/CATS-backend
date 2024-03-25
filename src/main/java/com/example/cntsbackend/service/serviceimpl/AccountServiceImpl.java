@@ -305,6 +305,48 @@ public class AccountServiceImpl implements AccountService {
         return cnType;
     }
 
+    public CommonResponse<String> getInfo(int account_id,String public_key,String secret_key){
+        if(public_key != null && secret_key != null){
+            return CommonResponse.createForError("已获取过该用户信息");
+        }else {
+            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
+            public_key = MD5Util.encrypt(public_key);
+            secret_key = MD5Util.encrypt(secret_key);
+            account.setPublic_key(public_key);
+            account.setSecret_key(secret_key);
+            UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("account_id",account_id);
+            accountMapper.update(account,updateWrapper);
+            return CommonResponse.createForSuccess("获取用户信息成功");
+        }
+    }
+
+    public CommonResponse<String> getT_coinAndT_limit(int account_id, double t_coin, double t_remain,double t_limit){
+        // 获取当前时间的上个月份
+        YearMonth currentYearMonth = YearMonth.now();
+        YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
+        // 格式化为"yyyy-MM"的字符串
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+        String previousMonthString = previousYearMonth.format(formatter);
+        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
+        account.setT_coin(t_coin);
+        UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("account_id",account_id);
+        accountMapper.update(account,updateWrapper);
+        CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", account_id).eq("month",previousMonthString));
+        if(cMessage != null){
+            cMessage.setT_remain(t_remain);
+            cMessage.setT_limit(t_limit);
+            UpdateWrapper<CMessage> updateWrapper1 = new UpdateWrapper<>();
+            updateWrapper1.eq("account_id",account_id);
+            cMessageMapper.update(cMessage,updateWrapper1);
+            return CommonResponse.createForSuccess("获取用户碳币信息成功");
+        }else {
+            return CommonResponse.createForError("获取信息失败");
+        }
+
+    }
+
 
     //-------------------------------------------管理员------------------------------------------------------
 
@@ -336,7 +378,7 @@ public class AccountServiceImpl implements AccountService {
         String month = yearMonth.format(formatter);
 
         //TODO:确定cmessage表碳额度的初始值以及碳币,要与以太坊联系起来(用定时任务来完成cMessage的更新)
-        cMessageMapper.insert(new CMessage(account_id1,500,month,500));
+        cMessageMapper.insert(new CMessage(account_id1,500,null,500));
         return CommonResponse.createForSuccess("审核成功，同意注册");
     }
 

@@ -42,6 +42,10 @@ public interface AccountService {
     CommonResponse<Boolean> VerifyPhoneCode(String phoneNumber,String code);
     //验证输入的邮箱验证码是否正确
     CommonResponse<Boolean> VerifyEmailCode(String email, String code);
+    //TODO:(新增)后端获取区块链相关信息(公钥密钥,如果存在,直接return,不存在则会添加到数据库中)
+    CommonResponse<String> getInfo(int account_id,String public_key,String secret_key);
+    //TODO:(新增)后端获取区块链相关信息(碳币、碳额度、剩余额度,每次登录都要进行数据更新)
+    CommonResponse<String> getT_coinAndT_limit(int account_id, double t_coin, double t_remain,double t_limit);
 
     //-----------------------------------管理员--------------------------------------
 
