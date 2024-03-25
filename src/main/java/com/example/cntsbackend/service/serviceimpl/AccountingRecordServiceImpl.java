@@ -1,14 +1,20 @@
 package com.example.cntsbackend.service.serviceimpl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.AccountingRecord;
+import com.example.cntsbackend.domain.CMessage;
 import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.persistence.AccountMapper;
 import com.example.cntsbackend.persistence.AccountingRecordMapper;
+import com.example.cntsbackend.persistence.CMessageMapper;
 import com.example.cntsbackend.service.AccountingRecordService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -33,6 +39,8 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
     private AccountingRecordMapper accountingRecordMapper;
     @Autowired
     private AccountMapper accountMapper;
+    @Autowired
+    private CMessageMapper cMessageMapper;
 
     public CommonResponse<List<AccountingRecordDto>> getAllCarbonAccountingForReview() {
         List<AccountingRecord> accountingRecordList = accountingRecordMapper.selectList(new QueryWrapper<AccountingRecord>().eq("state", 1));
@@ -121,27 +129,69 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
         }
     }
 
-//    public CommonResponse<String> CarbonAccounting(int id,int account_id) throws JsonProcessingException {
+//    public CommonResponse<String> CarbonAccounting(int id,int account_id){
 //        AccountingRecord accountingRecord = accountingRecordMapper.selectOne(new QueryWrapper<AccountingRecord>().eq("id", id));
 //        int state = accountingRecord.getState();
 //        if(state != 1){
 //            return CommonResponse.createForError("该请求已被处理");
 //        }else{
+//            //得到企业id
 //            int enterprise_id = accountingRecord.getEnterprise_id();
+//            //得到证明材料的字符串
 //            String variable_json = accountingRecord.getVariable_json();
+//            //得到用户提交的结果
 //            String result = accountingRecord.getResult();
+//            double result_double = Double.parseDouble(result);
 //            //将字符串解析为 JSON 对象
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            JsonNode jsonNode = objectMapper.readTree(variable_json);
+//            JSONObject jsonObject=JSONObject.parseObject(variable_json);
 //
 //            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
 //            Integer enterprise_type = account.getEnterprise_type();
 //            switch (enterprise_type) {
 //                case 1 :
 //                    break;
-////                case 2 -> {
-////                    break;
-////                }
+//                case 2 :
+//                    JSONArray rec_cap_arr = jsonObject.getJSONArray("rec_cap_arr");
+//                    JSONArray rec_pra_arr = jsonObject.getJSONArray("rec_pra_arr");
+//                    JSONArray rep_cap_arr = jsonObject.getJSONArray("rep_cap_arr");
+//                    JSONArray rep_pra_arr = jsonObject.getJSONArray("rep_pra_arr");
+//                    double[] rec_cap_arr1 = jsonArrayToDoubleArray(rec_cap_arr);
+//                    double[] rec_pra_arr1 = jsonArrayToDoubleArray(rec_pra_arr);
+//                    double[] rep_cap_arr1 = jsonArrayToDoubleArray(rep_cap_arr);
+//                    double[] rep_pra_arr1 = jsonArrayToDoubleArray(rep_pra_arr);
+//                    double ef = jsonObject.getIntValue("ef");//区域排放因子
+//                    int rec_num = jsonObject.getIntValue("rec_num");//退役设备数量
+//                    int rep_num = jsonObject.getIntValue("rep_num");//修理设备数量
+//                    double el_net = jsonObject.getIntValue("el_net");//电网上网数量
+//                    double el_input = jsonObject.getIntValue("el_input");//自外省输入电量
+//                    double el_output = jsonObject.getIntValue("el_output");//自外省输出电量
+//                    double el_sell = jsonObject.getIntValue("el_sell");//售电量
+//                    double res = Model2ServiceImpl.Model2CarbonAccounting(rec_cap_arr1, rec_pra_arr1, rep_cap_arr1, rep_pra_arr1, el_net, el_input, el_output, el_sell, ef);
+//                    if(res == result_double){
+//                        //更新碳核算记录表
+//                        accountingRecord.setState(0);
+//                        accountingRecord.setConductor_id(account_id);
+//                        UpdateWrapper<AccountingRecord> updateWrapper = new UpdateWrapper<>();
+//                        updateWrapper.eq("id",id);
+//                        accountingRecordMapper.update(accountingRecord,updateWrapper);
+//                        //进行碳核算后用户额度的修改
+//                        CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", enterprise_id));
+//                        double t_limit = cMessage.getT_limit();
+//                        cMessage.setT_remain(t_limit-res);
+//                        UpdateWrapper<CMessage> updateWrapper1 = new UpdateWrapper<>();
+//                        updateWrapper1.eq("account_id",enterprise_id);
+//                        cMessageMapper.update(cMessage,updateWrapper1);
+//
+//                        return CommonResponse.createForSuccess("审核通过");
+//                    }else{
+//                        accountingRecord.setState(2);
+//                        accountingRecord.setConductor_id(account_id);
+//                        UpdateWrapper<AccountingRecord> updateWrapper = new UpdateWrapper<>();
+//                        updateWrapper.eq("id",id);
+//                        accountingRecordMapper.update(accountingRecord,updateWrapper);
+//                        return CommonResponse.createForError("审核失败");
+//                    }
+//                    break;
 //                case 3 :
 //                case 4 :
 //                case 5 :
@@ -149,9 +199,9 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
 //                case 7 :
 //                case 8 :
 //                case 9 :break;
-////                case 10 -> {
-////
-////                }
+//                case 10 :
+//
+//
 //            }
 //        }
 //    }
@@ -265,6 +315,20 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
             accountingRecordDTOList.add(accountingRecordDto);
         }
         return CommonResponse.createForSuccess(accountingRecordDTOList);
+    }
+
+    public static double[] jsonArrayToDoubleArray(JSONArray jsonArray) {
+        double[] doubleArray = new double[jsonArray.size()]; // 创建一个double数组
+
+        for (int i = 0; i < jsonArray.size(); i++) {
+            try {
+                doubleArray[i] = jsonArray.getDouble(i); // 将JSONArray中的元素转换为double并存储在数组中
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return doubleArray; // 返回转换后的double数组
     }
 
 

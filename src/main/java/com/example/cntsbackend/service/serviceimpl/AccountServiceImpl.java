@@ -335,7 +335,7 @@ public class AccountServiceImpl implements AccountService {
         // 格式化为指定格式的字符串
         String month = yearMonth.format(formatter);
 
-        //TODO:确定cmessage表碳额度的初始值以及碳币,要与以太坊联系起来
+        //TODO:确定cmessage表碳额度的初始值以及碳币,要与以太坊联系起来(用定时任务来完成cMessage的更新)
         cMessageMapper.insert(new CMessage(account_id1,500,month,500));
         return CommonResponse.createForSuccess("审核成功，同意注册");
     }
@@ -375,5 +375,9 @@ public class AccountServiceImpl implements AccountService {
     public CommonResponse<List<RegisterApplication>> getPendingReviewAccount(){
         List<RegisterApplication> registerApplications = registerApplicationMapper.selectList(new QueryWrapper<RegisterApplication>().eq("state", 0));
         return CommonResponse.createForSuccess("查询未审核申请信息成功",registerApplications);
+    }
+    public CommonResponse<List<Account>> getAllEnterpriseUsers(){
+        List<Account> accountList = accountMapper.selectList(new QueryWrapper<Account>().eq("type",1));
+        return CommonResponse.createForSuccess("获取所有企业用户成功",accountList);
     }
 }

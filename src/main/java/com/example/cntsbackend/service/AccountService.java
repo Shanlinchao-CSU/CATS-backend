@@ -55,4 +55,6 @@ public interface AccountService {
     CommonResponse<String> RefuseUpdateAccountInfo(String phone ,String email);
     //管理员获取所有还未被审核的注册申请
     CommonResponse<List<RegisterApplication>> getPendingReviewAccount();
+    //TODO:(新增)管理员获取所有企业用户
+    public CommonResponse<List<Account>> getAllEnterpriseUsers();
 }

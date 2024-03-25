@@ -36,7 +36,7 @@ public class Model1ServiceImpl {
             AD1[i] = FC1[i] * NCV1[i]  / 1000000;//
             AD2[i] = FC2[i] * NCV2[i]  / 1000000 * (1-BF[i]);//用户输入的生物质混合燃料单位要统一,否则还要转换
             EF[i] = CC[i] * OF[i] * 44 / 12;
-            Eran = Eran + AD1[i] * EF[i] + AD2[i] * EF[i];
+            Eran = Eran + AD1[i] * EF[i] + AD2[i] * 0.3;
         }
         EE = ADE * EFE;
         Ere = ADre * 0.11;
