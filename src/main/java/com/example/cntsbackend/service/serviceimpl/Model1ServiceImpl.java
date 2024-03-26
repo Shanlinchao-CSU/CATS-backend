@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Model1;
 import com.example.cntsbackend.persistence.Model1Mapper;
+import com.example.cntsbackend.util.BigDecimalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,14 +34,20 @@ public class Model1ServiceImpl {
     //todo:用户需要输入各燃料的消耗值，生物质混合燃料的消耗值、低位发热值、生物质含量，国内与国际化石燃料消耗量(double[] FC3)，国内与国际消耗的生物质混合燃料的消耗量(double[] FC4)、低位发热值以及生物质混合燃料中生物质的含量、数据的月份、公司账户名、企业的净购入电量（MWh）、区域电网年平均供电排放因子（tCO2/MWh）、企业净购入的热力（GJ）
     public static double Model1CarbonAccounting(double[] FC1,double[] FC2,double[] NCV2,double[] BF,double ADE,double EFE,double ADre){
         for (int i = 0; i < AD1.length; i++) {
-            AD1[i] = FC1[i] * NCV1[i]  / 1000000;//
-            AD2[i] = FC2[i] * NCV2[i]  / 1000000 * (1-BF[i]);//用户输入的生物质混合燃料单位要统一,否则还要转换
-            EF[i] = CC[i] * OF[i] * 44 / 12;
-            Eran = Eran + AD1[i] * EF[i] + AD2[i] * 0.3;
+            AD1[i] = BigDecimalUtil.divide(BigDecimalUtil.multiply(FC1[i],NCV1[i]),1000000);
+//            AD1[i] = FC1[i] * NCV1[i]  / 1000000;
+            AD2[i] = BigDecimalUtil.multiply(BigDecimalUtil.divide(BigDecimalUtil.multiply(FC2[i],NCV2[i]),1000000),BigDecimalUtil.subtract(1,BF[i]));
+//            AD2[i] = FC2[i] * NCV2[i]  / 1000000 * (1-BF[i]);//用户输入的生物质混合燃料单位要统一,否则还要转换
+            EF[i] = BigDecimalUtil.divide(BigDecimalUtil.multiply(BigDecimalUtil.multiply(CC[i],OF[i]),44),12);
+//            EF[i] = CC[i] * OF[i] * 44 / 12;
+            Eran = BigDecimalUtil.add(BigDecimalUtil.add(Eran,BigDecimalUtil.multiply(AD1[i],EF[i])),BigDecimalUtil.multiply(AD2[i],0.3));
+//            Eran = Eran + AD1[i] * EF[i] + AD2[i] * 0.3;
         }
-        EE = ADE * EFE;
-        Ere = ADre * 0.11;
+        EE = BigDecimalUtil.multiply(ADE,EFE);
+//        EE = ADE * EFE;
+        Ere = BigDecimalUtil.multiply(ADre,0.11);
+//        Ere = ADre * 0.11;
         //总量 Eran+EE+Ere
-        return Eran+EE+Ere;
+        return BigDecimalUtil.add(BigDecimalUtil.add(Eran,EE),Ere);
     }
 }

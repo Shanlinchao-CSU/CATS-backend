@@ -13,6 +13,7 @@ import com.example.cntsbackend.persistence.CMessageMapper;
 import com.example.cntsbackend.persistence.QuotaSaleMapper;
 import com.example.cntsbackend.persistence.TransactionMapper;
 import com.example.cntsbackend.service.TransactionService;
+import com.example.cntsbackend.util.BigDecimalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +57,7 @@ public class TransactionServiceImpl implements TransactionService {
         return CommonResponse.createForSuccess(transactionDtoList);
     }
 
-    public CommonResponse<String> CompleteTransaction(int account_id ,int quotaSale_id , double amount){
+    public synchronized CommonResponse<String> CompleteTransaction(int account_id ,int quotaSale_id , double amount){
         //获取买额度企业信息
         CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", account_id));
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
@@ -64,23 +65,26 @@ public class TransactionServiceImpl implements TransactionService {
         double quota = quotaSale.getQuota();
         double unit_price = quotaSale.getUnit_price();
         int seller_id = quotaSale.getSeller_id();
-        if(account.getT_coin()>=(amount * unit_price)){
+        double cost = BigDecimalUtil.multiply(amount, unit_price);
+        if(BigDecimalUtil.compareTo(account.getT_coin(),cost)>=0){
             //完成交易
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String formatedDateTime = format.format(new Date());
             Date timestamp = Timestamp.valueOf(formatedDateTime);
-            double cost = amount * unit_price;
+//            double cost = amount * unit_price;
             Transaction transaction = new Transaction(amount,account_id,seller_id,cost,timestamp);
             transactionMapper.insert(transaction);
             //更新买家信息
             double t_remain = cMessage.getT_remain();
-            t_remain = t_remain + amount;
+            t_remain = BigDecimalUtil.add(t_remain,amount);
+//            t_remain = t_remain + amount;
             cMessage.setT_remain(t_remain);
             UpdateWrapper<CMessage> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("account_id",account_id);
             cMessageMapper.update(cMessage, updateWrapper);
             double t_coin = account.getT_coin();
-            t_coin = t_coin - (amount * unit_price);
+            t_coin = BigDecimalUtil.subtract(t_coin,cost);
+//            t_coin = t_coin - (amount * unit_price);
             account.setT_coin(t_coin);
             UpdateWrapper<Account> updateWrapper3 = new UpdateWrapper<>();
             updateWrapper3.eq("account_id",account_id);
@@ -88,13 +92,15 @@ public class TransactionServiceImpl implements TransactionService {
             //更新卖家信息
             Account account1 = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", seller_id));
             double t_coin1 = account1.getT_coin();
-            t_coin1 = t_coin1 + (amount * unit_price);
+            t_coin1 = BigDecimalUtil.add(t_coin1,cost);
+//            t_coin1 = t_coin1 + (amount * unit_price);
             account1.setT_coin(t_coin1);
             UpdateWrapper<Account> updateWrapper1 = new UpdateWrapper<>();
             updateWrapper1.eq("account_id",seller_id);
             accountMapper.update(account1, updateWrapper1);
 
-            quota = quota - amount;
+            quota = BigDecimalUtil.subtract(quota,amount);
+//            quota = quota - amount;
             if(quota == 0){
                 quotaSaleMapper.deleteById(quotaSale);
             }else{

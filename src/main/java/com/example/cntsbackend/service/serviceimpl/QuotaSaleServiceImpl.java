@@ -10,6 +10,7 @@ import com.example.cntsbackend.persistence.AccountingRecordMapper;
 import com.example.cntsbackend.persistence.CMessageMapper;
 import com.example.cntsbackend.persistence.QuotaSaleMapper;
 import com.example.cntsbackend.service.QuotaSaleService;
+import com.example.cntsbackend.util.BigDecimalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,12 +45,13 @@ public class QuotaSaleServiceImpl implements QuotaSaleService {
         if(accountingRecord != null){
             CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", account_id));
             double t_remain = cMessage.getT_remain();
-            if(t_remain>=quota){
+            if(BigDecimalUtil.compareTo(t_remain,quota)>=0){
                 //数据库增添一行数据
                 QuotaSale quotaSale = new QuotaSale(quota,account_id,unit_price,previousMonthString);
                 quotaSaleMapper.insert(quotaSale);
                 //CMessage更新数据
-                t_remain = t_remain - quota;
+                t_remain = BigDecimalUtil.subtract(t_remain,quota);
+//                t_remain = t_remain - quota;
                 cMessage.setT_remain(t_remain);
                 UpdateWrapper<CMessage> updateWrapper = new UpdateWrapper<>();
                 updateWrapper.eq("account_id",account_id);
@@ -66,7 +68,8 @@ public class QuotaSaleServiceImpl implements QuotaSaleService {
         int seller_id = quotaSale.getSeller_id();
         CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", seller_id));
         double t_remain = cMessage.getT_remain();
-        t_remain = t_remain + quota;
+        t_remain = BigDecimalUtil.add(t_remain,quota);
+//        t_remain = t_remain + quota;
         cMessage.setT_remain(t_remain);
         UpdateWrapper<CMessage> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("account_id",seller_id);
