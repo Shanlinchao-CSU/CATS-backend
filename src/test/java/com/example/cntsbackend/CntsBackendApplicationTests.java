@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +70,7 @@ class CntsBackendApplicationTests {
     }
 
     @Test
-    public void AgreeApplicationTest() {
+    public void AgreeApplicationTest() throws NoSuchAlgorithmException {
         CommonResponse<String> application = accountService.AgreeApplication(3, 1);
         System.out.println(application.getMessage());
     }

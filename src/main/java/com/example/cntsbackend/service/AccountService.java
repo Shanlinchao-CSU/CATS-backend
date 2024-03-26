@@ -5,6 +5,7 @@ import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.RegisterApplication;
 import org.web3j.abi.datatypes.Bool;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public interface AccountService {
     //-----------------------------------管理员--------------------------------------
 
     //同意注册
-    CommonResponse<String> AgreeApplication(int register_application_id, int account_id);
+    CommonResponse<String> AgreeApplication(int register_application_id, int account_id) throws NoSuchAlgorithmException;
     //拒绝注册
     CommonResponse<String> RefuseApplication(int register_application_id, int account_id);
     //同意修改个人信息
