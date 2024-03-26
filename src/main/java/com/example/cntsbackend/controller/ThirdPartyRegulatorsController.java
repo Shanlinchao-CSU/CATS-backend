@@ -67,12 +67,12 @@ public class ThirdPartyRegulatorsController {
 
         File f = MultipartFileToFileConverter.convert(file);
         if (f == null) {
-            return CommonResponse.createForError("传输错误，请重新上传后重试","3");
+            return CommonResponse.createForError(3,"传输错误，请重新上传后重试");
         }
         if (accountService.VerifyPhoneCode(phone, code).getData())
             return registerApplicationService.ThirdPartyRegulatorsRegister(f, name, password, phone, type);
         else
-            return CommonResponse.createForError("验证码错误","2");
+            return CommonResponse.createForError(1,"验证码错误");
     }
 
 }

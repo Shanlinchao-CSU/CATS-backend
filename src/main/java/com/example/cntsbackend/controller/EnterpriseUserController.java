@@ -142,6 +142,9 @@ public class EnterpriseUserController {
      * @param enterprise_type 企业类型
      * @param type            类型
      * @param code            验证码
+     * @param signature       数字签名
+     * @param message         消息
+     * @param address         地址
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/enterprise/info")
@@ -152,15 +155,22 @@ public class EnterpriseUserController {
             @RequestParam("phone") String phone,
             @RequestParam("enterprise_type") int enterprise_type,
             @RequestParam("type") int type,
-            @RequestParam("code") String code) throws IOException {
+            @RequestParam("code") String code,
+            @RequestParam("signature") String signature,
+            @RequestParam("message") String message,
+            @RequestParam("address") String address) throws IOException {
         File f = MultipartFileToFileConverter.convert(file);
         if (f == null) {
-            return CommonResponse.createForError("文件已存在，请重新上传后重试","3");
+            return CommonResponse.createForError(3,"文件已存在，请重新上传后重试");
         }
-        if (accountService.VerifyPhoneCode(phone, code).getData())
-            return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type);
-        else
-            return CommonResponse.createForError("验证码错误","2");
+        if (accountService.verifyDigitalSignature(signature, message, address).getData()){
+            if (accountService.VerifyPhoneCode(phone, code).getData())
+                return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type);
+            else
+                return CommonResponse.createForError(1,"验证码错误");
+        }else{
+            return CommonResponse.createForError(2,"数字签名错误");
+        }
     }
 
     /**
