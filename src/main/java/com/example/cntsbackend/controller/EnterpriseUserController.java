@@ -161,7 +161,7 @@ public class EnterpriseUserController {
             @RequestParam("address") String address) throws IOException {
         File f = MultipartFileToFileConverter.convert(file);
         if (f == null) {
-            return CommonResponse.createForError(3,"文件已存在，请重新上传后重试");
+            return CommonResponse.createForError(2,"文件已存在，请重新上传后重试");
         }
         if (accountService.verifyDigitalSignature(signature, message, address).getData()){
             if (accountService.VerifyPhoneCode(phone, code).getData())
@@ -169,7 +169,7 @@ public class EnterpriseUserController {
             else
                 return CommonResponse.createForError(1,"验证码错误");
         }else{
-            return CommonResponse.createForError(2,"数字签名错误");
+            return CommonResponse.createForError(3,"数字签名错误");
         }
     }
 

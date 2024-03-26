@@ -54,25 +54,25 @@ public class AES {
         return bytes;
     }
 
-    public static void main(String[] args) throws Exception {
-        // 地址(公钥)
-        String address = "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4";
-
-        // 使用 address 生成密匙
-        byte[] key = generateKey(address);
-
-        System.out.println("密钥: " + bytesToHex(key));
-
-        // 要加密的数据
-        String originalText = "Hello World! Where are you? I am here!";
-
-        // 加密数据
-        String encryptedText = encrypt(originalText, key);
-        System.out.println("加密后的数据: " + encryptedText);
-        System.out.println("加密数据长度: " + encryptedText.length());
-
-        // 解密数据
-        String decryptedText = decrypt(encryptedText, key);
-        System.out.println("解密后的数据: " + decryptedText);
-    }
+//    public static void main(String[] args) throws Exception {
+//        // 地址(公钥)
+//        String address = "0x5B38Da6a701c568545dCfcB11FcB875f56beddC4";
+//
+//        // 使用 address 生成密匙
+//        byte[] key = generateKey(address);
+//
+//        System.out.println("密钥: " + bytesToHex(key));
+//
+//        // 要加密的数据
+//        String originalText = "Hello World! Where are you? I am here!";
+//
+//        // 加密数据
+//        String encryptedText = encrypt(originalText, key);
+//        System.out.println("加密后的数据: " + encryptedText);
+//        System.out.println("加密数据长度: " + encryptedText.length());
+//
+//        // 解密数据
+//        String decryptedText = decrypt(encryptedText, key);
+//        System.out.println("解密后的数据: " + decryptedText);
+//    }
 }
