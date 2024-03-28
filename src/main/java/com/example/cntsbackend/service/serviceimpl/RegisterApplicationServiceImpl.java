@@ -2,9 +2,12 @@ package com.example.cntsbackend.service.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.cntsbackend.common.CommonResponse;
+import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.RegisterApplication;
+import com.example.cntsbackend.persistence.AccountMapper;
 import com.example.cntsbackend.persistence.RegisterApplicationMapper;
 import com.example.cntsbackend.service.RegisterApplicationService;
+import com.example.cntsbackend.util.AES;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,25 +22,35 @@ import java.io.OutputStream;
 public class RegisterApplicationServiceImpl implements RegisterApplicationService {
     @Autowired
     private RegisterApplicationMapper registerApplicationMapper;
-    public CommonResponse<String> EnterpriseUserRegister(File file , String account_name , String password , String phone , int enterprise_type , int type ,String public_key){
-        //检验邮箱是否已被提交注册过
+    @Autowired
+    private AccountMapper accountMapper;
+    private static final String KEY = "asdasdefsgrfsrdgsfgvsderfgsefgsedw";
+    public CommonResponse<String> EnterpriseUserRegister(File file , String account_name , String password , String phone , int enterprise_type , int type ,String public_key) throws Exception {
+        //检验手机是否已被提交注册过
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone));
+        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         String str= String.valueOf(file);
         // 保存文件到路径
-        if(registerApplication!=null){
+        if(registerApplication!=null || account!=null){
             return CommonResponse.createForError();
         }else {
+            phone = AES.encrypt(phone, KEY.getBytes());
+            password = AES.encrypt(password, KEY.getBytes());
+            public_key = AES.encrypt(public_key, KEY.getBytes());
             RegisterApplication registerApplication1 = new RegisterApplication(account_name,password,phone,type,str,enterprise_type,public_key);
             int i = registerApplicationMapper.insert(registerApplication1);
             return CommonResponse.createForSuccess("SUCCESS");
         }
     }
-    public CommonResponse<String> ThirdPartyRegulatorsRegister(File file ,String account_name ,String password ,String phone ,int type ){
+    public CommonResponse<String> ThirdPartyRegulatorsRegister(File file ,String account_name ,String password ,String phone ,int type ) throws Exception {
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone));
+        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         String str= String.valueOf(file);
-        if(registerApplication!=null){
+        if(registerApplication!=null || account!=null){
             return CommonResponse.createForError();
         }else {
+            phone = AES.encrypt(phone, KEY.getBytes());
+            password = AES.encrypt(password, KEY.getBytes());
             //100为企业类型之外的编号
             RegisterApplication registerApplication1 = new RegisterApplication(account_name,password,phone,type,str,100);
             int i = registerApplicationMapper.insert(registerApplication1);

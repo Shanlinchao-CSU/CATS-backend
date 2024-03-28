@@ -19,14 +19,10 @@ public class UpdateAccount {
     private int conductor_id;
     private String file;
 
-    public UpdateAccount(String account_name, String password, String phone, String email, Integer type, Integer enterprise_type, int conductor_id, String file) {
+    public UpdateAccount(int account_id,String account_name, Integer enterprise_type, String file) {
+        this.account_id = account_id;
         this.account_name = account_name;
-        this.password = password;
-        this.phone = phone;
-        this.email = email;
-        this.type = type;
         this.enterprise_type = enterprise_type;
-        this.conductor_id = conductor_id;
         this.file = file;
     }
 

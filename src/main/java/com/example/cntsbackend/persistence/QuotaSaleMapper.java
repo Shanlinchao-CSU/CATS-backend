@@ -7,11 +7,13 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface QuotaSaleMapper extends BaseMapper<QuotaSale> {
-    @Select("SELECT qs.quota, qs.seller_id, qs.unit_price, qs.month, a.account_name " +
+    @Select("SELECT qs.id, qs.quota, qs.seller_id, qs.unit_price, qs.month, a.account_name " +
             "FROM quota_sale qs " +
             "JOIN account a ON qs.seller_id = a.account_id " +
             "WHERE qs.seller_id = #{seller_id}")
-    QuotaSaleDto getQuotaSaleWithAccount(@Param("seller_id") int seller_id);
+    List<QuotaSaleDto> getQuotaSaleWithAccount(@Param("seller_id") int seller_id);
 }

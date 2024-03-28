@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TransactionMapper extends BaseMapper<Transaction> {
-    @Select("SELECT t.amount, t.cost, t.complete_time, " +
+    @Select("SELECT t.transaction_id, t.amount, t.cost, t.complete_time, " +
             "a1.account_name AS sale_account_name, a2.account_name AS buyer_account_name " +
             "FROM transaction t " +
             "JOIN account a1 ON t.sale_id = a1.account_id " +

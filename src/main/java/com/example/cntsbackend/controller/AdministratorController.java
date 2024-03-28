@@ -125,7 +125,7 @@ public class AdministratorController {
     @PostMapping("/administrator/application")
     public CommonResponse<String> AgreeApplication(
             @PathParam("register_application_id") int register_application_id,
-            @PathParam("account_id") int account_id) throws NoSuchAlgorithmException {
+            @PathParam("account_id") int account_id) throws Exception {
         return accountService.AgreeApplication(register_application_id, account_id);
     }
 

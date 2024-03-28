@@ -108,9 +108,11 @@ public class QuotaSaleServiceImpl implements QuotaSaleService {
         String previousMonthString = previousYearMonth.format(formatter);
         List<QuotaSale> quotaSaleList = quotaSaleMapper.selectList(new QueryWrapper<QuotaSale>().eq("month",previousMonthString));
         List<QuotaSaleDto> quotaSaleDtoList = new ArrayList<>();
-        for (int i = 0; i < quotaSaleList.size(); i++) {
-            QuotaSaleDto quotaSaleWithAccount = quotaSaleMapper.getQuotaSaleWithAccount(quotaSaleList.get(i).getSeller_id());
-            quotaSaleDtoList.add(quotaSaleWithAccount);
+        for (QuotaSale quotaSale : quotaSaleList) {
+            int seller_id = quotaSale.getSeller_id();
+            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", seller_id));
+            QuotaSaleDto quotaSaleDto = new QuotaSaleDto(quotaSale.getId(), quotaSale.getQuota(), seller_id, quotaSale.getUnit_price(), quotaSale.getMonth(), account.getAccount_name());
+            quotaSaleDtoList.add(quotaSaleDto);
         }
         return CommonResponse.createForSuccess("获取所有用户余额成功",quotaSaleDtoList);
     }

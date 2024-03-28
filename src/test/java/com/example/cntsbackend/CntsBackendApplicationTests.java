@@ -37,14 +37,14 @@ class CntsBackendApplicationTests {
     void contextLoads() {
     }
     @Test
-    public void sendVerificationCodeByPhoneTest() {
+    public void sendVerificationCodeByPhoneTest() throws Exception {
         CommonResponse<String> accountCommonResponse = accountService.sendVerificationCodeByPhone("19313028910");
         System.out.println(accountCommonResponse.getMessage());
         System.out.println(accountCommonResponse.getCode());
         System.out.println(accountCommonResponse.getData());
     }
     @Test
-    public void sendVerificationCodeByEmailTest() {
+    public void sendVerificationCodeByEmailTest() throws Exception {
         CommonResponse<String> accountCommonResponse = accountService.sendVerificationCodeByEmail("1821166153@qq.com");
         System.out.println(accountCommonResponse.getData());
         System.out.println(accountCommonResponse.getCode());
@@ -57,20 +57,20 @@ class CntsBackendApplicationTests {
         System.out.println(stringCommonResponse.getCode());
     }
     @Test
-    public void loginByPhoneTest() {
+    public void loginByPhoneTest() throws Exception {
         CommonResponse<Map> accountCommonResponse = accountService.loginByPhone("123");
         System.out.println(accountCommonResponse.getData());
         System.out.println(accountCommonResponse.getCode());
     }
     @Test
-    public void loginByIDTest() {
+    public void loginByIDTest() throws Exception {
         CommonResponse<Map> accountCommonResponse = accountService.loginById("12345","123");
         System.out.println(accountCommonResponse.getData());
         System.out.println(accountCommonResponse.getCode());
     }
 
     @Test
-    public void AgreeApplicationTest() throws NoSuchAlgorithmException {
+    public void AgreeApplicationTest() throws Exception {
         CommonResponse<String> application = accountService.AgreeApplication(3, 1);
         System.out.println(application.getMessage());
     }
@@ -91,13 +91,13 @@ class CntsBackendApplicationTests {
         System.out.println(application.getMessage());
     }*/
     @Test
-    public void changePasswordTest() {
+    public void changePasswordTest() throws Exception {
         CommonResponse<String> application = accountService.changePassword("1223", "666");
         System.out.println(application.getMessage());
     }
     @Test
-    public void changeEmailTest() {
-        CommonResponse<String> application = accountService.changeEmail("12345", "4314843@qq.com");
+    public void changeEmailTest() throws Exception {
+        CommonResponse<String> application = accountService.changeEmail("12345", 1);
         System.out.println(application.getMessage());
     }
     @Test
@@ -107,17 +107,17 @@ class CntsBackendApplicationTests {
     }
     @Test
     public void AgreeUpdateAccountInfoTest() {
-        CommonResponse<String> stringCommonResponse = accountService.AgreeUpdateAccountInfo("666", "666");
+        CommonResponse<String> stringCommonResponse = accountService.AgreeUpdateAccountInfo(1);
         System.out.println(stringCommonResponse.getMessage());
     }
     @Test
-    public void VerifyNewPhoneTest() {
+    public void VerifyNewPhoneTest() throws Exception {
         CommonResponse<String> stringCommonResponse = accountService.VerifyNewPhone("19313028910");
         System.out.println(stringCommonResponse.getMessage());
         System.out.println(stringCommonResponse.getData());
     }
     @Test
-    public void VerifyNewEmailTest() {
+    public void VerifyNewEmailTest() throws Exception {
         CommonResponse<String> stringCommonResponse = accountService.VerifyNewEmail("1821166153@qq.com");
         System.out.println(stringCommonResponse.getMessage());
         System.out.println(stringCommonResponse.getData());
@@ -167,6 +167,7 @@ class CntsBackendApplicationTests {
     public void getAllRemainTest(){
         CommonResponse<List<QuotaSaleDto>> allRemain = quotaSaleService.getAllRemain();
         System.out.println(allRemain.getMessage());
+        System.out.println(allRemain.getData());
         QuotaSaleDto quotaSaleDto = allRemain.getData().get(0);
         System.out.println(quotaSaleDto.getQuota());
     }

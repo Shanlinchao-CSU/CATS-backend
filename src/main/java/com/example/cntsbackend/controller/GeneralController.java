@@ -30,7 +30,7 @@ public class GeneralController {
      */
     @GetMapping("/general/code/phone")
     public CommonResponse<String> sendPhoneCode(
-            @PathParam("phone") String phone) {
+            @PathParam("phone") String phone) throws Exception {
         return accountService.sendVerificationCodeByPhone(phone);
     }
 
@@ -42,7 +42,7 @@ public class GeneralController {
      */
     @GetMapping("/general/code/email")
     public CommonResponse<String> setEmailCode(
-            @PathParam("email") String email) {
+            @PathParam("email") String email) throws Exception {
         return accountService.sendVerificationCodeByEmail(email);
     }
 
@@ -54,7 +54,7 @@ public class GeneralController {
      */
     @GetMapping("/general/verify/phone")
     public CommonResponse<String> verifyNewPhone(
-            @PathParam("phone") String phone) {
+            @PathParam("phone") String phone) throws Exception {
         return accountService.VerifyNewPhone(phone);
     }
 
@@ -66,7 +66,7 @@ public class GeneralController {
      */
     @GetMapping("/general/verify/email")
     public CommonResponse<String> verifyNewEmail(
-            @PathParam("email") String email) {
+            @PathParam("email") String email) throws Exception {
         return accountService.VerifyNewEmail(email);
     }
 
@@ -80,7 +80,7 @@ public class GeneralController {
     @GetMapping("/general/id")
     public CommonResponse<Map> loginById(
             @PathParam("id") String id,
-            @PathParam("password") String password) {
+            @PathParam("password") String password) throws Exception {
         System.out.println(id+password);
         return accountService.loginById(id, password);
     }
@@ -95,7 +95,7 @@ public class GeneralController {
     @GetMapping("/general/email")
     public CommonResponse<Map> loginByEmail(
             @PathParam("email") String email,
-            @PathParam("code")String code) {
+            @PathParam("code")String code) throws Exception {
         if (accountService.VerifyEmailCode(email, code).getData())
             return accountService.loginByEmail(email);
         else
@@ -140,7 +140,7 @@ public class GeneralController {
     @GetMapping("/general/phone")
     public CommonResponse<Map> loginByPhone(
             @PathParam("phone") String phone,
-            @PathParam("code") String code) {
+            @PathParam("code") String code) throws Exception {
         if (accountService.VerifyPhoneCode(phone, code).getData())
             return accountService.loginByPhone(phone);
         else
@@ -203,7 +203,7 @@ public class GeneralController {
     @PatchMapping("/general/password")
     public CommonResponse<String> changePassword(
             @PathParam("phone") String phone,
-            @PathParam("password") String password) {
+            @PathParam("password") String password) throws Exception {
         return accountService.changePassword(phone, password);
     }
 
@@ -269,7 +269,7 @@ public class GeneralController {
     public CommonResponse<String> findPassword(
             @PathParam("str") String str,
             @PathParam("password") String password,
-            @PathParam("code") String code) {
+            @PathParam("code") String code) throws Exception {
         if (accountService.VerifyPhoneCode(str, code).getData() || accountService.VerifyEmailCode(str, code).getData())
             return accountService.findPassword(str, password);
         else

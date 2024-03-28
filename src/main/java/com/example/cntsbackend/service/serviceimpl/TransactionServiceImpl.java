@@ -38,8 +38,14 @@ public class TransactionServiceImpl implements TransactionService {
     public CommonResponse<List<TransactionDto>> getAllTransactionDatas() {
         List<Transaction> transactions = transactionMapper.selectList(null);
         List<TransactionDto> transactionDtoList = new ArrayList<>();
-        for (int i = 0; i < transactions.size(); i++) {
-            TransactionDto transactionDto = transactionMapper.getTransactionWithAccountNames(transactions.get(i).getSale_id(), transactions.get(i).getBuyer_id());
+        for (Transaction transaction : transactions) {
+            int sale_id = transaction.getSale_id();
+            int buyer_id = transaction.getBuyer_id();
+            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", sale_id));
+            String sale_account_name = account.getAccount_name();
+            Account account1 = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", buyer_id));
+            String buyer_account_name = account1.getAccount_name();
+            TransactionDto transactionDto = new TransactionDto(transaction.getTransaction_id(), transaction.getAmount(), sale_account_name, buyer_account_name, transaction.getCost(), transaction.getComplete_time());
             transactionDtoList.add(transactionDto);
         }
         return CommonResponse.createForSuccess("获取上月交易信息成功",transactionDtoList);
@@ -50,8 +56,14 @@ public class TransactionServiceImpl implements TransactionService {
         queryWrapper.and(wrapper -> wrapper.eq("buyer_id",account_id ).or().eq("sale_id", account_id));
         List<Transaction> transactions = transactionMapper.selectList(queryWrapper);
         List<TransactionDto> transactionDtoList = new ArrayList<>();
-        for (int i = 0; i < transactions.size(); i++) {
-            TransactionDto transactionDto = transactionMapper.getTransactionWithAccountNames(transactions.get(i).getSale_id(), transactions.get(i).getBuyer_id());
+        for (Transaction transaction : transactions) {
+            int sale_id = transaction.getSale_id();
+            int buyer_id = transaction.getBuyer_id();
+            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", sale_id));
+            String sale_account_name = account.getAccount_name();
+            Account account1 = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", buyer_id));
+            String buyer_account_name = account1.getAccount_name();
+            TransactionDto transactionDto = new TransactionDto(transaction.getTransaction_id(), transaction.getAmount(), sale_account_name, buyer_account_name, transaction.getCost(), transaction.getComplete_time());
             transactionDtoList.add(transactionDto);
         }
         return CommonResponse.createForSuccess(transactionDtoList);

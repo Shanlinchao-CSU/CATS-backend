@@ -37,30 +37,33 @@ public class AccountServiceImpl implements AccountService {
     private RedisService redisService;
     private static final String CHARACTERS = "0123456789";
     private static final int CODE_LENGTH = 4;
+    private static final String KEY = "asdasdefsgrfsrdgsfgvsderfgsefgsedw";
 
     //--------------------------------------------企业用户--------------------------------------------------
 
     //检验号码是否已经注册
-    public int checkPhoneNumberExist(String phoneNumber) {
-        phoneNumber = MD5Util.encrypt(phoneNumber);
+    public int checkPhoneNumberExist(String phoneNumber) throws Exception {
+        phoneNumber = AES.encrypt(phoneNumber, KEY.getBytes());
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phoneNumber));
-        if (account != null) {
+        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phoneNumber));
+        if (account != null && registerApplication !=null) {
             return 0; // 号码已存在，发送验证码
         }
         return 1; // 号码不存在，发送错误信息(号码未被注册)
     }
     //检验邮箱是否已经注册
-    public int checkEmailExist(String email) {
-        email = MD5Util.encrypt(email);
+    public int checkEmailExist(String email) throws Exception {
+        email = AES.encrypt(email, KEY.getBytes());
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
-        if (account != null) {
+        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("email", email));
+        if (account != null && registerApplication !=null) {
             return 0; // 邮箱已存在，发送验证码
         }
         return 1; // 邮箱不存在，发送错误信息(邮箱未被注册)
     }
 
     //发送手机验证码
-    public CommonResponse<String> sendVerificationCodeByPhone(String phoneNumber) {
+    public CommonResponse<String> sendVerificationCodeByPhone(String phoneNumber) throws Exception {
         if(checkPhoneNumberExist(phoneNumber)==0){
             // 生成四位包括数字、小写字母和大写字母的随机验证码
             String verificationCode = generateVerificationCode();
@@ -76,7 +79,7 @@ public class AccountServiceImpl implements AccountService {
         return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
     }
     //发送邮箱验证码
-    public CommonResponse<String> sendVerificationCodeByEmail(String email) {
+    public CommonResponse<String> sendVerificationCodeByEmail(String email) throws Exception {
         if(checkEmailExist(email)==0){
             // 生成四位包括数字、小写字母和大写字母的随机验证码
             String verificationCode = generateVerificationCode();
@@ -106,17 +109,20 @@ public class AccountServiceImpl implements AccountService {
     }
 
     //邮箱登录
-    public CommonResponse<Map> loginByEmail(String email){
-        email = MD5Util.encrypt(email);
+    public CommonResponse<Map> loginByEmail(String email) throws Exception {
+        email = AES.encrypt(email, KEY.getBytes());
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
         if(account!=null){
             Integer enterprise_type = account.getEnterprise_type();
-            String cnType = getCNType(enterprise_type);
+            String cnType = "";
+            if(enterprise_type!=null){
+                cnType = getCNType(enterprise_type);
+            }
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
             account.setSecret_key("");
             account.setPublic_key("");
-            AccountDto accountDto = new AccountDto(account.getAccount_name(),account.getPassword(),account.getPhone(),account.getEmail(),account.getType(),account.getFile(),account.getT_coin(),cnType);
+            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),account.getPhone(),account.getEmail(),account.getType(),account.getFile(),account.getT_coin(),cnType);
             map.put("Account",accountDto);
             map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
@@ -124,29 +130,33 @@ public class AccountServiceImpl implements AccountService {
         }else return CommonResponse.createForError("邮箱登录失败");
     }
     //手机号码登录
-    public CommonResponse<Map> loginByPhone(String phone){
-        phone = MD5Util.encrypt(phone);
+    public CommonResponse<Map> loginByPhone(String phone) throws Exception {
+        phone = AES.encrypt(phone, KEY.getBytes());
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         if(account!=null){
             Integer enterprise_type = account.getEnterprise_type();
-            String cnType = getCNType(enterprise_type);
+            String cnType = "";
+            if(enterprise_type!=null){
+                cnType = getCNType(enterprise_type);
+            }
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
             account.setSecret_key("");
             account.setPublic_key("");
-            AccountDto accountDto = new AccountDto(account.getAccount_name(),account.getPassword(),account.getPhone(),account.getEmail(),account.getType(),account.getFile(),account.getT_coin(),cnType);
+            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),account.getPhone(),account.getEmail(),account.getType(),account.getFile(),account.getT_coin(),cnType);
             map.put("Account",accountDto);
             map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
             return CommonResponse.createForSuccess("手机号码登录成功",map);
         }else return CommonResponse.createForError("手机号码登录失败");
     }
-    public CommonResponse<Map> loginById(String str,String password){
-        password = MD5Util.encrypt(password);
+    public CommonResponse<Map> loginById(String str,String password) throws Exception {
+        password = AES.encrypt(password, KEY.getBytes());
+        String encrypt_str = AES.encrypt(str, KEY.getBytes());
         QueryWrapper<Account> queryWrapper = new QueryWrapper<>();
         queryWrapper.and(wrapper -> wrapper.eq("account_id", str)
-                        .or().eq("email", str)
-                        .or().eq("phone", str))
+                        .or().eq("email", encrypt_str)
+                        .or().eq("phone", encrypt_str))
                 .eq("password", password);
         Account account = accountMapper.selectOne(queryWrapper);
         if(account!=null){
@@ -167,11 +177,11 @@ public class AccountServiceImpl implements AccountService {
         }else return CommonResponse.createForError("id+密码登录失败");
     }
 
-    public CommonResponse<String> changePassword(String phone,String password){
-        phone = MD5Util.encrypt(phone);
+    public CommonResponse<String> changePassword(String phone,String password) throws Exception {
+        phone = AES.encrypt(phone, KEY.getBytes());
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         if(account!=null){
-            password = MD5Util.encrypt(password);
+            password = AES.encrypt(password, KEY.getBytes());
             account.setPassword(password);
 
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
@@ -181,62 +191,63 @@ public class AccountServiceImpl implements AccountService {
             return CommonResponse.createForSuccess("修改密码成功");
         }else return CommonResponse.createForError("用户不存在，修改密码失败");
     }
-    public CommonResponse<String> VerifyNewPhone(String phone){
+    public CommonResponse<String> VerifyNewPhone(String phone) throws Exception {
         if(checkPhoneNumberExist(phone)==0){
             return CommonResponse.createForError("手机号已被使用");
         }else{
             return sendVerificationCodeByChangePhone(phone);
         }
     }
-    public CommonResponse<String> changePhone(String phone,String email){
-        email = MD5Util.encrypt(email);
-        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
+    public CommonResponse<String> changePhone(String phone,int account_id) throws Exception {
+        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
         if(account!=null){
-            phone = MD5Util.encrypt(phone);
+            phone = AES.encrypt(phone, KEY.getBytes());
             account.setPhone(phone);
 
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
-            updateWrapper.eq("email",email);
+            updateWrapper.eq("account_id",account_id);
             accountMapper.update(account, updateWrapper);
 
             return CommonResponse.createForSuccess("修改手机号成功");
         }else return CommonResponse.createForError("用户不存在，修改手机号失败");
     }
-    public CommonResponse<String> VerifyNewEmail(String email){
+    public CommonResponse<String> VerifyNewEmail(String email) throws Exception {
         if(checkEmailExist(email)==0){
             return CommonResponse.createForError("邮箱已被使用");
         }else{
             return sendVerificationCodeByChangeEmail(email);
         }
     }
-    public CommonResponse<String> changeEmail(String phone,String email){
-        phone = MD5Util.encrypt(phone);
-        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
+    public CommonResponse<String> changeEmail(String email,int account_id) throws Exception {
+        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
         if(account!=null){
-            email = MD5Util.encrypt(email);
+            email = AES.encrypt(email, KEY.getBytes());
             account.setEmail(email);
 
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
-            updateWrapper.eq("phone",phone);
+            updateWrapper.eq("account_id",account_id);
             accountMapper.update(account, updateWrapper);
 
             return CommonResponse.createForSuccess("修改邮箱成功");
         }else return CommonResponse.createForError("用户不存在，修改邮箱失败");
     }
     public CommonResponse<String> updateAccountInfo(Account account){
-        String password = MD5Util.encrypt(account.getPassword());
-        String phone = MD5Util.encrypt(account.getPhone());
-        String email = MD5Util.encrypt(account.getEmail());
-        UpdateAccount updateAccount = new UpdateAccount(account.getAccount_name(),password,phone,email,account.getType(),account.getEnterprise_type(),0,account.getFile());
-        updateAccountMapper.insert(updateAccount);
+        int account_id = account.getAccount_id();
+        UpdateAccount updateAccount1 = updateAccountMapper.selectOne(new QueryWrapper<UpdateAccount>().eq("account_id", account_id));
+        if(updateAccount1 !=null){
+            updateAccountMapper.deleteById(updateAccount1);
+        }else {
+            UpdateAccount updateAccount = new UpdateAccount(account.getAccount_id(),account.getAccount_name(),account.getEnterprise_type(),account.getFile());
+            updateAccountMapper.insert(updateAccount);
+        }
         return CommonResponse.createForSuccess("提交修改信息成功，等待审核");
     }
 
-    public CommonResponse<String> findPassword(String str,String password){
-        str = MD5Util.encrypt(str);
+    public CommonResponse<String> findPassword(String str,String password) throws Exception {
+        str = AES.encrypt(str, KEY.getBytes());
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", str).or().eq("email", str));
         if(account!=null) {
-            password = MD5Util.encrypt(password);
+            password = AES.encrypt(password, KEY.getBytes());
             account.setPassword(password);
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("phone", str).or().eq("email", str);
@@ -291,15 +302,13 @@ public class AccountServiceImpl implements AccountService {
         return cnType;
     }
 
-    public CommonResponse<String> getInfo(int account_id,String public_key,String secret_key){
-        if(public_key != null && secret_key != null){
+    public CommonResponse<String> getInfo(int account_id,String public_key) throws Exception {
+        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
+        if(account.getPublic_key() != null){
             return CommonResponse.createForError("已获取过该用户信息");
         }else {
-            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
-            public_key = MD5Util.encrypt(public_key);
-            secret_key = MD5Util.encrypt(secret_key);
+            public_key = AES.encrypt(public_key, KEY.getBytes());
             account.setPublic_key(public_key);
-            account.setSecret_key(secret_key);
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("account_id",account_id);
             accountMapper.update(account,updateWrapper);
@@ -336,7 +345,7 @@ public class AccountServiceImpl implements AccountService {
 
     //-------------------------------------------管理员------------------------------------------------------
 
-    public CommonResponse<String> AgreeApplication(int register_application_id, int account_id) throws NoSuchAlgorithmException {
+    public CommonResponse<String> AgreeApplication(int register_application_id, int account_id) throws Exception {
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("register_application_id", register_application_id));
         registerApplication.setConductor_id(account_id);
         registerApplication.setState(1);
@@ -353,11 +362,6 @@ public class AccountServiceImpl implements AccountService {
         String public_key = registerApplication.getPublic_key();
         byte[] bytes = AES.generateKey(public_key);
         String secret_key = Arrays.toString(bytes);
-        password = MD5Util.encrypt(password);
-        phone = MD5Util.encrypt(phone);
-        email = MD5Util.encrypt(email);
-        public_key = MD5Util.encrypt(public_key);
-        secret_key = MD5Util.encrypt(secret_key);
         accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type,public_key,file_address,secret_key));
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         int account_id1 = account.getAccount_id();
@@ -383,25 +387,25 @@ public class AccountServiceImpl implements AccountService {
         return CommonResponse.createForSuccess("审核成功，拒绝注册");
     }
 
-    public CommonResponse<String> AgreeUpdateAccountInfo(String phone ,String email){
-        QueryWrapper<UpdateAccount> queryWrapper = new QueryWrapper<UpdateAccount>().eq("phone", phone).eq("email", email);
+    public CommonResponse<String> AgreeUpdateAccountInfo(int account_id){
+        QueryWrapper<UpdateAccount> queryWrapper = new QueryWrapper<UpdateAccount>().eq("account_id", account_id);
         UpdateAccount updateAccount = updateAccountMapper.selectOne(queryWrapper);
         if(updateAccount!=null){
-            QueryWrapper<Account> queryWrapper1 = new QueryWrapper<Account>().eq("phone", phone).eq("email", email);
+            QueryWrapper<Account> queryWrapper1 = new QueryWrapper<Account>().eq("account_id", account_id);
             Account account = accountMapper.selectOne(queryWrapper1);
             account.setAccount_name(updateAccount.getAccount_name());
             account.setEnterprise_type(updateAccount.getEnterprise_type());
             account.setFile(updateAccount.getFile());
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
-            updateWrapper.eq("phone",phone).eq("email", email);
+            updateWrapper.eq("account_id", account_id);
             accountMapper.update(account, updateWrapper);
             updateAccountMapper.delete(queryWrapper);
             return CommonResponse.createForSuccess("管理员审核成功，同意修改信息");
         }else return CommonResponse.createForError("管理员审核失败");
     }
 
-    public CommonResponse<String> RefuseUpdateAccountInfo(String phone ,String email){
-        QueryWrapper<UpdateAccount> queryWrapper = new QueryWrapper<UpdateAccount>().eq("phone", phone).eq("email", email);
+    public CommonResponse<String> RefuseUpdateAccountInfo(int account_id){
+        QueryWrapper<UpdateAccount> queryWrapper = new QueryWrapper<UpdateAccount>().eq("account_id", account_id);
         updateAccountMapper.delete(queryWrapper);
         return CommonResponse.createForSuccess("审核成功，拒绝修改信息");
     }
