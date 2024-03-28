@@ -14,11 +14,11 @@ import com.example.cntsbackend.persistence.RegisterApplicationMapper;
 import com.example.cntsbackend.persistence.UpdateAccountMapper;
 import com.example.cntsbackend.service.AccountService;
 import com.example.cntsbackend.service.RedisService;
-import com.example.cntsbackend.util.MD5Util;
-import com.example.cntsbackend.util.MetaMaskUtil;
+import com.example.cntsbackend.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.NoSuchAlgorithmException;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -62,8 +62,12 @@ public class AccountServiceImpl implements AccountService {
         if(checkPhoneNumberExist(phoneNumber)==0){
             // 生成四位包括数字、小写字母和大写字母的随机验证码
             String verificationCode = generateVerificationCode();
-            redisService.XAdd("p"+"+"+phoneNumber+"+"+verificationCode);
-
+            SendPhoneUtil.sendSMS(phoneNumber,verificationCode);
+            boolean b = redisService.hasKey(phoneNumber);
+            if(b){
+                redisService.delete(phoneNumber);
+            }
+            redisService.setWithExpire(phoneNumber,verificationCode,600);
             return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
         }else{
             return CommonResponse.createForError(1,"手机号不存在");
@@ -71,7 +75,12 @@ public class AccountServiceImpl implements AccountService {
     }
     public CommonResponse<String> sendVerificationCodeByChangePhone(String phoneNumber){
         String verificationCode = generateVerificationCode();
-        redisService.XAdd("p"+"+"+phoneNumber+"+"+verificationCode);
+        SendPhoneUtil.sendSMS(phoneNumber,verificationCode);
+        boolean b = redisService.hasKey(phoneNumber);
+        if(b){
+            redisService.delete(phoneNumber);
+        }
+        redisService.setWithExpire(phoneNumber,verificationCode,600);
         return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
     }
     //发送邮箱验证码
@@ -79,8 +88,12 @@ public class AccountServiceImpl implements AccountService {
         if(checkEmailExist(email)==0){
             // 生成四位包括数字、小写字母和大写字母的随机验证码
             String verificationCode = generateVerificationCode();
-            redisService.XAdd("e"+"+"+email+"+"+verificationCode);
-
+            SendMailUtil.sendQQEmail(email, Integer.parseInt(verificationCode));
+            boolean b = redisService.hasKey(email);
+            if(b){
+                redisService.delete(email);
+            }
+            redisService.setWithExpire(email,verificationCode,600);
             return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
         }else{
             return CommonResponse.createForError(1,"邮箱不存在");
@@ -88,7 +101,12 @@ public class AccountServiceImpl implements AccountService {
     }
     public CommonResponse<String> sendVerificationCodeByChangeEmail(String email){
         String verificationCode = generateVerificationCode();
-        redisService.XAdd("e"+"+"+email+"+"+verificationCode);
+        SendMailUtil.sendQQEmail(email, Integer.parseInt(verificationCode));
+        boolean b = redisService.hasKey(email);
+        if(b){
+            redisService.delete(email);
+        }
+        redisService.setWithExpire(email,verificationCode,600);
         return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
     }
     //生成四位验证码
@@ -330,7 +348,7 @@ public class AccountServiceImpl implements AccountService {
 
     //-------------------------------------------管理员------------------------------------------------------
 
-    public CommonResponse<String> AgreeApplication(int register_application_id, int account_id){
+    public CommonResponse<String> AgreeApplication(int register_application_id, int account_id) throws NoSuchAlgorithmException {
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("register_application_id", register_application_id));
         registerApplication.setConductor_id(account_id);
         registerApplication.setState(1);
@@ -344,10 +362,15 @@ public class AccountServiceImpl implements AccountService {
         int enterprise_type = registerApplication.getEnterprise_type();
         String file_address = registerApplication.getFile_address();
         Integer type = registerApplication.getType();
+        String public_key = registerApplication.getPublic_key();
+        byte[] bytes = AES.generateKey(public_key);
+        String secret_key = Arrays.toString(bytes);
         password = MD5Util.encrypt(password);
         phone = MD5Util.encrypt(phone);
         email = MD5Util.encrypt(email);
-        accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type ,file_address));
+        public_key = MD5Util.encrypt(public_key);
+        secret_key = MD5Util.encrypt(secret_key);
+        accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type,public_key,file_address,secret_key));
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         int account_id1 = account.getAccount_id();
         // 获取当前年月

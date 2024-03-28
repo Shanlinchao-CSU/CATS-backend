@@ -21,7 +21,19 @@ public class RegisterApplication {
     private Integer enterprise_type;
     private int conductor_id;
     private Integer state;
+    private String public_key;
 
+    public RegisterApplication(String account_name, String password, String phone, Integer type, String file_address, Integer enterprise_type,String public_key) {
+        this.account_name = account_name;
+        this.password = password;
+        this.phone = phone;
+        this.type = type;
+        this.file_address = file_address;
+        this.enterprise_type = enterprise_type;
+        this.conductor_id = 0;
+        this.state = 0;
+        this.public_key = public_key;
+    }
     public RegisterApplication(String account_name, String password, String phone, Integer type, String file_address, Integer enterprise_type) {
         this.account_name = account_name;
         this.password = password;

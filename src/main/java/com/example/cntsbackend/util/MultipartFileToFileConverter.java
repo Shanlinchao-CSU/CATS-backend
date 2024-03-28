@@ -17,7 +17,7 @@ public class MultipartFileToFileConverter {
         // 删除临时文件
         tempFile.delete();
         // 文件保存路径
-        String prefix = System.getProperty("user.dir") + "/data/upload/";
+        String prefix = System.getProperty("user.dir") + "\\data\\upload\\";
         // 查看文件夹下是否有重名文件
         if(checkFile(prefix, etag)){
             return null;

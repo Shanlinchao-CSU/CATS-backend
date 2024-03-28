@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 /**
@@ -124,7 +125,7 @@ public class AdministratorController {
     @PostMapping("/administrator/application")
     public CommonResponse<String> AgreeApplication(
             @PathParam("register_application_id") int register_application_id,
-            @PathParam("account_id") int account_id) {
+            @PathParam("account_id") int account_id) throws NoSuchAlgorithmException {
         return accountService.AgreeApplication(register_application_id, account_id);
     }
 

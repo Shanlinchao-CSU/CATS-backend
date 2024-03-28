@@ -158,14 +158,15 @@ public class EnterpriseUserController {
             @RequestParam("code") String code,
             @RequestParam("signature") String signature,
             @RequestParam("message") String message,
-            @RequestParam("address") String address) throws IOException {
+            @RequestParam("address") String address,
+            @RequestParam("public_key") String public_key) throws IOException {
         File f = MultipartFileToFileConverter.convert(file);
         if (f == null) {
             return CommonResponse.createForError(2,"文件已存在，请重新上传后重试");
         }
         if (accountService.verifyDigitalSignature(signature, message, address).getData()){
             if (accountService.VerifyPhoneCode(phone, code).getData())
-                return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type);
+                return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type, public_key);
             else
                 return CommonResponse.createForError(1,"验证码错误");
         }else{

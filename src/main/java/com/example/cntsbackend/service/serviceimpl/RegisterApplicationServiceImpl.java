@@ -19,7 +19,7 @@ import java.io.OutputStream;
 public class RegisterApplicationServiceImpl implements RegisterApplicationService {
     @Autowired
     private RegisterApplicationMapper registerApplicationMapper;
-    public CommonResponse<String> EnterpriseUserRegister(File file , String account_name , String password , String phone , int enterprise_type , int type ){
+    public CommonResponse<String> EnterpriseUserRegister(File file , String account_name , String password , String phone , int enterprise_type , int type ,String public_key){
         //检验邮箱是否已被提交注册过
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone));
         String str= String.valueOf(file);
@@ -27,7 +27,7 @@ public class RegisterApplicationServiceImpl implements RegisterApplicationServic
         if(registerApplication!=null){
             return CommonResponse.createForError();
         }else {
-            RegisterApplication registerApplication1 = new RegisterApplication(account_name,password,phone,type,str,enterprise_type);
+            RegisterApplication registerApplication1 = new RegisterApplication(account_name,password,phone,type,str,enterprise_type,public_key);
             int i = registerApplicationMapper.insert(registerApplication1);
             return CommonResponse.createForSuccess("SUCCESS");
         }

@@ -32,6 +32,19 @@ public class Account {
         this.t_coin = 500;
     }
 
+    public Account(String account_name, String password, String phone, String email, Integer type, Integer enterprise_type, String public_key, String file, String secret_key) {
+        this.account_name = account_name;
+        this.password = password;
+        this.phone = phone;
+        this.email = email;
+        this.type = type;
+        this.enterprise_type = enterprise_type;
+        this.public_key = public_key;
+        this.file = file;
+        this.secret_key = secret_key;
+        this.t_coin = 500;
+    }
+
     public Account() {
     }
 }
