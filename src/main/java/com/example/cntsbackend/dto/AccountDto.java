@@ -25,6 +25,17 @@ public class AccountDto {
         this.enterprise_type = enterprise_type;
     }
 
+    public AccountDto(int account_id, String account_name, String phone, String email, Integer type, String file, double t_coin, String enterprise_type) {
+        this.account_id = account_id;
+        this.account_name = account_name;
+        this.phone = phone;
+        this.email = email;
+        this.type = type;
+        this.file = file;
+        this.t_coin = t_coin;
+        this.enterprise_type = enterprise_type;
+    }
+
     public AccountDto() {
     }
 }

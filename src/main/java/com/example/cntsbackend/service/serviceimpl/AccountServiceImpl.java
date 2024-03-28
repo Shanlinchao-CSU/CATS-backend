@@ -160,22 +160,24 @@ public class AccountServiceImpl implements AccountService {
         }else return CommonResponse.createForError("手机号码登录失败");
     }
     public CommonResponse<Map> loginById(String str,String password){
-        String encrypt = MD5Util.encrypt(str);
         password = MD5Util.encrypt(password);
         QueryWrapper<Account> queryWrapper = new QueryWrapper<>();
         queryWrapper.and(wrapper -> wrapper.eq("account_id", str)
-                        .or().eq("email", encrypt)
-                        .or().eq("phone", encrypt))
+                        .or().eq("email", str)
+                        .or().eq("phone", str))
                 .eq("password", password);
         Account account = accountMapper.selectOne(queryWrapper);
         if(account!=null){
             Integer enterprise_type = account.getEnterprise_type();
-            String cnType = getCNType(enterprise_type);
+            String cnType = "";
+            if (enterprise_type!=null) {
+                cnType=getCNType(enterprise_type);
+            }
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
             account.setSecret_key("");
             account.setPublic_key("");
-            AccountDto accountDto = new AccountDto(account.getAccount_name(),account.getPassword(),account.getPhone(),account.getEmail(),account.getType(),account.getFile(),account.getT_coin(),cnType);
+            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),account.getPhone(),account.getEmail(),account.getType(),account.getFile(),account.getT_coin(),cnType);
             map.put("Account",accountDto);
             map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
@@ -299,6 +301,7 @@ public class AccountServiceImpl implements AccountService {
             case 8 -> cnType="陶瓷生产企业";
             case 9 -> cnType="民航企业";
             case 10 -> cnType="其它企业";
+            default -> cnType="";
         }
         return cnType;
     }

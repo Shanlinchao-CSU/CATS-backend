@@ -81,6 +81,7 @@ public class GeneralController {
     public CommonResponse<Map> loginById(
             @PathParam("id") String id,
             @PathParam("password") String password) {
+        System.out.println(id+password);
         return accountService.loginById(id, password);
     }
 
