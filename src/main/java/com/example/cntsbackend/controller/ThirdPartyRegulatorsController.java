@@ -63,7 +63,7 @@ public class ThirdPartyRegulatorsController {
             @RequestParam("password") String password,
             @RequestParam("phone") String phone,
             @RequestParam("type") int type,
-            @RequestParam("code") String code) throws IOException {
+            @RequestParam("code") String code) throws Exception {
 
         File f = MultipartFileToFileConverter.convert(file);
         if (f == null) {
