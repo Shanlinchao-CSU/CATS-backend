@@ -1,5 +1,7 @@
 package com.example.cntsbackend.service;
 
+import java.util.Map;
+
 public interface RedisService {
     //设置key-value
     void set(String key, Object value);
@@ -21,4 +23,7 @@ public interface RedisService {
     boolean hasToken(String key);
     //Token续期
     boolean renewToken(String key);
+    // XADD
+    void XAdd(String value);
+
 }
