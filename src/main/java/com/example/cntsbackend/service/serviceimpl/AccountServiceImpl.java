@@ -42,6 +42,7 @@ public class AccountServiceImpl implements AccountService {
 
     //检验号码是否已经注册
     public int checkPhoneNumberExist(String phoneNumber) {
+        phoneNumber = MD5Util.encrypt(phoneNumber);
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phoneNumber));
         if (account != null) {
             return 0; // 号码已存在，发送验证码
@@ -50,6 +51,7 @@ public class AccountServiceImpl implements AccountService {
     }
     //检验邮箱是否已经注册
     public int checkEmailExist(String email) {
+        email = MD5Util.encrypt(email);
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
         if (account != null) {
             return 0; // 邮箱已存在，发送验证码
@@ -220,7 +222,10 @@ public class AccountServiceImpl implements AccountService {
         }else return CommonResponse.createForError("用户不存在，修改邮箱失败");
     }
     public CommonResponse<String> updateAccountInfo(Account account){
-        UpdateAccount updateAccount = new UpdateAccount(account.getAccount_name(),account.getPassword(),account.getPhone(),account.getEmail(),account.getType(),account.getEnterprise_type(),0,account.getFile());
+        String password = MD5Util.encrypt(account.getPassword());
+        String phone = MD5Util.encrypt(account.getPhone());
+        String email = MD5Util.encrypt(account.getEmail());
+        UpdateAccount updateAccount = new UpdateAccount(account.getAccount_name(),password,phone,email,account.getType(),account.getEnterprise_type(),0,account.getFile());
         updateAccountMapper.insert(updateAccount);
         return CommonResponse.createForSuccess("提交修改信息成功，等待审核");
     }
