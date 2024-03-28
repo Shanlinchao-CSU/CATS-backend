@@ -15,5 +15,5 @@ public class RedisStreamConfig {
     private String group;
     private String consumer;
     private String consumer2;
-    private List<String> consumers;
+    private String del;
 }

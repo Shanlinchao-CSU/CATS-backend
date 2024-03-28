@@ -36,7 +36,7 @@ public class RedisStreamScheduled {
 
     /**
      * 每隔5秒钟，扫描一下有没有等待自己消费的
-     * 处理死信队列，如果发送给消费者1超过1分钟还没有ack，则转发给消费者2，如果超过20秒，并且转发次数为2，进行手动ack。并且记录异常信息
+     * 处理死信队列，如果发送给消费者超过20秒还没有ack，则转发给del，如果del处理超时，进行手动ack。并且记录异常信息
      */
     @Scheduled(cron="0/5 * * * * ?")
     public void scanPendingMsg() {
@@ -111,7 +111,7 @@ public class RedisStreamScheduled {
     private void changeConsumer(Map<String,List<RecordId>> consumerRecordIdMap) {
         consumerRecordIdMap.forEach((oldComsumer, recordIds) -> {
             // 根据当前consumer去获取另外一个consumer
-            String newConsumer = redisStreamConfig.getConsumers().stream().filter(s -> !s.equals(oldComsumer)).toList().get(0);
+            String newConsumer = redisStreamConfig.getDel();
             List<ByteRecord> retVal = this.stringRedisTemplate.execute((RedisCallback<List<ByteRecord>>) redisConnection -> {
                 // 相当于执行XCLAIM操作，批量将某一个consumer中的消息转到另外一个consumer中
                 return redisConnection.streamCommands().xClaim(redisStreamConfig.getStream().getBytes(),

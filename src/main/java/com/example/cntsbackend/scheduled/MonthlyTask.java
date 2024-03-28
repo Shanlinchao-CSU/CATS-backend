@@ -1,4 +1,4 @@
-package com.example.cntsbackend.util;
+package com.example.cntsbackend.scheduled;
 
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
