@@ -161,21 +161,21 @@ public class GeneralController {
             return CommonResponse.createForError("验证码错误");
     }
 
-    /**
-     * 后端获取区块链相关信息(公钥密钥,如果存在,直接return,不存在则会添加到数据库中)
-     *
-     * @param account_id 账号ID
-     * @param public_key 公钥
-
-     * @return 获取结果 CommonResponse<String>
-     */
-    @GetMapping("/general/block/key")
-    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
-    public CommonResponse<String> getInfo(
-            @PathParam("account_id") int account_id,
-            @PathParam("public_key") String public_key) throws Exception {
-        return accountService.getInfo(account_id, public_key);
-    }
+//    /**
+//     * 后端获取区块链相关信息(公钥密钥,如果存在,直接return,不存在则会添加到数据库中)
+//     *
+//     * @param account_id 账号ID
+//     * @param public_key 公钥
+//
+//     * @return 获取结果 CommonResponse<String>
+//     */
+//    @GetMapping("/general/block/key")
+//    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
+//    public CommonResponse<String> getInfo(
+//            @PathParam("account_id") int account_id,
+//            @PathParam("public_key") String public_key) throws Exception {
+//        return accountService.getInfo(account_id, public_key);
+//    }
 
     /**
      * 后端获取区块链相关信息(碳币、碳额度、剩余额度,每次登录都要进行数据更新)

@@ -4,6 +4,7 @@ import com.example.cntsbackend.annotation.LOG;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.RegisterApplication;
+import com.example.cntsbackend.dto.AccountDto;
 import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.dto.TransactionDto;
 import com.example.cntsbackend.service.AccountService;
@@ -119,11 +120,11 @@ public class AdministratorController {
     /**
      * 管理员获取所有企业用户
      *
-     * @return 所有企业用户 List<Account>
+     * @return 所有企业用户 List<AccountDto>
      */
     @GetMapping("/administrator/enterprise/accounts")
     @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
-    public CommonResponse<List<Account>> getAllEnterpriseUsers() throws Exception {
+    public CommonResponse<List<AccountDto>> getAllEnterpriseUsers() throws Exception {
         return accountService.getAllEnterpriseUsers();
     }
 
