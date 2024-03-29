@@ -16,10 +16,7 @@ import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -129,6 +126,17 @@ public class AdministratorController {
     }
 
     /**
+     * 管理员获取各月超额企业信息
+     *
+     * @return 所有企业用户 List<AccountDto>
+     */
+    @GetMapping("/administrator/enterprise/exceed")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
+    public CommonResponse<List<AccountDto>> getExceedEnterpriseUsers() throws Exception {
+        return accountService.GetAllExcessEnterprises();
+    }
+
+    /**
      * 同意注册
      * @param register_application_id 注册表的id
      * @param account_id 管理人员的id
@@ -155,6 +163,22 @@ public class AdministratorController {
             @PathParam("account_id") int account_id) {
         return accountService.AgreeUpdateAccountInfo(account_id);
     }
+
+    /**
+     * 管理员修改企业额度
+     *
+     * @param account_id 企业账号ID
+     * @param t_limit    额度
+     * @return 修改结果 CommonResponse<String>
+     */
+    @PatchMapping("/administrator/enterprise/t_limit")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
+    public CommonResponse<String> ModifyT_limit(
+            @PathParam("account_id") int account_id,
+            @PathParam("t_limit") double t_limit) {
+        return accountService.ModifyT_limit(account_id, t_limit);
+    }
+
 
     /**
      * 拒绝注册

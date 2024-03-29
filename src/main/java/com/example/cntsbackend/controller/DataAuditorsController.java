@@ -8,6 +8,7 @@ import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -36,6 +37,24 @@ public class DataAuditorsController {
     public CommonResponse<List<AccountingRecordDto>> DataAuditorsGetMyCarbonAccounting(
             @PathParam("conductor_id") int account_id) {
         return accountingRecordService.DataAuditorsGetMyCarbonAccounting(account_id);
+    }
+
+
+    /**
+     * 数据审核员处理碳核算请求
+     *
+     * @param id            碳请求的id
+     * @param approve       是否通过
+     * @param conductor_id  数据审核员id
+     * @return              返回处理结果
+     */
+    @PostMapping("/dataAuditors/carbon_accounting")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
+    public CommonResponse<String> CarbonAccountingRequests(
+            @PathParam("id") int id,
+            @PathParam("approve") boolean approve,
+            @PathParam("conductor_id") int conductor_id) {
+        return accountingRecordService.CarbonAccountingRequests(id, approve, conductor_id);
     }
 
 }
