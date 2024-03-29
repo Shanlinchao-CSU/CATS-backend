@@ -29,9 +29,9 @@ public interface AccountService {
     CommonResponse<String> VerifyNewPhone(String phone) throws Exception;
     //验证新邮箱并发送验证码(修改邮箱必须先验证，验证通过并且验证码输入正确后调用下面的changeEmail())
     CommonResponse<String> VerifyNewEmail(String email) throws Exception;
-    //TODO:(修改参数，需要传新手机号和account_id)修改手机号
+    //修改手机号
     CommonResponse<String> changePhone(String phone,int account_id) throws Exception;
-    //TODO:(修改参数，需要传新邮箱和account_id)修改邮箱
+    //修改邮箱
     CommonResponse<String> changeEmail(String email,int account_id) throws Exception;
     //用户修改个人信息(只能修改name、企业type并提供证明材料)(需要管理员审核)
     CommonResponse<String> updateAccountInfo(Account account);
@@ -43,7 +43,7 @@ public interface AccountService {
     CommonResponse<Boolean> VerifyPhoneCode(String phoneNumber,String code);
     //验证输入的邮箱验证码是否正确
     CommonResponse<Boolean> VerifyEmailCode(String email, String code);
-    //TODO:(修改，只需要传id和公钥)后端获取区块链相关信息(公钥,如果存在,直接return,不存在则会添加到数据库中)
+    //后端获取区块链相关信息(公钥,如果存在,直接return,不存在则会添加到数据库中)
     CommonResponse<String> getInfo(int account_id,String public_key) throws Exception;
     //后端获取区块链相关信息(碳币、碳额度、剩余额度,每次登录都要进行数据更新)
     CommonResponse<String> getT_coinAndT_limit(int account_id, double t_coin, double t_remain,double t_limit);
@@ -54,12 +54,12 @@ public interface AccountService {
     CommonResponse<String> AgreeApplication(int register_application_id, int account_id) throws Exception;
     //拒绝注册
     CommonResponse<String> RefuseApplication(int register_application_id, int account_id);
-    //TODO:(修改参数,只需要传用户id)同意修改个人信息
+    //同意修改个人信息
     CommonResponse<String> AgreeUpdateAccountInfo(int account_id);
-    //TODO:(修改参数,只需要传用户id)拒绝修改个人信息
+    //拒绝修改个人信息
     CommonResponse<String> RefuseUpdateAccountInfo(int account_id);
     //管理员获取所有还未被审核的注册申请
     CommonResponse<List<RegisterApplication>> getPendingReviewAccount();
     //管理员获取所有企业用户
-    public CommonResponse<List<Account>> getAllEnterpriseUsers();
+    CommonResponse<List<Account>> getAllEnterpriseUsers();
 }

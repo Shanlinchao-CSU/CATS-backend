@@ -11,6 +11,7 @@ import com.example.cntsbackend.service.AccountService;
 import org.web3j.abi.datatypes.Bool;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * General 通用controller
@@ -152,15 +153,18 @@ public class GeneralController {
      *
      * @param account_id 账号ID
      * @param public_key 公钥
-     * @param secret_key 密钥
+
      * @return 获取结果 CommonResponse<String>
      */
     @GetMapping("/general/block/key")
     public CommonResponse<String> getInfo(
             @PathParam("account_id") int account_id,
-            @PathParam("public_key") String public_key,
-            @PathParam("secret_key") String secret_key) {
-        return accountService.getInfo(account_id, public_key, secret_key);
+            @PathParam("public_key") String public_key) {
+        try {
+            return accountService.getInfo(account_id, public_key);
+        } catch (Exception e) {
+            return CommonResponse.createForError("----------------");
+        }
     }
 
     /**
@@ -210,39 +214,41 @@ public class GeneralController {
     /**
      * 修改手机号
      *
-     * @param email 邮箱
      * @param phone 手机
-     * @param code 验证码
+     * @param account_id 账号ID
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/general/phone")
     public CommonResponse<String> changePhone(
-            @PathParam("email") String email,
             @PathParam("phone") String phone,
-            @PathParam("code") String code) {
-        if (accountService.VerifyPhoneCode(phone, code).getData())
-            return accountService.changePhone(email, phone);
-        else
-            return CommonResponse.createForError("验证码错误");
+            @PathParam("account_id") int account_id){
+
+        try {
+            return accountService.changePhone(phone, account_id);
+        } catch (Exception e) {
+            return CommonResponse.createForError("修改新手机失败");
+        }
+
     }
 
     /**
      * 修改邮箱
      *
-     * @param phone 手机
      * @param email 邮箱
-     * @param code 验证码
+     * @param account_id 账号ID
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/general/email")
     public CommonResponse<String> changeEmail(
-            @PathParam("phone") String phone,
             @PathParam("email") String email,
-            @PathParam("code") String code) {
-        if (accountService.VerifyEmailCode(email, code).getData())
-            return accountService.changeEmail(phone, email);
-        else
-            return CommonResponse.createForError("验证码错误");
+            @PathParam("account_id") int account_id){
+
+        try {
+            return accountService.changeEmail(email, account_id);
+        } catch (Exception e) {
+            return CommonResponse.createForError("修改新邮箱失败");
+        }
+
     }
 
     /**

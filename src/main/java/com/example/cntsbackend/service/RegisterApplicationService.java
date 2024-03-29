@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 
 public interface RegisterApplicationService {
-    //TODO:(修改,增加一个参数：公钥)企业注册
+    //企业注册
     CommonResponse<String> EnterpriseUserRegister(File file , String account_name , String password , String phone , int enterprise_type , int type ,String public_key) throws Exception;
     //第三方注册
     CommonResponse<String> ThirdPartyRegulatorsRegister(File file , String account_name , String password ,  String phone ,  int type ) throws Exception;

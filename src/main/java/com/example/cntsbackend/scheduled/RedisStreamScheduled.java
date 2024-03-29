@@ -4,9 +4,7 @@ import com.example.cntsbackend.config.RedisStreamConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Range;
-import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.stream.*;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StreamOperations;
@@ -19,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.springframework.data.redis.connection.RedisStreamCommands.XClaimOptions.minIdle;
 
@@ -38,7 +35,7 @@ public class RedisStreamScheduled {
      * 每隔5秒钟，扫描一下有没有等待自己消费的
      * 处理死信队列，如果发送给消费者超过20秒还没有ack，则转发给del，如果del处理超时，进行手动ack。并且记录异常信息
      */
-    @Scheduled(cron="0/5 * * * * ?")
+    @Scheduled(cron = "0/5 * * * * ?")
     public void scanPendingMsg() {
         StreamOperations<String, String, String> streamOperations = this.stringRedisTemplate.opsForStream();
         // 获取group中的pending消息信息，本质上就是执行XPENDING指令
@@ -48,16 +45,16 @@ public class RedisStreamScheduled {
         if (pendingMessagesSummary != null) {
             totalPendingMessages = pendingMessagesSummary.getTotalPendingMessages();
         }
-        if(totalPendingMessages == 0){
+        if (totalPendingMessages == 0) {
             return;
         }
         // 消费组名称
-        String groupName= pendingMessagesSummary.getGroupName();
+        String groupName = pendingMessagesSummary.getGroupName();
         // pending队列中的最小ID
         String minMessageId = pendingMessagesSummary.minMessageId();
         // pending队列中的最大ID
         String maxMessageId = pendingMessagesSummary.maxMessageId();
-        LOGGER.info("流：{},消费组：{}，一共有{}条pending消息，最大ID={}，最小ID={}", redisStreamConfig.getStream(),groupName, totalPendingMessages, minMessageId, maxMessageId);
+        LOGGER.info("流：{},消费组：{}，一共有{}条pending消息，最大ID={}，最小ID={}", redisStreamConfig.getStream(), groupName, totalPendingMessages, minMessageId, maxMessageId);
         // 获取每个消费者的pending消息数量
         Map<String, Long> pendingMessagesPerConsumer = pendingMessagesSummary.getPendingMessagesPerConsumer();
         Map<String, List<RecordId>> consumerRecordIdMap = new HashMap<>();
@@ -80,13 +77,13 @@ public class RedisStreamScheduled {
                     Duration elapsedTimeSinceLastDelivery = message.getElapsedTimeSinceLastDelivery();
                     // 消息被获取的次数
                     long deliveryCount = message.getTotalDeliveryCount();
-                    // 判断是否超过60秒没有消费
+                    // 判断是否超过20秒没有消费
                     if (elapsedTimeSinceLastDelivery.getSeconds() > 20) {
-                        // 如果消息被消费的次数为1，则进行一次转组，否则手动消费
+                        // 如果消息被消费的次数为1，则交给del，否则就手动ack
                         if (1 == deliveryCount) {
                             list.add(recordId);
                         } else {
-                            LOGGER.info("手动ACK消息,并记录异常，id={}, elapsedTimeSinceLastDelivery={}, deliveryCount={}", recordId, elapsedTimeSinceLastDelivery, deliveryCount);
+                            LOGGER.warn("手动ACK消息,并记录异常，id={}, elapsedTimeSinceLastDelivery={}, deliveryCount={}", recordId, elapsedTimeSinceLastDelivery, deliveryCount);
                             streamOperations.acknowledge(redisStreamConfig.getStream(), redisStreamConfig.getGroup(), recordId);
                             streamOperations.delete(redisStreamConfig.getStream(), recordId);
                         }
@@ -98,7 +95,7 @@ public class RedisStreamScheduled {
             }
         });
         // 最后将待转组的消息进行转组
-        if(!consumerRecordIdMap.isEmpty()){
+        if (!consumerRecordIdMap.isEmpty()) {
             this.changeConsumer(consumerRecordIdMap);
         }
 
@@ -106,11 +103,12 @@ public class RedisStreamScheduled {
 
     /**
      * 将消息进行转组
+     *
      * @param consumerRecordIdMap 待转组的消息
      */
-    private void changeConsumer(Map<String,List<RecordId>> consumerRecordIdMap) {
+    private void changeConsumer(Map<String, List<RecordId>> consumerRecordIdMap) {
         consumerRecordIdMap.forEach((oldComsumer, recordIds) -> {
-            // 根据当前consumer去获取另外一个consumer
+            // 转到DEL
             String newConsumer = redisStreamConfig.getDel();
             List<ByteRecord> retVal = this.stringRedisTemplate.execute((RedisCallback<List<ByteRecord>>) redisConnection -> {
                 // 相当于执行XCLAIM操作，批量将某一个consumer中的消息转到另外一个consumer中
@@ -121,12 +119,11 @@ public class RedisStreamScheduled {
                 for (ByteRecord byteRecord : retVal) {
                     LOGGER.info("更改消息的消费者：id={}, value={},newConsumer={}", byteRecord.getId(), byteRecord.getValue(), newConsumer);
                 }
-            }else {
+            } else {
                 LOGGER.error("更改消息的消费者失败");
             }
         });
     }
-
 
 
 }

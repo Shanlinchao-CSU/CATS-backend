@@ -132,16 +132,14 @@ public class AdministratorController {
     /**
      * 同意修改账号信息
      *
-     * @param phone 手机号
-     * @param email 邮箱
+     * @param account_id 账号ID
      * @return 修改结果 CommonResponse<String>
      */
 
     @PostMapping("/administrator/update/account_info")
     public CommonResponse<String> AgreeUpdateAccountInfo(
-            @PathParam("phone") String phone,
-            @PathParam("email") String email) {
-        return accountService.AgreeUpdateAccountInfo(phone, email);
+            @PathParam("account_id") int account_id) {
+        return accountService.AgreeUpdateAccountInfo(account_id);
     }
 
     /**
@@ -161,15 +159,13 @@ public class AdministratorController {
     /**
      * 拒绝修改账号信息
      *
-     * @param phone 手机号
-     * @param email 邮箱
+     * @param account_id 账号ID
      * @return 修改结果 CommonResponse<String>
      */
     @DeleteMapping("/administrator/update/account_info")
     public CommonResponse<String> RefuseUpdateAccountInfo(
-            @PathParam("phone") String phone,
-            @PathParam("email") String email) {
-        return accountService.RefuseUpdateAccountInfo(phone, email);
+            @PathParam("account_id") int account_id) {
+        return accountService.RefuseUpdateAccountInfo(account_id);
     }
 
 }

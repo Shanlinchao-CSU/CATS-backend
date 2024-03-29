@@ -165,8 +165,13 @@ public class EnterpriseUserController {
             return CommonResponse.createForError(2,"文件已存在，请重新上传后重试");
         }
         if (accountService.verifyDigitalSignature(signature, message, address).getData()){
-            if (accountService.VerifyPhoneCode(phone, code).getData())
-                return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type, public_key);
+            if (accountService.VerifyPhoneCode(phone, code).getData()) {
+                try {
+                    return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type, public_key);
+                } catch (Exception e) {
+                    return CommonResponse.createForError(4,"其他错误");
+                }
+            }
             else
                 return CommonResponse.createForError(1,"验证码错误");
         }else{
