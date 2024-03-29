@@ -63,8 +63,8 @@ public interface AccountService {
     CommonResponse<List<RegisterApplication>> getPendingReviewAccount() throws Exception;
     //管理员获取所有企业用户
     CommonResponse<List<AccountDto>> getAllEnterpriseUsers() throws Exception;
-    //TODO:(新加)管理员修改企业额度
+    //管理员修改企业额度
     CommonResponse<String> ModifyT_limit(int account_id , double t_limit);
-    //TODO:(新加)管理员获取各月超额企业信息
+    //管理员获取各月超额企业信息
     CommonResponse<List<AccountDto>> GetAllExcessEnterprises() throws Exception;
 }
