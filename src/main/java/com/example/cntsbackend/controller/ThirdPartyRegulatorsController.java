@@ -1,5 +1,6 @@
 package com.example.cntsbackend.controller;
 
+import com.example.cntsbackend.annotation.LOG;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Transaction;
 import com.example.cntsbackend.dto.TransactionDto;
@@ -24,6 +25,7 @@ import java.util.List;
  * ThirdPartyRegulators 第三方监管机构controller
  */
 
+
 @RestController
 public class ThirdPartyRegulatorsController {
 
@@ -35,12 +37,16 @@ public class ThirdPartyRegulatorsController {
     @Autowired
     private AccountService  accountService;
 
+    private static final String MODULE_NAME = "第三方监管机构模块";
+    private static final String MODULE_VERSION = "v1.0.0";
+
     /**
      * 第三方监管机构查看交易信息
      *
      * @return 交易信息 List<Transaction>
      */
     @GetMapping("/thirdParty/transaction")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<List<TransactionDto>> getAllTransactionDatas() {
         return transactionService.getAllTransactionDatas();
     }
@@ -57,6 +63,7 @@ public class ThirdPartyRegulatorsController {
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/thirdParty/info")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> register(
             @RequestParam("file") MultipartFile file,
             @RequestParam("name") String name,

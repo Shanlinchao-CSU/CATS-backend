@@ -1,5 +1,6 @@
 package com.example.cntsbackend.controller;
 
+import com.example.cntsbackend.annotation.LOG;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.Signature;
@@ -23,6 +24,9 @@ public class GeneralController {
     @Autowired
     private AccountService accountService;
 
+    private static final String MODULE_NAME = "通用模块";
+    private static final String MODULE_VERSION = "v1.0.0";
+
     /**
      * 发送手机验证码
      *
@@ -30,6 +34,7 @@ public class GeneralController {
      * @return 验证码 CommonResponse<String>
      */
     @GetMapping("/general/code/phone")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> sendPhoneCode(
             @PathParam("phone") String phone) throws Exception {
         return accountService.sendVerificationCodeByPhone(phone);
@@ -42,6 +47,7 @@ public class GeneralController {
      * @return 验证码 CommonResponse<String>
      */
     @GetMapping("/general/code/email")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> setEmailCode(
             @PathParam("email") String email) throws Exception {
         return accountService.sendVerificationCodeByEmail(email);
@@ -54,6 +60,7 @@ public class GeneralController {
      * @return 验证结果 CommonResponse<String>
      */
     @GetMapping("/general/verify/phone")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> verifyNewPhone(
             @PathParam("phone") String phone) throws Exception {
         return accountService.VerifyNewPhone(phone);
@@ -66,6 +73,7 @@ public class GeneralController {
      * @return 验证结果 CommonResponse<String>
      */
     @GetMapping("/general/verify/email")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> verifyNewEmail(
             @PathParam("email") String email) throws Exception {
         return accountService.VerifyNewEmail(email);
@@ -79,6 +87,7 @@ public class GeneralController {
      * @return 登录结果 CommonResponse<Map>
      */
     @GetMapping("/general/id")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<Map> loginById(
             @PathParam("id") String id,
             @PathParam("password") String password) throws Exception {
@@ -94,6 +103,7 @@ public class GeneralController {
      * @return 登录结果 CommonResponse<Map>
      */
     @GetMapping("/general/email")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<Map> loginByEmail(
             @PathParam("email") String email,
             @PathParam("code")String code) throws Exception {
@@ -111,6 +121,7 @@ public class GeneralController {
      * @return 验证结果 CommonResponse<String>
      */
     @GetMapping("/general/verify/phone/code")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<Boolean> verifyPhoneCode(
             @PathParam("phoneNumber") String phoneNumber,
             @PathParam("code") String code) {
@@ -125,6 +136,7 @@ public class GeneralController {
      * @return 验证结果 CommonResponse<String>
      */
     @GetMapping("/general/verify/email/code")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<Boolean> verifyEmailCode(
             @PathParam("email") String email,
             @PathParam("code") String code) {
@@ -139,6 +151,7 @@ public class GeneralController {
      * @return 登录结果 CommonResponse<Map>
      */
     @GetMapping("/general/phone")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<Map> loginByPhone(
             @PathParam("phone") String phone,
             @PathParam("code") String code) throws Exception {
@@ -157,14 +170,11 @@ public class GeneralController {
      * @return 获取结果 CommonResponse<String>
      */
     @GetMapping("/general/block/key")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> getInfo(
             @PathParam("account_id") int account_id,
-            @PathParam("public_key") String public_key) {
-        try {
-            return accountService.getInfo(account_id, public_key);
-        } catch (Exception e) {
-            return CommonResponse.createForError("----------------");
-        }
+            @PathParam("public_key") String public_key) throws Exception {
+        return accountService.getInfo(account_id, public_key);
     }
 
     /**
@@ -177,6 +187,7 @@ public class GeneralController {
      * @return 获取结果 CommonResponse<String>
      */
     @GetMapping("/general/block/info/update")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> getT_coinAndT_limit(
             @PathParam("account_id") int account_id,
             @PathParam("t_coin") double t_coin,
@@ -192,6 +203,7 @@ public class GeneralController {
      * @return 验证结果 CommonResponse<Boolean>
      */
     @PostMapping("/general/signature")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<Boolean> verifyDigitalSignature(
             @RequestBody Signature signature) {
         return accountService.verifyDigitalSignature(signature.getSignature(), signature.getMessage(), signature.getAddress());
@@ -205,6 +217,7 @@ public class GeneralController {
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/general/password")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> changePassword(
             @PathParam("phone") String phone,
             @PathParam("password") String password) throws Exception {
@@ -219,16 +232,11 @@ public class GeneralController {
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/general/phone")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> changePhone(
             @PathParam("phone") String phone,
-            @PathParam("account_id") int account_id){
-
-        try {
-            return accountService.changePhone(phone, account_id);
-        } catch (Exception e) {
-            return CommonResponse.createForError("修改新手机失败");
-        }
-
+            @PathParam("account_id") int account_id) throws Exception {
+        return accountService.changePhone(phone, account_id);
     }
 
     /**
@@ -239,16 +247,11 @@ public class GeneralController {
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/general/email")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> changeEmail(
             @PathParam("email") String email,
-            @PathParam("account_id") int account_id){
-
-        try {
-            return accountService.changeEmail(email, account_id);
-        } catch (Exception e) {
-            return CommonResponse.createForError("修改新邮箱失败");
-        }
-
+            @PathParam("account_id") int account_id) throws Exception {
+        return accountService.changeEmail(email, account_id);
     }
 
     /**
@@ -258,6 +261,7 @@ public class GeneralController {
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/general/account_info")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> updateAccountInfo(
             @RequestBody Account account) {
         return accountService.updateAccountInfo(account);
@@ -272,6 +276,7 @@ public class GeneralController {
      * @return 找回结果 CommonResponse<String>
      */
     @PatchMapping("/general/str/password")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> findPassword(
             @PathParam("str") String str,
             @PathParam("password") String password,

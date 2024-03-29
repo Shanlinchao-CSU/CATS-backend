@@ -1,5 +1,6 @@
 package com.example.cntsbackend.controller;
 
+import com.example.cntsbackend.annotation.LOG;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.AccountingRecord;
 import com.example.cntsbackend.domain.QuotaSale;
@@ -36,6 +37,9 @@ public class EnterpriseUserController {
     @Autowired
     private AccountService accountService;
 
+    private static final String MODULE_NAME = "企业用户模块";
+    private static final String MODULE_VERSION = "v1.0.0";
+
 
     /**
      * 企业获取自己已完成的交易
@@ -44,6 +48,7 @@ public class EnterpriseUserController {
      * @return 交易信息 List<Transaction>
      */
     @GetMapping("/enterprise/transaction/finished/{account_id}")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<List<TransactionDto>> getMyFinishedTransactionDatas(
             @PathVariable("account_id") int account_id) {
         return transactionService.getMyFinishedTransactionDatas(account_id);
@@ -56,6 +61,7 @@ public class EnterpriseUserController {
      * @return 剩余额度 CommonResponse<List<QuotaSale>>
      */
     @GetMapping("/enterprise/transaction/remain/{account_id}")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<List<QuotaSale>> getRemain(
             @PathVariable("account_id") int account_id) {
         return quotaSaleService.getRemain(account_id);
@@ -67,6 +73,7 @@ public class EnterpriseUserController {
      * @return 所有企业上月额度剩余 CommonResponse<List<QuotaSaleDto>>
      */
     @GetMapping("/enterprise/transaction/remain")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<List<QuotaSaleDto>> getAllRemain() {
         return quotaSaleService.getAllRemain();
     }
@@ -78,6 +85,7 @@ public class EnterpriseUserController {
      * @return 碳核算记录 CommonResponse<List<AccountingRecordDto>>
      */
     @GetMapping("/enterprise/accounting_record/{enterprise_id}")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<List<AccountingRecordDto>> getMyCarbonAccounting(
             @PathVariable("enterprise_id") int enterprise_id) {
         return accountingRecordService.getMyCarbonAccounting(enterprise_id);
@@ -91,6 +99,7 @@ public class EnterpriseUserController {
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/enterprise/transaction/price")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> ModifyUnitPrice(
             @PathParam("id") int id,
             @PathParam("unit_price") double unit_price) {
@@ -106,6 +115,7 @@ public class EnterpriseUserController {
      * @return 购买结果 CommonResponse<String>
      */
     @PatchMapping("/enterprise/transaction/amount")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> CompleteTransaction(
             @PathParam("account_id") int account_id,
             @PathParam("quotaSale_id") int quotaSale_id,
@@ -122,6 +132,7 @@ public class EnterpriseUserController {
      * @return 修改结果 CommonResponse<String>
      */
     @PatchMapping("/enterprise/accounting_record")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> ModifyMyCarbonAccounting(
             @PathParam("id") int id,
             @PathParam("variable_json") String variable_json,
@@ -148,6 +159,7 @@ public class EnterpriseUserController {
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/enterprise/info")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> register(
             @RequestParam("file") MultipartFile file,
             @RequestParam("name") String name,
@@ -159,18 +171,14 @@ public class EnterpriseUserController {
             @RequestParam("signature") String signature,
             @RequestParam("message") String message,
             @RequestParam("address") String address,
-            @RequestParam("public_key") String public_key) throws IOException {
+            @RequestParam("public_key") String public_key) throws Exception {
         File f = MultipartFileToFileConverter.convert(file);
         if (f == null) {
             return CommonResponse.createForError(2,"文件已存在，请重新上传后重试");
         }
         if (accountService.verifyDigitalSignature(signature, message, address).getData()){
             if (accountService.VerifyPhoneCode(phone, code).getData()) {
-                try {
-                    return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type, public_key);
-                } catch (Exception e) {
-                    return CommonResponse.createForError(4,"其他错误");
-                }
+                return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type, public_key);
             }
             else
                 return CommonResponse.createForError(1,"验证码错误");
@@ -188,6 +196,7 @@ public class EnterpriseUserController {
      * @return 发布结果 CommonResponse<String>
      */
     @PostMapping("/enterprise/transaction/publish")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> publishTransaction(
             @PathParam("account_id") int account_id,
             @PathParam("quota") double quota,
@@ -205,6 +214,7 @@ public class EnterpriseUserController {
      * @return 提交结果 CommonResponse<String>
      */
     @PostMapping("/enterprise/accounting_record")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> SubmitCarbonAccounting(
             @RequestParam("enterprise_id") int enterprise_id,
             @RequestParam("variable_json") String variable_json,
@@ -224,6 +234,7 @@ public class EnterpriseUserController {
      * @return 取消结果 CommonResponse<String>
      */
     @DeleteMapping("/enterprise/transaction/{id}")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> cancelTransactionData(
             @PathVariable("id") int id) {
         return quotaSaleService.cancelTransactionData(id);
@@ -236,6 +247,7 @@ public class EnterpriseUserController {
      * @return 取消结果 CommonResponse<String>
      */
     @DeleteMapping("/enterprise/accounting_record/{id}")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> CancelMyCarbonAccounting(
             @PathVariable("id") int id) {
         return accountingRecordService.CancelMyCarbonAccounting(id);

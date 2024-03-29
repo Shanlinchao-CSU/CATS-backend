@@ -1,5 +1,6 @@
 package com.example.cntsbackend.controller;
 
+import com.example.cntsbackend.annotation.LOG;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.service.AccountingRecordService;
@@ -20,6 +21,9 @@ public class DataAuditorsController {
     @Autowired
     private AccountingRecordService accountingRecordService;
 
+    private static final String MODULE_NAME = "数据审核员模块";
+    private static final String MODULE_VERSION = "v1.0.0";
+
 
     /**
      * 数据审核员获取自己审核的所有碳核算申请
@@ -28,6 +32,7 @@ public class DataAuditorsController {
      * @return              返回所有碳核算申请
      */
     @GetMapping("/dataAuditors/carbon_accounting")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<List<AccountingRecordDto>> DataAuditorsGetMyCarbonAccounting(
             @PathParam("conductor_id") int account_id) {
         return accountingRecordService.DataAuditorsGetMyCarbonAccounting(account_id);

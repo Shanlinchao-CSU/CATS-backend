@@ -1,5 +1,6 @@
 package com.example.cntsbackend.controller;
 
+import com.example.cntsbackend.annotation.LOG;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.RegisterApplication;
@@ -41,12 +42,16 @@ public class AdministratorController {
     @Autowired
     private RegisterApplicationService registerApplicationService;
 
+    private static final String MODULE_NAME = "管理员模块";
+    private static final String MODULE_VERSION = "v1.0.0";
+
     /**
      * 第三方监管机构和管理员查看交易信息
      *
      * @return 交易信息 List<Transaction>
      */
     @GetMapping("/administrator/transaction")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<List<TransactionDto>> getAllTransactionDatas() {
         return transactionService.getAllTransactionDatas();
     }
@@ -57,6 +62,7 @@ public class AdministratorController {
      * @return 待审核的碳核算请求 List<AccountingRecordDto>
      */
     @GetMapping("/administrator/accounting_record/review")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<List<AccountingRecordDto>> getAllCarbonAccountingForReview() {
         return accountingRecordService.getAllCarbonAccountingForReview();
     }
@@ -67,6 +73,7 @@ public class AdministratorController {
      * @return 碳核算请求 List<AccountingRecordDto>
      */
     @GetMapping("/administrator/accounting_record")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<List<AccountingRecordDto>> getAllCarbonAccounting() {
         return accountingRecordService.getAllCarbonAccounting();
     }
@@ -78,6 +85,7 @@ public class AdministratorController {
      * @param id 碳核算请求id
      */
     @GetMapping("/administrator/accounting_record/file")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public void getSupportingMaterial(
             @PathParam("id") int id,
             HttpServletResponse response) throws Exception {
@@ -90,6 +98,7 @@ public class AdministratorController {
      * @param id 注册申请id
      */
     @GetMapping("/administrator/application/file")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public void getRegisterSupportingMaterial(
             @PathParam("id") int id,
             HttpServletResponse response) throws Exception {
@@ -102,6 +111,7 @@ public class AdministratorController {
      * @return 未审核的注册申请 List<RegisterApplication>
      */
     @GetMapping("/administrator/application/review")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<List<RegisterApplication>> getPendingReviewAccount() {
         return accountService.getPendingReviewAccount();
     }
@@ -112,6 +122,7 @@ public class AdministratorController {
      * @return 所有企业用户 List<Account>
      */
     @GetMapping("/administrator/enterprise/accounts")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<List<Account>> getAllEnterpriseUsers() {
         return accountService.getAllEnterpriseUsers();
     }
@@ -123,6 +134,7 @@ public class AdministratorController {
      * @return 注册结果 CommonResponse<String>
      */
     @PostMapping("/administrator/application")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> AgreeApplication(
             @PathParam("register_application_id") int register_application_id,
             @PathParam("account_id") int account_id) throws Exception {
@@ -137,6 +149,7 @@ public class AdministratorController {
      */
 
     @PostMapping("/administrator/update/account_info")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> AgreeUpdateAccountInfo(
             @PathParam("account_id") int account_id) {
         return accountService.AgreeUpdateAccountInfo(account_id);
@@ -149,6 +162,7 @@ public class AdministratorController {
      * @return 注册结果 CommonResponse<String>
      */
     @DeleteMapping("/administrator/application")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> RefuseApplication(
             @PathParam("register_application_id") int register_application_id,
             @PathParam("account_id") int account_id) {
@@ -163,6 +177,7 @@ public class AdministratorController {
      * @return 修改结果 CommonResponse<String>
      */
     @DeleteMapping("/administrator/update/account_info")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> RefuseUpdateAccountInfo(
             @PathParam("account_id") int account_id) {
         return accountService.RefuseUpdateAccountInfo(account_id);
