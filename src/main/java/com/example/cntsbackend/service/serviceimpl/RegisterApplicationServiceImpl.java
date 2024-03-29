@@ -24,7 +24,7 @@ public class RegisterApplicationServiceImpl implements RegisterApplicationServic
     private RegisterApplicationMapper registerApplicationMapper;
     @Autowired
     private AccountMapper accountMapper;
-    private static final String KEY = "asdasdefsgrfsrdgsfgvsderfgsefgsedw";
+    private static final String KEY = "asdasdefsgrfsrdgsfgvsder";
     public CommonResponse<String> EnterpriseUserRegister(File file , String account_name , String password , String phone , int enterprise_type , int type ,String public_key) throws Exception {
         //检验手机是否已被提交注册过
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone));

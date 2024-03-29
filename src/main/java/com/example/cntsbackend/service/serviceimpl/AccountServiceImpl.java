@@ -3,22 +3,15 @@ package com.example.cntsbackend.service.serviceimpl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.cntsbackend.common.CommonResponse;
-import com.example.cntsbackend.domain.Account;
-import com.example.cntsbackend.domain.CMessage;
-import com.example.cntsbackend.domain.RegisterApplication;
-import com.example.cntsbackend.domain.UpdateAccount;
+import com.example.cntsbackend.domain.*;
 import com.example.cntsbackend.dto.AccountDto;
-import com.example.cntsbackend.persistence.AccountMapper;
-import com.example.cntsbackend.persistence.CMessageMapper;
-import com.example.cntsbackend.persistence.RegisterApplicationMapper;
-import com.example.cntsbackend.persistence.UpdateAccountMapper;
+import com.example.cntsbackend.persistence.*;
 import com.example.cntsbackend.service.AccountService;
 import com.example.cntsbackend.service.RedisService;
 import com.example.cntsbackend.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.NoSuchAlgorithmException;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -35,9 +28,11 @@ public class AccountServiceImpl implements AccountService {
     private UpdateAccountMapper updateAccountMapper;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private AccountLimitMapper accountLimitMapper;
     private static final String CHARACTERS = "0123456789";
     private static final int CODE_LENGTH = 4;
-    private static final String KEY = "asdasdefsgrfsrdgsfgvsderfgsefgsedw";
+    private static final String KEY = "asdasdefsgrfsrdgsfgvsder";
 
     //--------------------------------------------企业用户--------------------------------------------------
 
@@ -115,14 +110,19 @@ public class AccountServiceImpl implements AccountService {
         if(account!=null){
             Integer enterprise_type = account.getEnterprise_type();
             String cnType = "";
-            if(enterprise_type!=null){
+            double t_limit = 0;
+            if(enterprise_type!=100){
                 cnType = getCNType(enterprise_type);
+                int account_id = account.getAccount_id();
+                AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
+                t_limit = accountLimit.getT_limit();
             }
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
-            account.setSecret_key("");
-            account.setPublic_key("");
-            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),account.getPhone(),account.getEmail(),account.getType(),account.getFile(),account.getT_coin(),cnType);
+            String phone = account.getPhone();
+            phone = AES.decrypt(phone, KEY.getBytes());
+            email = AES.decrypt(email, KEY.getBytes());
+            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit);
             map.put("Account",accountDto);
             map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
@@ -136,14 +136,21 @@ public class AccountServiceImpl implements AccountService {
         if(account!=null){
             Integer enterprise_type = account.getEnterprise_type();
             String cnType = "";
-            if(enterprise_type!=null){
+            double t_limit = 0;
+            if(enterprise_type!=100){
                 cnType = getCNType(enterprise_type);
+                int account_id = account.getAccount_id();
+                AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
+                t_limit = accountLimit.getT_limit();
             }
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
-            account.setSecret_key("");
-            account.setPublic_key("");
-            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),account.getPhone(),account.getEmail(),account.getType(),account.getFile(),account.getT_coin(),cnType);
+            phone = AES.decrypt(phone, KEY.getBytes());
+            String email = account.getEmail();
+            if(email != null){
+                email = AES.decrypt(email, KEY.getBytes());
+            }
+            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit);
             map.put("Account",accountDto);
             map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
@@ -162,14 +169,22 @@ public class AccountServiceImpl implements AccountService {
         if(account!=null){
             Integer enterprise_type = account.getEnterprise_type();
             String cnType = "";
-            if (enterprise_type!=null) {
+            double t_limit = 0;
+            if (enterprise_type!=100) {
                 cnType=getCNType(enterprise_type);
+                int account_id = account.getAccount_id();
+                AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
+                t_limit = accountLimit.getT_limit();
             }
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
-            account.setSecret_key("");
-            account.setPublic_key("");
-            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),account.getPhone(),account.getEmail(),account.getType(),account.getFile(),account.getT_coin(),cnType);
+            String phone = account.getPhone();
+            phone = AES.decrypt(phone, KEY.getBytes());
+            String email = account.getEmail();
+            if(email != null){
+                email = AES.decrypt(email, KEY.getBytes());
+            }
+            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit);
             map.put("Account",accountDto);
             map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
@@ -302,19 +317,19 @@ public class AccountServiceImpl implements AccountService {
         return cnType;
     }
 
-    public CommonResponse<String> getInfo(int account_id,String public_key) throws Exception {
-        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
-        if(account.getPublic_key() != null){
-            return CommonResponse.createForError("已获取过该用户信息");
-        }else {
-            public_key = AES.encrypt(public_key, KEY.getBytes());
-            account.setPublic_key(public_key);
-            UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
-            updateWrapper.eq("account_id",account_id);
-            accountMapper.update(account,updateWrapper);
-            return CommonResponse.createForSuccess("获取用户信息成功");
-        }
-    }
+//    public CommonResponse<String> getInfo(int account_id,String public_key) throws Exception {
+//        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
+//        if(account.getPublic_key() != null){
+//            return CommonResponse.createForError("已获取过该用户信息");
+//        }else {
+//            public_key = AES.encrypt(public_key, KEY.getBytes());
+//            account.setPublic_key(public_key);
+//            UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
+//            updateWrapper.eq("account_id",account_id);
+//            accountMapper.update(account,updateWrapper);
+//            return CommonResponse.createForSuccess("获取用户信息成功");
+//        }
+//    }
 
     public CommonResponse<String> getT_coinAndT_limit(int account_id, double t_coin, double t_remain,double t_limit){
         // 获取当前时间的上个月份
@@ -324,20 +339,24 @@ public class AccountServiceImpl implements AccountService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
         String previousMonthString = previousYearMonth.format(formatter);
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
+        //更新用户表中的碳币
         account.setT_coin(t_coin);
         UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("account_id",account_id);
         accountMapper.update(account,updateWrapper);
+        //更新用户的额度
+        AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
+        accountLimit.setT_limit(t_limit);
+        //更新用户剩余额度
         CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", account_id).eq("month",previousMonthString));
         if(cMessage != null){
             cMessage.setT_remain(t_remain);
-            cMessage.setT_limit(t_limit);
             UpdateWrapper<CMessage> updateWrapper1 = new UpdateWrapper<>();
             updateWrapper1.eq("account_id",account_id);
             cMessageMapper.update(cMessage,updateWrapper1);
             return CommonResponse.createForSuccess("获取用户碳币信息成功");
         }else {
-            return CommonResponse.createForError("获取信息失败");
+            return CommonResponse.createForError("该用户还未进行碳核算");
         }
 
     }
@@ -347,34 +366,41 @@ public class AccountServiceImpl implements AccountService {
 
     public CommonResponse<String> AgreeApplication(int register_application_id, int account_id) throws Exception {
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("register_application_id", register_application_id));
-        registerApplication.setConductor_id(account_id);
-        registerApplication.setState(1);
-        UpdateWrapper<RegisterApplication> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("register_application_id", register_application_id);
-        registerApplicationMapper.update(registerApplication, updateWrapper);
-        String account_name = registerApplication.getAccount_name();
-        String password = registerApplication.getPassword();
-        String phone = registerApplication.getPhone();
-        String email = registerApplication.getEmail();
-        int enterprise_type = registerApplication.getEnterprise_type();
-        String file_address = registerApplication.getFile_address();
-        Integer type = registerApplication.getType();
-        String public_key = registerApplication.getPublic_key();
-        byte[] bytes = AES.generateKey(public_key);
-        String secret_key = Arrays.toString(bytes);
-        accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type,public_key,file_address,secret_key));
-        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
-        int account_id1 = account.getAccount_id();
-        // 获取当前年月
-        YearMonth yearMonth = YearMonth.now();
-        // 定义日期时间格式化器
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
-        // 格式化为指定格式的字符串
-        String month = yearMonth.format(formatter);
+        if(registerApplication != null){
+            registerApplication.setConductor_id(account_id);
+            registerApplication.setState(1);
+            UpdateWrapper<RegisterApplication> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("register_application_id", register_application_id);
+            registerApplicationMapper.update(registerApplication, updateWrapper);
+            String account_name = registerApplication.getAccount_name();
+            String password = registerApplication.getPassword();
+            String phone = registerApplication.getPhone();
+            String email = registerApplication.getEmail();
+            int enterprise_type = registerApplication.getEnterprise_type();
+            String file_address = registerApplication.getFile_address();
+            Integer type = registerApplication.getType();
+            String public_key = registerApplication.getPublic_key();
+            String secret_key = "";
+            if(public_key != null){
+                byte[] bytes = AES.generateKey(public_key);
+                secret_key = Arrays.toString(bytes);
+            }
+            accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type,public_key,file_address,secret_key));
+            if(type == 1){
+                Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
+                accountLimitMapper.insert(new AccountLimit(account.getAccount_id(),500,500));
+            }
+            return CommonResponse.createForSuccess("审核成功，同意注册");
+        }else return CommonResponse.createForError("该请求注册id不存在");
+//        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
+//        int account_id1 = account.getAccount_id();
+//        // 获取当前年月
+//        YearMonth yearMonth = YearMonth.now();
+//        // 定义日期时间格式化器
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+//        // 格式化为指定格式的字符串
+//        String month = yearMonth.format(formatter);
 
-        //TODO:确定cmessage表碳额度的初始值以及碳币,要与以太坊联系起来(用定时任务来完成cMessage的更新)
-        cMessageMapper.insert(new CMessage(account_id1,500,null,500));
-        return CommonResponse.createForSuccess("审核成功，同意注册");
     }
 
     public CommonResponse<String> RefuseApplication(int register_application_id, int account_id){
@@ -409,12 +435,72 @@ public class AccountServiceImpl implements AccountService {
         updateAccountMapper.delete(queryWrapper);
         return CommonResponse.createForSuccess("审核成功，拒绝修改信息");
     }
-    public CommonResponse<List<RegisterApplication>> getPendingReviewAccount(){
+    public CommonResponse<List<RegisterApplication>> getPendingReviewAccount() throws Exception {
         List<RegisterApplication> registerApplications = registerApplicationMapper.selectList(new QueryWrapper<RegisterApplication>().eq("state", 0));
+        for (int i = 0; i < registerApplications.size(); i++) {
+            RegisterApplication registerApplication = registerApplications.get(i);
+            String phone = registerApplication.getPhone();
+            phone = AES.decrypt(phone, KEY.getBytes());
+            registerApplication.setPhone(phone);
+            registerApplication.setPassword("");
+            registerApplication.setPublic_key("");
+        }
         return CommonResponse.createForSuccess("查询未审核申请信息成功",registerApplications);
     }
-    public CommonResponse<List<Account>> getAllEnterpriseUsers(){
+    public CommonResponse<List<AccountDto>> getAllEnterpriseUsers() throws Exception {
         List<Account> accountList = accountMapper.selectList(new QueryWrapper<Account>().eq("type",1));
-        return CommonResponse.createForSuccess("获取所有企业用户成功",accountList);
+        List<AccountDto> accountDtoList = new ArrayList<>();
+        for (Account account : accountList) {
+            int account_id = account.getAccount_id();
+            AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
+            double t_limit = accountLimit.getT_limit();
+            Integer enterprise_type = account.getEnterprise_type();
+            String cnType = "";
+            if(enterprise_type!=100){
+                cnType = getCNType(enterprise_type);
+            }
+            String phone = account.getPhone();
+            phone = AES.decrypt(phone, KEY.getBytes());
+            String email = account.getEmail();
+            if(email !=null){
+                email = AES.decrypt(email, KEY.getBytes());
+            }
+            AccountDto accountDto = new AccountDto(account_id,account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit);
+            accountDtoList.add(accountDto);
+        }
+        return CommonResponse.createForSuccess("获取所有企业用户成功",accountDtoList);
+    }
+
+    public CommonResponse<String> ModifyT_limit(int account_id , double t_limit){
+        AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
+        accountLimit.setT_next_month(t_limit);
+        UpdateWrapper<AccountLimit> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("account_id",account_id);
+        accountLimitMapper.update(accountLimit,updateWrapper);
+        return CommonResponse.createForSuccess("修改额度成功");
+    }
+
+    public CommonResponse<List<AccountDto>> GetAllExcessEnterprises() throws Exception {
+        List<CMessage> cMessageList = cMessageMapper.selectList(new QueryWrapper<CMessage>().lt("t_remain", 0));
+        List<AccountDto> accountDtoList = new ArrayList<>();
+        for (CMessage cMessage : cMessageList) {
+            int account_id = cMessage.getAccount_id();
+            double t_remain = cMessage.getT_remain();
+            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
+            String email = account.getEmail();
+            if (email == null) {
+                email = "无";
+            }else email = AES.decrypt(email, KEY.getBytes());
+            Integer enterprise_type = account.getEnterprise_type();
+            String cnType = "";
+            if (enterprise_type != 100) {
+                cnType = getCNType(enterprise_type);
+            }
+            String phone = account.getPhone();
+            phone = AES.decrypt(phone, KEY.getBytes());
+            AccountDto accountDto = new AccountDto(account_id, account.getAccount_name(), phone, email, cnType, cMessage.getMonth(), t_remain);
+            accountDtoList.add(accountDto);
+        }
+        return CommonResponse.createForSuccess("获取各月超额企业信息成功",accountDtoList);
     }
 }

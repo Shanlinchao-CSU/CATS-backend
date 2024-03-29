@@ -3,6 +3,7 @@ package com.example.cntsbackend.service;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.RegisterApplication;
+import com.example.cntsbackend.dto.AccountDto;
 import org.web3j.abi.datatypes.Bool;
 
 import java.security.NoSuchAlgorithmException;
@@ -43,8 +44,8 @@ public interface AccountService {
     CommonResponse<Boolean> VerifyPhoneCode(String phoneNumber,String code);
     //验证输入的邮箱验证码是否正确
     CommonResponse<Boolean> VerifyEmailCode(String email, String code);
-    //后端获取区块链相关信息(公钥,如果存在,直接return,不存在则会添加到数据库中)
-    CommonResponse<String> getInfo(int account_id,String public_key) throws Exception;
+    //TODO:(删除，这个方法不需要)后端获取区块链相关信息(公钥,如果存在,直接return,不存在则会添加到数据库中)
+//    CommonResponse<String> getInfo(int account_id,String public_key) throws Exception;
     //后端获取区块链相关信息(碳币、碳额度、剩余额度,每次登录都要进行数据更新)
     CommonResponse<String> getT_coinAndT_limit(int account_id, double t_coin, double t_remain,double t_limit);
 
@@ -59,7 +60,11 @@ public interface AccountService {
     //拒绝修改个人信息
     CommonResponse<String> RefuseUpdateAccountInfo(int account_id);
     //管理员获取所有还未被审核的注册申请
-    CommonResponse<List<RegisterApplication>> getPendingReviewAccount();
-    //管理员获取所有企业用户
-    CommonResponse<List<Account>> getAllEnterpriseUsers();
+    CommonResponse<List<RegisterApplication>> getPendingReviewAccount() throws Exception;
+    //TODO:(修改返回类型)管理员获取所有企业用户
+    CommonResponse<List<AccountDto>> getAllEnterpriseUsers() throws Exception;
+    //TODO:(新加)管理员修改企业额度
+    CommonResponse<String> ModifyT_limit(int account_id , double t_limit);
+    //TODO:(新加)管理员获取各月超额企业信息
+    CommonResponse<List<AccountDto>> GetAllExcessEnterprises() throws Exception;
 }

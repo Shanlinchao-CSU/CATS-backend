@@ -7,9 +7,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
+import com.example.cntsbackend.domain.AccountLimit;
 import com.example.cntsbackend.domain.AccountingRecord;
 import com.example.cntsbackend.domain.CMessage;
 import com.example.cntsbackend.dto.AccountingRecordDto;
+import com.example.cntsbackend.persistence.AccountLimitMapper;
 import com.example.cntsbackend.persistence.AccountMapper;
 import com.example.cntsbackend.persistence.AccountingRecordMapper;
 import com.example.cntsbackend.persistence.CMessageMapper;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.web3j.protocol.admin.methods.response.NewAccountIdentifier;
 
 import java.io.*;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.YearMonth;
@@ -41,6 +44,8 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
     private AccountMapper accountMapper;
     @Autowired
     private CMessageMapper cMessageMapper;
+    @Autowired
+    private AccountLimitMapper accountLimitMapper;
 
     public CommonResponse<List<AccountingRecordDto>> getAllCarbonAccountingForReview() {
         List<AccountingRecord> accountingRecordList = accountingRecordMapper.selectList(new QueryWrapper<AccountingRecord>().eq("state", 1));
@@ -146,6 +151,8 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
 //            JSONObject jsonObject=JSONObject.parseObject(variable_json);
 //
 //            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
+//            AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", enterprise_id));
+//            double t_limit = accountLimit.getT_limit();
 //            Integer enterprise_type = account.getEnterprise_type();
 //            switch (enterprise_type) {
 //                case 1 :
@@ -174,13 +181,15 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
 //                        UpdateWrapper<AccountingRecord> updateWrapper = new UpdateWrapper<>();
 //                        updateWrapper.eq("id",id);
 //                        accountingRecordMapper.update(accountingRecord,updateWrapper);
-//                        //进行碳核算后用户额度的修改
-//                        CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", enterprise_id));
-//                        double t_limit = cMessage.getT_limit();
-//                        cMessage.setT_remain(t_limit-res);
-//                        UpdateWrapper<CMessage> updateWrapper1 = new UpdateWrapper<>();
-//                        updateWrapper1.eq("account_id",enterprise_id);
-//                        cMessageMapper.update(cMessage,updateWrapper1);
+//                        // 获取当前时间的上个月份
+//                        YearMonth currentYearMonth = YearMonth.now();
+//                        YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
+//                        // 格式化为"yyyy-MM"的字符串
+//                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+//                        String previousMonthString = previousYearMonth.format(formatter);
+//                        //进行碳核算后cmessage表的更新
+//                        CMessage cMessage = new CMessage(enterprise_id,t_limit-res,previousMonthString,t_limit);
+//                        cMessageMapper.insert(cMessage);
 //
 //                        return CommonResponse.createForSuccess("审核通过");
 //                    }else{
@@ -329,6 +338,19 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
         }
 
         return doubleArray; // 返回转换后的double数组
+    }
+
+    public CommonResponse<String> CarbonAccountingRequests(int id,boolean approve,int conductor_id){
+        AccountingRecord accountingRecord = accountingRecordMapper.selectOne(new QueryWrapper<AccountingRecord>().eq("id", id));
+        if(accountingRecord.getState() !=1){
+            return CommonResponse.createForError("该请求已被处理");
+        }else{
+            if(approve){
+                accountingRecord.setState(0);
+            }else accountingRecord.setState(2);
+            accountingRecord.setConductor_id(conductor_id);
+            return CommonResponse.createForSuccess("审核碳请求成功");
+        }
     }
 
 

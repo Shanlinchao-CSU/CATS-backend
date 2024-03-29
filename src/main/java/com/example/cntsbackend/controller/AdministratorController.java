@@ -112,7 +112,7 @@ public class AdministratorController {
      */
     @GetMapping("/administrator/application/review")
     @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
-    public CommonResponse<List<RegisterApplication>> getPendingReviewAccount() {
+    public CommonResponse<List<RegisterApplication>> getPendingReviewAccount() throws Exception {
         return accountService.getPendingReviewAccount();
     }
 
@@ -123,7 +123,7 @@ public class AdministratorController {
      */
     @GetMapping("/administrator/enterprise/accounts")
     @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
-    public CommonResponse<List<Account>> getAllEnterpriseUsers() {
+    public CommonResponse<List<Account>> getAllEnterpriseUsers() throws Exception {
         return accountService.getAllEnterpriseUsers();
     }
 

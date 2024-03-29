@@ -31,4 +31,6 @@ public interface AccountingRecordService {
     CommonResponse<String> ModifyMyCarbonAccounting(int id, AccountingRecord accountingRecord);
     //数据审核员获取自己审核的所有碳核算申请
     CommonResponse<List<AccountingRecordDto>> DataAuditorsGetMyCarbonAccounting(int account_id);
+    //TODO:(新加，id为碳请求的id)数据审核员处理碳核算请求
+    CommonResponse<String> CarbonAccountingRequests(int id,boolean approve,int conductor_id);
 }

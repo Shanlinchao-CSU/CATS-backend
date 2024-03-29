@@ -2,6 +2,7 @@ package com.example.cntsbackend;
 
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.*;
+import com.example.cntsbackend.dto.AccountDto;
 import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.dto.QuotaSaleDto;
 import com.example.cntsbackend.dto.TransactionDto;
@@ -71,7 +72,7 @@ class CntsBackendApplicationTests {
 
     @Test
     public void AgreeApplicationTest() throws Exception {
-        CommonResponse<String> application = accountService.AgreeApplication(3, 1);
+        CommonResponse<String> application = accountService.AgreeApplication(4, 1);
         System.out.println(application.getMessage());
     }
     @Test
@@ -80,16 +81,22 @@ class CntsBackendApplicationTests {
         System.out.println(application.getMessage());
     }
     @Test
-    public void getPendingReviewAccountTest() {
+    public void getPendingReviewAccountTest() throws Exception {
         CommonResponse<List<RegisterApplication>> pendingReviewAccount = accountService.getPendingReviewAccount();
         System.out.println(pendingReviewAccount.getMessage());
         System.out.println(pendingReviewAccount.getData());
     }
-    /*@Test
-    public void EnterpriseUserRegisterTest() {
-        CommonResponse<String> application = registerApplicationService.EnterpriseUserRegister(new File("https://www.baidu.com"),"zs","111","111",1,1);
+    @Test
+    public void getAllEnterpriseUsersTest() throws Exception {
+        CommonResponse<List<AccountDto>> allEnterpriseUsers = accountService.getAllEnterpriseUsers();
+        System.out.println(allEnterpriseUsers.getMessage());
+        System.out.println(allEnterpriseUsers.getData());
+    }
+    @Test
+    public void EnterpriseUserRegisterTest() throws Exception {
+        CommonResponse<String> application = registerApplicationService.EnterpriseUserRegister(new File("https://www.baidu.com"),"j2ee","888","999",1,1,"123456");
         System.out.println(application.getMessage());
-    }*/
+    }
     @Test
     public void changePasswordTest() throws Exception {
         CommonResponse<String> application = accountService.changePassword("1223", "666");
@@ -233,4 +240,16 @@ class CntsBackendApplicationTests {
         System.out.println(listCommonResponse.getData());
         System.out.println(listCommonResponse.getData().get(0).getEnterprise_type());
     }
+    @Test
+    public void ModifyT_limitTest(){
+        CommonResponse<String> stringCommonResponse = accountService.ModifyT_limit(13, 600);
+        System.out.println(stringCommonResponse.getMessage());
+    }
+    @Test
+    public void GetAllExcessEnterprisesTest() throws Exception {
+        CommonResponse<List<AccountDto>> listCommonResponse = accountService.GetAllExcessEnterprises();
+        System.out.println(listCommonResponse.getMessage());
+        System.out.println(listCommonResponse.getData());
+    }
+
 }

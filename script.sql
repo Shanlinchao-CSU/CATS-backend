@@ -15,6 +15,15 @@ create table account
 )
     comment '用户表';
 
+create table account_limit
+(
+    account_id   int auto_increment
+        primary key,
+    t_limit      double null comment '上月额度',
+    t_next_month double null comment '本月额度'
+)
+    comment '用户额度表';
+
 create table accounting_record
 (
     id                  int auto_increment comment '记录的id'
@@ -62,7 +71,8 @@ create table register_application
     file_address            varchar(255) null,
     enterprise_type         int          null,
     conductor_id            int          null comment '处理这条申请的管理员的id',
-    state                   int          null
+    state                   int          null,
+    public_key              varchar(255) null
 )
     comment '注册申请表';
 

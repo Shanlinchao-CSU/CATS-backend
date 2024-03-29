@@ -1,8 +1,11 @@
 package com.example.cntsbackend.scheduled;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
+import com.example.cntsbackend.domain.AccountLimit;
 import com.example.cntsbackend.domain.CMessage;
+import com.example.cntsbackend.persistence.AccountLimitMapper;
 import com.example.cntsbackend.persistence.CMessageMapper;
 import com.example.cntsbackend.service.AccountService;
 import com.example.cntsbackend.service.serviceimpl.AccountServiceImpl;
@@ -18,24 +21,18 @@ import java.util.List;
 @Component
 public class MonthlyTask {
     @Autowired
-    private AccountService accountService;
-    @Autowired
-    private CMessageMapper cMessageMapper;
+    private AccountLimitMapper accountLimitMapper;
 
     @Scheduled(cron = "0 0 0 1 * *") // 每月1号零点执行
     public void executeTask() {
-        // 在这里编写每月1号执行的任务逻辑
-        // 获取当前时间的上个月份
-        YearMonth currentYearMonth = YearMonth.now();
-        YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
-        // 格式化为"yyyy-MM"的字符串
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
-        String previousMonthString = previousYearMonth.format(formatter);
-        CommonResponse<List<Account>> allEnterpriseUsers = accountService.getAllEnterpriseUsers();
-        List<Account> data = allEnterpriseUsers.getData();
-        for (Account datum : data) {
-            int account_id = datum.getAccount_id();
-            cMessageMapper.insert(new CMessage(account_id, 500, previousMonthString, 500));
+        List<AccountLimit> accountLimits = accountLimitMapper.selectList(null);
+        for (AccountLimit accountLimit : accountLimits) {
+            int account_id = accountLimit.getAccount_id();
+            double t_next_month = accountLimit.getT_next_month();
+            accountLimit.setT_limit(t_next_month);
+            UpdateWrapper<AccountLimit> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("account_id", account_id);
+            accountLimitMapper.update(accountLimit, updateWrapper);
         }
     }
 }
