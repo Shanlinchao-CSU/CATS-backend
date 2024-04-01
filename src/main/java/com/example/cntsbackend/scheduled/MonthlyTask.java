@@ -28,7 +28,7 @@ public class MonthlyTask {
         List<AccountLimit> accountLimits = accountLimitMapper.selectList(null);
         for (AccountLimit accountLimit : accountLimits) {
             int account_id = accountLimit.getAccount_id();
-            double t_next_month = accountLimit.getT_next_month();
+            double t_next_month = accountLimit.getLimit_next_month();
             accountLimit.setT_limit(t_next_month);
             UpdateWrapper<AccountLimit> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("account_id", account_id);

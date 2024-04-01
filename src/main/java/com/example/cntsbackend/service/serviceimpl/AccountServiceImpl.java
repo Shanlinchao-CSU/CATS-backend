@@ -472,7 +472,7 @@ public class AccountServiceImpl implements AccountService {
 
     public CommonResponse<String> ModifyT_limit(int account_id , double t_limit){
         AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
-        accountLimit.setT_next_month(t_limit);
+        accountLimit.setLimit_next_month(t_limit);
         UpdateWrapper<AccountLimit> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("account_id",account_id);
         accountLimitMapper.update(accountLimit,updateWrapper);
