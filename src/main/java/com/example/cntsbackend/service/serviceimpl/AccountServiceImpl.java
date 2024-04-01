@@ -120,8 +120,8 @@ public class AccountServiceImpl implements AccountService {
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
             String phone = account.getPhone();
-            phone = AES.decrypt(phone, KEY.getBytes());
-            email = AES.decrypt(email, KEY.getBytes());
+            phone = AES.decrypt(phone, AES.hexToBytes(KEY));
+            email = AES.decrypt(email, AES.hexToBytes(KEY));
             AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit);
             map.put("Account",accountDto);
             map.put("token",token);
@@ -145,10 +145,10 @@ public class AccountServiceImpl implements AccountService {
             }
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
-            phone = AES.decrypt(phone, KEY.getBytes());
+            phone = AES.decrypt(phone, AES.hexToBytes(KEY));
             String email = account.getEmail();
             if(email != null){
-                email = AES.decrypt(email, KEY.getBytes());
+                email = AES.decrypt(email, AES.hexToBytes(KEY));
             }
             AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit);
             map.put("Account",accountDto);
@@ -179,10 +179,10 @@ public class AccountServiceImpl implements AccountService {
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
             String phone = account.getPhone();
-            phone = AES.decrypt(phone, KEY.getBytes());
+            phone = AES.decrypt(phone, AES.hexToBytes(KEY));
             String email = account.getEmail();
             if(email != null){
-                email = AES.decrypt(email, KEY.getBytes());
+                email = AES.decrypt(email, AES.hexToBytes(KEY));
             }
             AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit);
             map.put("Account",accountDto);
@@ -437,8 +437,7 @@ public class AccountServiceImpl implements AccountService {
     }
     public CommonResponse<List<RegisterApplication>> getPendingReviewAccount() throws Exception {
         List<RegisterApplication> registerApplications = registerApplicationMapper.selectList(new QueryWrapper<RegisterApplication>().eq("state", 0));
-        for (int i = 0; i < registerApplications.size(); i++) {
-            RegisterApplication registerApplication = registerApplications.get(i);
+        for (RegisterApplication registerApplication : registerApplications) {
             String phone = registerApplication.getPhone();
             phone = AES.decrypt(phone, AES.hexToBytes(KEY));
             registerApplication.setPhone(phone);
@@ -460,10 +459,10 @@ public class AccountServiceImpl implements AccountService {
                 cnType = getCNType(enterprise_type);
             }
             String phone = account.getPhone();
-            phone = AES.decrypt(phone, KEY.getBytes());
+            phone = AES.decrypt(phone, AES.hexToBytes(KEY));
             String email = account.getEmail();
             if(email !=null){
-                email = AES.decrypt(email, KEY.getBytes());
+                email = AES.decrypt(email, AES.hexToBytes(KEY));
             }
             AccountDto accountDto = new AccountDto(account_id,account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit);
             accountDtoList.add(accountDto);
@@ -490,14 +489,14 @@ public class AccountServiceImpl implements AccountService {
             String email = account.getEmail();
             if (email == null) {
                 email = "无";
-            }else email = AES.decrypt(email, KEY.getBytes());
+            }else email = AES.decrypt(email, AES.hexToBytes(KEY));
             Integer enterprise_type = account.getEnterprise_type();
             String cnType = "";
             if (enterprise_type != 100) {
                 cnType = getCNType(enterprise_type);
             }
             String phone = account.getPhone();
-            phone = AES.decrypt(phone, KEY.getBytes());
+            phone = AES.decrypt(phone, AES.hexToBytes(KEY));
             AccountDto accountDto = new AccountDto(account_id, account.getAccount_name(), phone, email, cnType, cMessage.getMonth(), t_remain);
             accountDtoList.add(accountDto);
         }
