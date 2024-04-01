@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.example.cntsbackend.annotation.LOG;
 import com.example.cntsbackend.common.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -16,13 +17,16 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Aspect
 @Component
 @Slf4j
 public class LogAspect {
 
-    ThreadLocal<Long> startTime = new ThreadLocal<>();
+    private static final ThreadLocal<SimpleDateFormat> dateFormatThreadLocal =
+            ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
     /**
      * 正常日志切入点
@@ -103,7 +107,7 @@ public class LogAspect {
                 logStr.append("模块名称：").append(logAnnotation.moduleName()).append("，");
                 logStr.append("模块版本：").append(logAnnotation.moduleVersion()).append("，");
             }
-            logStr.append("请求时间：").append(startTime.get()).append("，");
+            logStr.append("请求时间：").append(getCurrentTime()).append("，");
             logStr.append("请求方法：").append(methodName).append("，");
 
             // 将参数转为json
@@ -177,6 +181,11 @@ public class LogAspect {
             ip = request.getRemoteAddr();
         }
         return ip;
+    }
+
+    public static String getCurrentTime() {
+        Date currentTime = new Date();
+        return dateFormatThreadLocal.get().format(currentTime);
     }
 
 
