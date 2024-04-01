@@ -38,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
 
     //检验号码是否已经注册
     public int checkPhoneNumberExist(String phoneNumber) throws Exception {
-        phoneNumber = AES.encrypt(phoneNumber, KEY.getBytes());
+        phoneNumber = AES.encrypt(phoneNumber, AES.hexToBytes(KEY));
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phoneNumber));
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phoneNumber));
         if (account != null && registerApplication !=null) {
@@ -48,7 +48,7 @@ public class AccountServiceImpl implements AccountService {
     }
     //检验邮箱是否已经注册
     public int checkEmailExist(String email) throws Exception {
-        email = AES.encrypt(email, KEY.getBytes());
+        email = AES.encrypt(email, AES.hexToBytes(KEY));
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("email", email));
         if (account != null && registerApplication !=null) {
@@ -105,7 +105,7 @@ public class AccountServiceImpl implements AccountService {
 
     //邮箱登录
     public CommonResponse<Map> loginByEmail(String email) throws Exception {
-        email = AES.encrypt(email, KEY.getBytes());
+        email = AES.encrypt(email, AES.hexToBytes(KEY));
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
         if(account!=null){
             Integer enterprise_type = account.getEnterprise_type();
@@ -131,7 +131,7 @@ public class AccountServiceImpl implements AccountService {
     }
     //手机号码登录
     public CommonResponse<Map> loginByPhone(String phone) throws Exception {
-        phone = AES.encrypt(phone, KEY.getBytes());
+        phone = AES.encrypt(phone, AES.hexToBytes(KEY));
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         if(account!=null){
             Integer enterprise_type = account.getEnterprise_type();
@@ -158,8 +158,8 @@ public class AccountServiceImpl implements AccountService {
         }else return CommonResponse.createForError("手机号码登录失败");
     }
     public CommonResponse<Map> loginById(String str,String password) throws Exception {
-        password = AES.encrypt(password, KEY.getBytes());
-        String encrypt_str = AES.encrypt(str, KEY.getBytes());
+        password = AES.encrypt(password, AES.hexToBytes(KEY));
+        String encrypt_str = AES.encrypt(str, AES.hexToBytes(KEY));
         QueryWrapper<Account> queryWrapper = new QueryWrapper<>();
         queryWrapper.and(wrapper -> wrapper.eq("account_id", str)
                         .or().eq("email", encrypt_str)
@@ -193,10 +193,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public CommonResponse<String> changePassword(String phone,String password) throws Exception {
-        phone = AES.encrypt(phone, KEY.getBytes());
+        phone = AES.encrypt(phone, AES.hexToBytes(KEY));
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
         if(account!=null){
-            password = AES.encrypt(password, KEY.getBytes());
+            password = AES.encrypt(password, AES.hexToBytes(KEY));
             account.setPassword(password);
 
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
@@ -216,7 +216,7 @@ public class AccountServiceImpl implements AccountService {
     public CommonResponse<String> changePhone(String phone,int account_id) throws Exception {
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
         if(account!=null){
-            phone = AES.encrypt(phone, KEY.getBytes());
+            phone = AES.encrypt(phone, AES.hexToBytes(KEY));
             account.setPhone(phone);
 
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
@@ -236,7 +236,7 @@ public class AccountServiceImpl implements AccountService {
     public CommonResponse<String> changeEmail(String email,int account_id) throws Exception {
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
         if(account!=null){
-            email = AES.encrypt(email, KEY.getBytes());
+            email = AES.encrypt(email, AES.hexToBytes(KEY));
             account.setEmail(email);
 
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
@@ -259,10 +259,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public CommonResponse<String> findPassword(String str,String password) throws Exception {
-        str = AES.encrypt(str, KEY.getBytes());
+        str = AES.encrypt(str, AES.hexToBytes(KEY));
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", str).or().eq("email", str));
         if(account!=null) {
-            password = AES.encrypt(password, KEY.getBytes());
+            password = AES.encrypt(password, AES.hexToBytes(KEY));
             account.setPassword(password);
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("phone", str).or().eq("email", str);
