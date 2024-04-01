@@ -2,33 +2,23 @@ package com.example.cntsbackend.service.serviceimpl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.common.EnterpriseType;
 import com.example.cntsbackend.domain.Account;
-import com.example.cntsbackend.domain.AccountLimit;
 import com.example.cntsbackend.domain.AccountingRecord;
-import com.example.cntsbackend.domain.CMessage;
 import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.persistence.AccountLimitMapper;
 import com.example.cntsbackend.persistence.AccountMapper;
 import com.example.cntsbackend.persistence.AccountingRecordMapper;
 import com.example.cntsbackend.persistence.CMessageMapper;
 import com.example.cntsbackend.service.AccountingRecordService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.web3j.protocol.admin.methods.response.NewAccountIdentifier;
 
 import java.io.*;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.YearMonth;
@@ -58,7 +48,7 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
             Integer enterprise_type = account.getEnterprise_type();
             String s = "待审核";
             AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(), s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
-            EnterpriseType.setDto(accountingRecordDto, AccountingRecordDto.class, enterprise_type);
+            EnterpriseType.setDto(accountingRecordDto, enterprise_type);
             accountingRecordDTOList.add(accountingRecordDto);
         }
         return CommonResponse.createForSuccess("获取所有待审核的碳核算请求成功",accountingRecordDTOList);
@@ -79,7 +69,7 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
                 s = "拒绝";
             }else s = "待审核";
             AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
-            EnterpriseType.setDto(accountingRecordDto, AccountingRecordDto.class, enterprise_type);
+            EnterpriseType.setDto(accountingRecordDto, enterprise_type);
             accountingRecordDTOList.add(accountingRecordDto);
         }
         return CommonResponse.createForSuccess("获取所有碳核算请求成功",accountingRecordDTOList);
@@ -224,7 +214,7 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
                 s = "拒绝";
             }else s = "待审核";
             AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
-            EnterpriseType.setDto(accountingRecordDto, AccountingRecordDto.class, enterprise_type);
+            EnterpriseType.setDto(accountingRecordDto, enterprise_type);
             accountingRecordDTOList.add(accountingRecordDto);
         }
         return CommonResponse.createForSuccess(accountingRecordDTOList);
@@ -275,7 +265,7 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
                     s = "通过";
                 }else s = "拒绝";
                 AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
-                EnterpriseType.setDto(accountingRecordDto, AccountingRecordDto.class, enterprise_type);
+                EnterpriseType.setDto(accountingRecordDto, enterprise_type);
                 accountingRecordDTOList.add(accountingRecordDto);
             }
             return CommonResponse.createForSuccess(accountingRecordDTOList);

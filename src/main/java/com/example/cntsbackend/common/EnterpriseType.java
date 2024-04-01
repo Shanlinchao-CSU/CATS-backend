@@ -36,10 +36,9 @@ public enum EnterpriseType {
      * 通过DTO对象设置企业类型
      *
      * @param dto   DTO对象
-     * @param clazz DTO对象的类
      * @param type  企业类型
      */
-    public static void setDto(Object dto, Class<?> clazz, int type){
+    public static void setDto(Object dto, int type){
         // 获取DTO对象的类信息
         Class<?> dtoClass = dto.getClass();
         // 拼接setter方法名称

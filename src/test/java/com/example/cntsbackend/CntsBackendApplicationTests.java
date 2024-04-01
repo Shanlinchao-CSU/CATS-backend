@@ -291,5 +291,4 @@ class CntsBackendApplicationTests {
         System.out.println(myCarbonAccounting.getData());
     }
 
-
 }
