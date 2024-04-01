@@ -34,9 +34,9 @@ public class RegisterApplicationServiceImpl implements RegisterApplicationServic
         if(registerApplication!=null || account!=null){
             return CommonResponse.createForError();
         }else {
-            phone = AES.encrypt(phone, KEY.getBytes());
-            password = AES.encrypt(password, KEY.getBytes());
-            public_key = AES.encrypt(public_key, KEY.getBytes());
+            phone = AES.encrypt(phone, AES.hexToBytes(KEY));
+            password = AES.encrypt(password, AES.hexToBytes(KEY));
+            public_key = AES.encrypt(public_key, AES.hexToBytes(KEY));
             RegisterApplication registerApplication1 = new RegisterApplication(account_name,password,phone,type,str,enterprise_type,public_key);
             int i = registerApplicationMapper.insert(registerApplication1);
             return CommonResponse.createForSuccess("SUCCESS");
@@ -49,8 +49,8 @@ public class RegisterApplicationServiceImpl implements RegisterApplicationServic
         if(registerApplication!=null || account!=null){
             return CommonResponse.createForError();
         }else {
-            phone = AES.encrypt(phone, KEY.getBytes());
-            password = AES.encrypt(password, KEY.getBytes());
+            phone = AES.encrypt(phone, AES.hexToBytes(KEY));
+            password = AES.encrypt(password, AES.hexToBytes(KEY));
             //100为企业类型之外的编号
             RegisterApplication registerApplication1 = new RegisterApplication(account_name,password,phone,type,str,100);
             int i = registerApplicationMapper.insert(registerApplication1);
