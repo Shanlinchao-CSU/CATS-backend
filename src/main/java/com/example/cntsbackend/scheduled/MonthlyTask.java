@@ -29,10 +29,13 @@ public class MonthlyTask {
         for (AccountLimit accountLimit : accountLimits) {
             int account_id = accountLimit.getAccount_id();
             double t_next_month = accountLimit.getLimit_next_month();
-            accountLimit.setT_limit(t_next_month);
-            UpdateWrapper<AccountLimit> updateWrapper = new UpdateWrapper<>();
-            updateWrapper.eq("account_id", account_id);
-            accountLimitMapper.update(accountLimit, updateWrapper);
+            if(t_next_month != 0){
+                accountLimit.setT_limit(t_next_month);
+                accountLimit.setLimit_next_month(0);
+                UpdateWrapper<AccountLimit> updateWrapper = new UpdateWrapper<>();
+                updateWrapper.eq("account_id", account_id);
+                accountLimitMapper.update(accountLimit, updateWrapper);
+            }
         }
     }
 }

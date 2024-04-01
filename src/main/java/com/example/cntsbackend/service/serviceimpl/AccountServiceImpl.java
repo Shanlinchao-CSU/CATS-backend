@@ -111,7 +111,7 @@ public class AccountServiceImpl implements AccountService {
             Integer enterprise_type = account.getEnterprise_type();
             String cnType = "";
             double t_limit = 0;
-            if(enterprise_type!=100){
+            if(enterprise_type!=-1){
                 cnType = getCNType(enterprise_type);
                 int account_id = account.getAccount_id();
                 AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
@@ -137,7 +137,7 @@ public class AccountServiceImpl implements AccountService {
             Integer enterprise_type = account.getEnterprise_type();
             String cnType = "";
             double t_limit = 0;
-            if(enterprise_type!=100){
+            if(enterprise_type!=-1){
                 cnType = getCNType(enterprise_type);
                 int account_id = account.getAccount_id();
                 AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
@@ -170,7 +170,7 @@ public class AccountServiceImpl implements AccountService {
             Integer enterprise_type = account.getEnterprise_type();
             String cnType = "";
             double t_limit = 0;
-            if (enterprise_type!=100) {
+            if (enterprise_type!=-1) {
                 cnType=getCNType(enterprise_type);
                 int account_id = account.getAccount_id();
                 AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
@@ -453,9 +453,10 @@ public class AccountServiceImpl implements AccountService {
             int account_id = account.getAccount_id();
             AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
             double t_limit = accountLimit.getT_limit();
+            double limit_next_month = accountLimit.getLimit_next_month();
             Integer enterprise_type = account.getEnterprise_type();
             String cnType = "";
-            if(enterprise_type!=100){
+            if(enterprise_type!=-1){
                 cnType = getCNType(enterprise_type);
             }
             String phone = account.getPhone();
@@ -464,7 +465,7 @@ public class AccountServiceImpl implements AccountService {
             if(email !=null){
                 email = AES.decrypt(email, AES.hexToBytes(KEY));
             }
-            AccountDto accountDto = new AccountDto(account_id,account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit);
+            AccountDto accountDto = new AccountDto(account_id,account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit,limit_next_month);
             accountDtoList.add(accountDto);
         }
         return CommonResponse.createForSuccess("获取所有企业用户成功",accountDtoList);
@@ -493,7 +494,7 @@ public class AccountServiceImpl implements AccountService {
             }else email = AES.decrypt(email, AES.hexToBytes(KEY));
             Integer enterprise_type = account.getEnterprise_type();
             String cnType = "";
-            if (enterprise_type != 100) {
+            if (enterprise_type != -1) {
                 cnType = getCNType(enterprise_type);
             }
             String phone = account.getPhone();

@@ -51,8 +51,8 @@ public class RegisterApplicationServiceImpl implements RegisterApplicationServic
         }else {
             phone = AES.encrypt(phone, AES.hexToBytes(KEY));
             password = AES.encrypt(password, AES.hexToBytes(KEY));
-            //100为企业类型之外的编号
-            RegisterApplication registerApplication1 = new RegisterApplication(account_name,password,phone,type,str,100);
+            //-1为企业类型之外的编号
+            RegisterApplication registerApplication1 = new RegisterApplication(account_name,password,phone,type,str,-1);
             int i = registerApplicationMapper.insert(registerApplication1);
             return CommonResponse.createForSuccess("SUCCESS");
         }
