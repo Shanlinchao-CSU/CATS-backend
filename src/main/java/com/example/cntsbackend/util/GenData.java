@@ -15,9 +15,20 @@ public class GenData {
     @Autowired
     private RegisterApplicationMapper registerApplicationMapper;
 
-    public  void genAccount() throws Exception {
+    public void genAccount(int id) throws Exception {
         // 生成数据
         Account account = new Account();
+        account.setAccount_id(id);
+        genAccount(account);
+    }
+
+
+    public  void genAccount(Account account) throws Exception {
+        if (account == null) {
+            // 生成数据
+            account = new Account();
+        }
+
         account.setAccount_name("gen_account"+System.currentTimeMillis());
         account.setPassword(AES.encrypt("123456mm"));
         account.setPhone(AES.encrypt(genPhone()));
@@ -47,8 +58,6 @@ public class GenData {
         registerApplication.setEnterprise_type(1);
         registerApplication.setConductor_id(1);
         registerApplication.setState(0);
-
-
         // 插入数据
         registerApplicationMapper.insert(registerApplication);
     }

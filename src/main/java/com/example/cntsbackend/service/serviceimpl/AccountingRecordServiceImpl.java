@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.cntsbackend.common.CommonResponse;
+import com.example.cntsbackend.common.EnterpriseType;
 import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.AccountLimit;
 import com.example.cntsbackend.domain.AccountingRecord;
@@ -57,19 +58,7 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
             Integer enterprise_type = account.getEnterprise_type();
             String s = "待审核";
             AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(), s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
-            switch (enterprise_type) {
-                case 0 -> accountingRecordDto.setEnterprise_type("发电企业");
-                case 1 -> accountingRecordDto.setEnterprise_type("电网企业");
-                case 2 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
-                case 3 -> accountingRecordDto.setEnterprise_type("化工生产企业");
-                case 4 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
-                case 5 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
-                case 6 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
-                case 7 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
-                case 8 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
-                case 9 -> accountingRecordDto.setEnterprise_type("民航企业");
-                case 10 -> accountingRecordDto.setEnterprise_type("其它企业");
-            }
+            EnterpriseType.setDto(accountingRecordDto, AccountingRecordDto.class, enterprise_type);
             accountingRecordDTOList.add(accountingRecordDto);
         }
         return CommonResponse.createForSuccess("获取所有待审核的碳核算请求成功",accountingRecordDTOList);
@@ -90,19 +79,7 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
                 s = "拒绝";
             }else s = "待审核";
             AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
-            switch (enterprise_type) {
-                case 0 -> accountingRecordDto.setEnterprise_type("发电企业");
-                case 1 -> accountingRecordDto.setEnterprise_type("电网企业");
-                case 2 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
-                case 3 -> accountingRecordDto.setEnterprise_type("化工生产企业");
-                case 4 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
-                case 5 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
-                case 6 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
-                case 7 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
-                case 8 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
-                case 9 -> accountingRecordDto.setEnterprise_type("民航企业");
-                case 10 -> accountingRecordDto.setEnterprise_type("其它企业");
-            }
+            EnterpriseType.setDto(accountingRecordDto, AccountingRecordDto.class, enterprise_type);
             accountingRecordDTOList.add(accountingRecordDto);
         }
         return CommonResponse.createForSuccess("获取所有碳核算请求成功",accountingRecordDTOList);
@@ -247,19 +224,7 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
                 s = "拒绝";
             }else s = "待审核";
             AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
-            switch (enterprise_type) {
-                case 0 -> accountingRecordDto.setEnterprise_type("发电企业");
-                case 1 -> accountingRecordDto.setEnterprise_type("电网企业");
-                case 2 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
-                case 3 -> accountingRecordDto.setEnterprise_type("化工生产企业");
-                case 4 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
-                case 5 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
-                case 6 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
-                case 7 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
-                case 8 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
-                case 9 -> accountingRecordDto.setEnterprise_type("民航企业");
-                case 10 -> accountingRecordDto.setEnterprise_type("其它企业");
-            }
+            EnterpriseType.setDto(accountingRecordDto, AccountingRecordDto.class, enterprise_type);
             accountingRecordDTOList.add(accountingRecordDto);
         }
         return CommonResponse.createForSuccess(accountingRecordDTOList);
@@ -310,19 +275,7 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
                     s = "通过";
                 }else s = "拒绝";
                 AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
-                switch (enterprise_type) {
-                    case 0 -> accountingRecordDto.setEnterprise_type("发电企业");
-                    case 1 -> accountingRecordDto.setEnterprise_type("电网企业");
-                    case 2 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
-                    case 3 -> accountingRecordDto.setEnterprise_type("化工生产企业");
-                    case 4 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
-                    case 5 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
-                    case 6 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
-                    case 7 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
-                    case 8 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
-                    case 9 -> accountingRecordDto.setEnterprise_type("民航企业");
-                    case 10 -> accountingRecordDto.setEnterprise_type("其它企业");
-                }
+                EnterpriseType.setDto(accountingRecordDto, AccountingRecordDto.class, enterprise_type);
                 accountingRecordDTOList.add(accountingRecordDto);
             }
             return CommonResponse.createForSuccess(accountingRecordDTOList);

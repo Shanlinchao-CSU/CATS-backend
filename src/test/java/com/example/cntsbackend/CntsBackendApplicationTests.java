@@ -271,12 +271,24 @@ class CntsBackendApplicationTests {
 
     @Test
     public void GenAccount() throws Exception {
-        genData.genAccount();
+        genData.genAccount(null);
     }
 
     @Test
     public void GenRegister() throws Exception {
         genData.genRegister();
+    }
+
+    @Test
+    public void GenAccountWithId() throws Exception {
+        genData.genAccount(1);
+    }
+
+
+    @Test
+    public void getMyCarbonAccounting(){
+        CommonResponse<List<AccountingRecordDto>> myCarbonAccounting = accountingRecordService.getMyCarbonAccounting(1);
+        System.out.println(myCarbonAccounting.getData());
     }
 
 
