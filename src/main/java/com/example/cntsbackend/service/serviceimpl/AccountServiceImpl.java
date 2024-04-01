@@ -251,10 +251,10 @@ public class AccountServiceImpl implements AccountService {
         UpdateAccount updateAccount1 = updateAccountMapper.selectOne(new QueryWrapper<UpdateAccount>().eq("account_id", account_id));
         if(updateAccount1 !=null){
             updateAccountMapper.deleteById(updateAccount1);
-        }else {
-            UpdateAccount updateAccount = new UpdateAccount(account.getAccount_id(),account.getAccount_name(),account.getEnterprise_type(),account.getFile());
-            updateAccountMapper.insert(updateAccount);
         }
+        UpdateAccount updateAccount = new UpdateAccount(account.getAccount_id(),account.getAccount_name(),account.getEnterprise_type(),account.getFile());
+        updateAccountMapper.insert(updateAccount);
+
         return CommonResponse.createForSuccess("提交修改信息成功，等待审核");
     }
 
