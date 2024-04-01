@@ -295,6 +295,7 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
                 accountingRecord.setState(0);
             }else accountingRecord.setState(2);
             accountingRecord.setConductor_id(conductor_id);
+            accountingRecordMapper.updateById(accountingRecord);
             return CommonResponse.createForSuccess("审核碳请求成功");
         }
     }
