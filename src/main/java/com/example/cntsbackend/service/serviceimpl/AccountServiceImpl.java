@@ -485,6 +485,7 @@ public class AccountServiceImpl implements AccountService {
         for (CMessage cMessage : cMessageList) {
             int account_id = cMessage.getAccount_id();
             double t_remain = cMessage.getT_remain();
+            double t_limit = cMessage.getT_limit();
             Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
             String email = account.getEmail();
             if (email == null) {
@@ -497,7 +498,7 @@ public class AccountServiceImpl implements AccountService {
             }
             String phone = account.getPhone();
             phone = AES.decrypt(phone, AES.hexToBytes(KEY));
-            AccountDto accountDto = new AccountDto(account_id, account.getAccount_name(), phone, email, cnType, cMessage.getMonth(), t_remain);
+            AccountDto accountDto = new AccountDto(account_id, account.getAccount_name(), phone, email, cnType, cMessage.getMonth(), t_remain,t_limit);
             accountDtoList.add(accountDto);
         }
         return CommonResponse.createForSuccess("获取各月超额企业信息成功",accountDtoList);

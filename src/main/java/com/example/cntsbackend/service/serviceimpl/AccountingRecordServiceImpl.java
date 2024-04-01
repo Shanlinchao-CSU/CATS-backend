@@ -296,34 +296,37 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
     }
 
     public CommonResponse<List<AccountingRecordDto>> DataAuditorsGetMyCarbonAccounting(int account_id){
-        List<AccountingRecord> accountingRecordList = accountingRecordMapper.selectList(new QueryWrapper<AccountingRecord>().eq("conductor_id", account_id));
-        List<AccountingRecordDto> accountingRecordDTOList = new ArrayList<>();
-        for (AccountingRecord accountingRecord : accountingRecordList) {
-            int enterprise_id = accountingRecord.getEnterprise_id();
-            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
-            String account_name = account.getAccount_name();
-            Integer enterprise_type = account.getEnterprise_type();
-            String s = String.valueOf(accountingRecord.getState());
-            if(s.equals("0")){
-                s = "通过";
-            }else s = "拒绝";
-            AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
-            switch (enterprise_type) {
-                case 0 -> accountingRecordDto.setEnterprise_type("发电企业");
-                case 1 -> accountingRecordDto.setEnterprise_type("电网企业");
-                case 2 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
-                case 3 -> accountingRecordDto.setEnterprise_type("化工生产企业");
-                case 4 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
-                case 5 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
-                case 6 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
-                case 7 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
-                case 8 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
-                case 9 -> accountingRecordDto.setEnterprise_type("民航企业");
-                case 10 -> accountingRecordDto.setEnterprise_type("其它企业");
+        Account account1 = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
+        if(account1 !=null){
+            List<AccountingRecord> accountingRecordList = accountingRecordMapper.selectList(new QueryWrapper<AccountingRecord>().eq("conductor_id", account_id));
+            List<AccountingRecordDto> accountingRecordDTOList = new ArrayList<>();
+            for (AccountingRecord accountingRecord : accountingRecordList) {
+                int enterprise_id = accountingRecord.getEnterprise_id();
+                Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
+                String account_name = account.getAccount_name();
+                Integer enterprise_type = account.getEnterprise_type();
+                String s = String.valueOf(accountingRecord.getState());
+                if(s.equals("0")){
+                    s = "通过";
+                }else s = "拒绝";
+                AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(),s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
+                switch (enterprise_type) {
+                    case 0 -> accountingRecordDto.setEnterprise_type("发电企业");
+                    case 1 -> accountingRecordDto.setEnterprise_type("电网企业");
+                    case 2 -> accountingRecordDto.setEnterprise_type("钢铁生产企业");
+                    case 3 -> accountingRecordDto.setEnterprise_type("化工生产企业");
+                    case 4 -> accountingRecordDto.setEnterprise_type("电解铝生产企业企业");
+                    case 5 -> accountingRecordDto.setEnterprise_type("镁冶炼企业");
+                    case 6 -> accountingRecordDto.setEnterprise_type("平板玻璃生产企业");
+                    case 7 -> accountingRecordDto.setEnterprise_type("水泥生产企业");
+                    case 8 -> accountingRecordDto.setEnterprise_type("陶瓷生产企业");
+                    case 9 -> accountingRecordDto.setEnterprise_type("民航企业");
+                    case 10 -> accountingRecordDto.setEnterprise_type("其它企业");
+                }
+                accountingRecordDTOList.add(accountingRecordDto);
             }
-            accountingRecordDTOList.add(accountingRecordDto);
-        }
-        return CommonResponse.createForSuccess(accountingRecordDTOList);
+            return CommonResponse.createForSuccess(accountingRecordDTOList);
+        }else return CommonResponse.createForError("该管理员不存在");
     }
 
     public static double[] jsonArrayToDoubleArray(JSONArray jsonArray) {
