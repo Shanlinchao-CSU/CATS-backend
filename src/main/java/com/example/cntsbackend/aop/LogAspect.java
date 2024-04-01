@@ -140,18 +140,20 @@ public class LogAspect {
      */
     private String paramsToString(Object[] args) {
         StringBuilder params = new StringBuilder();
+        params.append("(");
         if (args != null) {
             for (Object o : args) {
                 if (o != null) {
                     try {
                         Object jsonObj = JSON.toJSON(o);
-                        params.append(jsonObj.toString()).append(" ");
+                        params.append(jsonObj.toString()).append(",");
                     } catch (Exception e) {
                         log.error("转换参数异常", e);
                     }
                 }
             }
         }
+        params.append(")");
         return params.toString().trim();
 
     }
