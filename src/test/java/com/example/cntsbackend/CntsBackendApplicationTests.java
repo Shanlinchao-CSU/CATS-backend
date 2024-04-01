@@ -8,6 +8,7 @@ import com.example.cntsbackend.dto.QuotaSaleDto;
 import com.example.cntsbackend.dto.TransactionDto;
 import com.example.cntsbackend.service.RedisService;
 import com.example.cntsbackend.service.serviceimpl.*;
+import com.example.cntsbackend.util.GenData;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ class CntsBackendApplicationTests {
     private AccountingRecordServiceImpl accountingRecordService;
     @Autowired
     private RedisServiceImpl redisServer;
+    @Autowired
+    private GenData genData;
 
     @Test
     void contextLoads() {
@@ -251,5 +254,30 @@ class CntsBackendApplicationTests {
         System.out.println(listCommonResponse.getMessage());
         System.out.println(listCommonResponse.getData());
     }
+
+    @Test
+    public void checkPhoneNumberExist() throws Exception {
+        int commonResponse = accountService.checkPhoneNumberExist("19313028910");
+        System.out.println(commonResponse);
+    }
+
+    @Test
+    public void getPendingReviewAccount() throws Exception {
+        CommonResponse<List<RegisterApplication>> pendingReviewAccount = accountService.getPendingReviewAccount();
+        System.out.println(pendingReviewAccount.getMessage());
+        System.out.println(pendingReviewAccount.getData());
+    }
+
+
+    @Test
+    public void GenAccount() throws Exception {
+        genData.genAccount();
+    }
+
+    @Test
+    public void GenRegister() throws Exception {
+        genData.genRegister();
+    }
+
 
 }

@@ -32,7 +32,7 @@ public class AccountServiceImpl implements AccountService {
     private AccountLimitMapper accountLimitMapper;
     private static final String CHARACTERS = "0123456789";
     private static final int CODE_LENGTH = 4;
-    private static final String KEY = "asdasdefsgrfsrdgsfgvsder";
+    private static final String KEY = "2a34575d0f1b7cb39a2c117c0650311a4d3a6e4f507142b45cc3d144bd62ec41";
 
     //--------------------------------------------企业用户--------------------------------------------------
 
@@ -440,7 +440,7 @@ public class AccountServiceImpl implements AccountService {
         for (int i = 0; i < registerApplications.size(); i++) {
             RegisterApplication registerApplication = registerApplications.get(i);
             String phone = registerApplication.getPhone();
-            phone = AES.decrypt(phone, KEY.getBytes());
+            phone = AES.decrypt(phone, AES.hexToBytes(KEY));
             registerApplication.setPhone(phone);
             registerApplication.setPassword("");
             registerApplication.setPublic_key("");

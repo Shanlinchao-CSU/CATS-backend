@@ -9,6 +9,23 @@ import java.util.Arrays;
 
 public class AES {
 
+    private static final String MODULE_NAME = "AES";
+    private static final String MODULE_VERSION = "v1.0.0";
+    private static final String DEFAULT_KEY = "2a34575d0f1b7cb39a2c117c0650311a4d3a6e4f507142b45cc3d144bd62ec41";
+
+
+    // 根据默认密钥加密
+    public static String encrypt(String text) throws Exception {
+        byte[] key = hexToBytes(DEFAULT_KEY);
+        return encrypt(text, key);
+    }
+
+    // 根据默认密钥解密
+    public static String decrypt(String encryptedText) throws Exception {
+        byte[] key = hexToBytes(DEFAULT_KEY);
+        return decrypt(encryptedText, key);
+    }
+
     // 加密函数
     public static String encrypt(String text, byte[] key) throws Exception {
         byte[] iv = Arrays.copyOfRange(key, 0, 16);
@@ -53,6 +70,7 @@ public class AES {
         }
         return bytes;
     }
+
 
 //    public static void main(String[] args) throws Exception {
 //        // 地址(公钥)
