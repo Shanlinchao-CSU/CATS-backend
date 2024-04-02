@@ -78,6 +78,14 @@ public class TransactionServiceImpl implements TransactionService {
         double unit_price = quotaSale.getUnit_price();
         int seller_id = quotaSale.getSeller_id();
         double cost = BigDecimalUtil.multiply(amount, unit_price);
+        //获取卖家信息
+        Account account1 = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", seller_id));
+        if(account == null ){
+            return CommonResponse.createForError("买额度企业用户不存在");
+        }
+        if (account1 == null){
+            return CommonResponse.createForError("卖额度企业用户不存在");
+        }
         if(BigDecimalUtil.compareTo(account.getT_coin(),cost)>=0){
             //完成交易
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -102,7 +110,6 @@ public class TransactionServiceImpl implements TransactionService {
             updateWrapper3.eq("account_id",account_id);
             accountMapper.update(account, updateWrapper3);
             //更新卖家信息
-            Account account1 = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", seller_id));
             double t_coin1 = account1.getT_coin();
             t_coin1 = BigDecimalUtil.add(t_coin1,cost);
 //            t_coin1 = t_coin1 + (amount * unit_price);

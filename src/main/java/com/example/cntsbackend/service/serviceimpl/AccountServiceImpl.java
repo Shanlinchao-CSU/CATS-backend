@@ -391,7 +391,7 @@ public class AccountServiceImpl implements AccountService {
                 accountLimitMapper.insert(new AccountLimit(account.getAccount_id(),500,500));
             }
             return CommonResponse.createForSuccess("审核成功，同意注册");
-        }else return CommonResponse.createForError("该请求注册id不存在");
+        }else return CommonResponse.createForError("审核失败，该请求注册id不存在");
 //        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
 //        int account_id1 = account.getAccount_id();
 //        // 获取当前年月
@@ -405,12 +405,14 @@ public class AccountServiceImpl implements AccountService {
 
     public CommonResponse<String> RefuseApplication(int register_application_id, int account_id){
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("register_application_id", register_application_id));
-        registerApplication.setConductor_id(account_id);
-        registerApplication.setState(2);
-        UpdateWrapper<RegisterApplication> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("register_application_id", register_application_id);
-        registerApplicationMapper.update(registerApplication, updateWrapper);
-        return CommonResponse.createForSuccess("审核成功，拒绝注册");
+        if(registerApplication != null){
+            registerApplication.setConductor_id(account_id);
+            registerApplication.setState(2);
+            UpdateWrapper<RegisterApplication> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("register_application_id", register_application_id);
+            registerApplicationMapper.update(registerApplication, updateWrapper);
+            return CommonResponse.createForSuccess("审核成功，拒绝注册");
+        }else return CommonResponse.createForError("审核失败，该请求注册id不存在");
     }
 
     public CommonResponse<String> AgreeUpdateAccountInfo(int account_id){
@@ -473,11 +475,13 @@ public class AccountServiceImpl implements AccountService {
 
     public CommonResponse<String> ModifyT_limit(int account_id , double t_limit){
         AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
-        accountLimit.setLimit_next_month(t_limit);
-        UpdateWrapper<AccountLimit> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("account_id",account_id);
-        accountLimitMapper.update(accountLimit,updateWrapper);
-        return CommonResponse.createForSuccess("修改额度成功");
+        if(accountLimit != null){
+            accountLimit.setLimit_next_month(t_limit);
+            UpdateWrapper<AccountLimit> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("account_id",account_id);
+            accountLimitMapper.update(accountLimit,updateWrapper);
+            return CommonResponse.createForSuccess("修改额度成功");
+        }else return CommonResponse.createForError("修改额度失败,该用户不存在");
     }
 
     public CommonResponse<List<AccountDto>> GetAllExcessEnterprises() throws Exception {
@@ -511,21 +515,23 @@ public class AccountServiceImpl implements AccountService {
         for (String s : publicKey) {
             String encrypt = AES.encrypt(s, AES.hexToBytes(KEY));
             Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("public_key", encrypt));
-            int account_id = account.getAccount_id();
-            String phone = account.getPhone();
-            phone = AES.decrypt(phone, AES.hexToBytes(KEY));
-            String email = account.getEmail();
-            if (email == null) {
-                email = "无";
-            } else email = AES.decrypt(email, AES.hexToBytes(KEY));
-            Integer enterprise_type = account.getEnterprise_type();
-            String cnType = "";
-            if (enterprise_type != -1) {
-                cnType = getCNType(enterprise_type);
+            if(account != null){
+                int account_id = account.getAccount_id();
+                String phone = account.getPhone();
+                phone = AES.decrypt(phone, AES.hexToBytes(KEY));
+                String email = account.getEmail();
+                if (email == null) {
+                    email = "无";
+                } else email = AES.decrypt(email, AES.hexToBytes(KEY));
+                Integer enterprise_type = account.getEnterprise_type();
+                String cnType = "";
+                if (enterprise_type != -1) {
+                    cnType = getCNType(enterprise_type);
+                }
+                AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
+                AccountDto accountDto = new AccountDto(account_id, account.getAccount_name(), phone, email, cnType, account.getT_coin(), accountLimit.getT_limit());
+                accountDtoList.add(accountDto);
             }
-            AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
-            AccountDto accountDto = new AccountDto(account_id, account.getAccount_name(), phone, email, cnType, account.getT_coin(), accountLimit.getT_limit());
-            accountDtoList.add(accountDto);
         }
         return CommonResponse.createForSuccess("获取企业信息成功",accountDtoList);
     }

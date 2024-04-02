@@ -64,28 +64,32 @@ public class QuotaSaleServiceImpl implements QuotaSaleService {
 
     public CommonResponse<String> cancelTransactionData(int id){
         QuotaSale quotaSale = quotaSaleMapper.selectOne(new QueryWrapper<QuotaSale>().eq("id", id));
-        double quota = quotaSale.getQuota();
-        int seller_id = quotaSale.getSeller_id();
-        CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", seller_id));
-        double t_remain = cMessage.getT_remain();
-        t_remain = BigDecimalUtil.add(t_remain,quota);
+        if(quotaSale != null){
+            double quota = quotaSale.getQuota();
+            int seller_id = quotaSale.getSeller_id();
+            CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", seller_id));
+            double t_remain = cMessage.getT_remain();
+            t_remain = BigDecimalUtil.add(t_remain,quota);
 //        t_remain = t_remain + quota;
-        cMessage.setT_remain(t_remain);
-        UpdateWrapper<CMessage> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("account_id",seller_id);
-        cMessageMapper.update(cMessage, updateWrapper);
-        quotaSaleMapper.deleteById(quotaSale);
-        return CommonResponse.createForSuccess("取消发布交易信息成功");
-
+            cMessage.setT_remain(t_remain);
+            UpdateWrapper<CMessage> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("account_id",seller_id);
+            cMessageMapper.update(cMessage, updateWrapper);
+            quotaSaleMapper.deleteById(quotaSale);
+            return CommonResponse.createForSuccess("取消发布交易信息成功");
+        }else return CommonResponse.createForError("取消发布交易信息失败，该交易信息不存在");
     }
 
     public CommonResponse<String> ModifyUnitPrice(int id,double unit_price) {
         QuotaSale quotaSale = quotaSaleMapper.selectOne(new QueryWrapper<QuotaSale>().eq("id", id));
-        quotaSale.setUnit_price(unit_price);
-        UpdateWrapper<QuotaSale> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", id);
-        quotaSaleMapper.update(quotaSale, updateWrapper);
-        return CommonResponse.createForSuccess("修改单价成功");
+        if(quotaSale != null){
+            quotaSale.setUnit_price(unit_price);
+            UpdateWrapper<QuotaSale> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("id", id);
+            quotaSaleMapper.update(quotaSale, updateWrapper);
+            return CommonResponse.createForSuccess("修改单价成功");
+        }else return CommonResponse.createForError("修改单价失败，该交易不存在");
+
     }
 
     public CommonResponse<List<QuotaSale>> getRemain(int account_id){
