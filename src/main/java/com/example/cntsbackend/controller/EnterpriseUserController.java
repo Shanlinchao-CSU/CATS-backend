@@ -11,6 +11,8 @@ import com.example.cntsbackend.dto.QuotaSaleDto;
 import com.example.cntsbackend.dto.TransactionDto;
 import com.example.cntsbackend.service.*;
 import com.example.cntsbackend.util.MultipartFileToFileConverter;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -154,8 +157,23 @@ public class EnterpriseUserController {
     @PostMapping("/enterprise/info/address")
     @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<List<AccountDto>> getEnterpriseInfoByAddress(
-            @RequestBody List<String> public_key) {
-        return accountService.getEnterpriseInfoByAddress(public_key);
+            @RequestBody String public_key) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(public_key);
+
+            // 将JSON解析为List<String>
+            JsonNode publicKeyNode = rootNode.get("public_key");
+            List<String> publicKeyList = new ArrayList<>();
+            if (publicKeyNode.isArray()) {
+                for (JsonNode node : publicKeyNode) {
+                    publicKeyList.add(node.asText());
+                }
+            }
+            return accountService.getEnterpriseInfoByAddress(publicKeyList);
+        } catch (Exception e) {
+            return CommonResponse.createForError(1,"解析错误");
+        }
     }
 
     /**
