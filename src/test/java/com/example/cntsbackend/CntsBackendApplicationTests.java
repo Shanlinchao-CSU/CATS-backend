@@ -315,6 +315,14 @@ class CntsBackendApplicationTests {
         System.out.println(s2);
     }
 
+    @Test
+    public void encryptTest() throws Exception {
+        //String context = "0x8b751a0226707Ef8Df389078B288D13A415343b7";
+        String context = "0x2F875A7c2069a7b389C24e6227755cDE6494e56D";
+        String result = AES.encrypt(context);
+        System.out.println(result);
+    }
+
     private static final String DEFAULT_KEY = "2a34575d0f1b7cb39a2c117c0650311a4d3a6e4f507142b45cc3d144bd62ec41";
     //TODO: 根据传入的密钥解密 TEST
 

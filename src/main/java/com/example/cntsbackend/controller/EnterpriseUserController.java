@@ -162,11 +162,9 @@ public class EnterpriseUserController {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(public_key);
 
-            // 将JSON解析为List<String>
-            JsonNode publicKeyNode = rootNode.get("public_key");
             List<String> publicKeyList = new ArrayList<>();
-            if (publicKeyNode.isArray()) {
-                for (JsonNode node : publicKeyNode) {
+            if (rootNode.isArray()) {
+                for (JsonNode node : rootNode) {
                     publicKeyList.add(node.asText());
                 }
             }
