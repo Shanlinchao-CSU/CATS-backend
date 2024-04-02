@@ -533,6 +533,11 @@ public class AccountServiceImpl implements AccountService {
                 accountDtoList.add(accountDto);
             }
         }
+
+        if(accountDtoList.isEmpty()){
+            return CommonResponse.createForError("未找到企业信息");
+        }
+
         return CommonResponse.createForSuccess("获取企业信息成功",accountDtoList);
     }
 }

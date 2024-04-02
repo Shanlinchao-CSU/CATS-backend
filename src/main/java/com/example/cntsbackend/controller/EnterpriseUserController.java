@@ -172,6 +172,7 @@ public class EnterpriseUserController {
             }
             return accountService.getEnterpriseInfoByAddress(publicKeyList);
         } catch (Exception e) {
+            e.printStackTrace();
             return CommonResponse.createForError(1,"解析错误");
         }
     }
