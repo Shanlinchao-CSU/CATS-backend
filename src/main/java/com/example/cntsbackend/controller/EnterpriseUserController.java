@@ -5,6 +5,7 @@ import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.AccountingRecord;
 import com.example.cntsbackend.domain.QuotaSale;
 import com.example.cntsbackend.domain.Transaction;
+import com.example.cntsbackend.dto.AccountDto;
 import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.dto.QuotaSaleDto;
 import com.example.cntsbackend.dto.TransactionDto;
@@ -91,6 +92,7 @@ public class EnterpriseUserController {
         return accountingRecordService.getMyCarbonAccounting(enterprise_id);
     }
 
+
     /**
      * 企业修改单价(id为发布信息的id)
      *
@@ -142,6 +144,19 @@ public class EnterpriseUserController {
         return accountingRecordService.ModifyMyCarbonAccounting(id,new AccountingRecord(variable_json,result,supporting_material));
     }
 
+
+    /**
+     * 根据公钥获取企业信息
+     *
+     * @param public_key 公钥
+     * @return 企业信息 CommonResponse<List<AccountDto>>
+     */
+    @PostMapping("/enterprise/info/address")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
+    public CommonResponse<List<AccountDto>> getEnterpriseInfoByAddress(
+            @RequestBody List<String> public_key) {
+        return accountService.getEnterpriseInfoByAddress(public_key);
+    }
 
     /**
      * 企业用户注册

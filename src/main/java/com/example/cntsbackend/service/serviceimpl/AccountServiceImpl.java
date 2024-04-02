@@ -504,4 +504,10 @@ public class AccountServiceImpl implements AccountService {
         }
         return CommonResponse.createForSuccess("获取各月超额企业信息成功",accountDtoList);
     }
+
+    @Override
+    public CommonResponse<List<AccountDto>> getEnterpriseInfoByAddress(List<String> publicKey) {
+
+        return null;
+    }
 }

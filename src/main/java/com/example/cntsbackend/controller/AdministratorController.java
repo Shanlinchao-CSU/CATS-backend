@@ -136,6 +136,22 @@ public class AdministratorController {
         return accountService.GetAllExcessEnterprises();
     }
 
+
+    /**
+     * 管理员修改企业额度
+     *
+     * @param account_id 企业账号ID
+     * @param t_limit    额度
+     * @return 修改结果 CommonResponse<String>
+     */
+    @PatchMapping("/administrator/enterprise/t_limit")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
+    public CommonResponse<String> ModifyT_limit(
+            @PathParam("account_id") int account_id,
+            @PathParam("t_limit") double t_limit) {
+        return accountService.ModifyT_limit(account_id, t_limit);
+    }
+
     /**
      * 同意注册
      * @param register_application_id 注册表的id
@@ -162,21 +178,6 @@ public class AdministratorController {
     public CommonResponse<String> AgreeUpdateAccountInfo(
             @PathParam("account_id") int account_id) {
         return accountService.AgreeUpdateAccountInfo(account_id);
-    }
-
-    /**
-     * 管理员修改企业额度
-     *
-     * @param account_id 企业账号ID
-     * @param t_limit    额度
-     * @return 修改结果 CommonResponse<String>
-     */
-    @PatchMapping("/administrator/enterprise/t_limit")
-    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
-    public CommonResponse<String> ModifyT_limit(
-            @PathParam("account_id") int account_id,
-            @PathParam("t_limit") double t_limit) {
-        return accountService.ModifyT_limit(account_id, t_limit);
     }
 
 
