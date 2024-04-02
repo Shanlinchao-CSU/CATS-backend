@@ -67,6 +67,6 @@ public interface AccountService {
     CommonResponse<String> ModifyT_limit(int account_id , double t_limit);
     //管理员获取各月超额企业信息
     CommonResponse<List<AccountDto>> GetAllExcessEnterprises() throws Exception;
-    // TODO 根据公钥获取企业信息
-    CommonResponse<List<AccountDto>> getEnterpriseInfoByAddress(List<String> publicKey);
+    //根据公钥获取企业信息
+    CommonResponse<List<AccountDto>> getEnterpriseInfoByAddress(List<String> publicKey) throws Exception;
 }

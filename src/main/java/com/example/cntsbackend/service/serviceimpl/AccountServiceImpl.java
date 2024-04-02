@@ -506,8 +506,27 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public CommonResponse<List<AccountDto>> getEnterpriseInfoByAddress(List<String> publicKey) {
-
-        return null;
+    public CommonResponse<List<AccountDto>> getEnterpriseInfoByAddress(List<String> publicKey) throws Exception {
+        List<AccountDto> accountDtoList = new ArrayList<>();
+        for (String s : publicKey) {
+            String encrypt = AES.encrypt(s, AES.hexToBytes(KEY));
+            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("public_key", encrypt));
+            int account_id = account.getAccount_id();
+            String phone = account.getPhone();
+            phone = AES.decrypt(phone, AES.hexToBytes(KEY));
+            String email = account.getEmail();
+            if (email == null) {
+                email = "无";
+            } else email = AES.decrypt(email, AES.hexToBytes(KEY));
+            Integer enterprise_type = account.getEnterprise_type();
+            String cnType = "";
+            if (enterprise_type != -1) {
+                cnType = getCNType(enterprise_type);
+            }
+            AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
+            AccountDto accountDto = new AccountDto(account_id, account.getAccount_name(), phone, email, cnType, account.getT_coin(), accountLimit.getT_limit());
+            accountDtoList.add(accountDto);
+        }
+        return CommonResponse.createForSuccess("获取企业信息成功",accountDtoList);
     }
 }

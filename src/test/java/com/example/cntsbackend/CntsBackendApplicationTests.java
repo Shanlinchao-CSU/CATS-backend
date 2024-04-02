@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -290,5 +291,14 @@ class CntsBackendApplicationTests {
         CommonResponse<List<AccountingRecordDto>> myCarbonAccounting = accountingRecordService.getMyCarbonAccounting(1);
         System.out.println(myCarbonAccounting.getData());
     }
+
+    @Test
+    public void getEnterpriseInfoByAddress() throws Exception {
+        List<String> list = new ArrayList<>();
+        list.add("123");
+        CommonResponse<List<AccountDto>> enterpriseInfoByAddress = accountService.getEnterpriseInfoByAddress(list);
+        System.out.println(enterpriseInfoByAddress.getData());
+    }
+
 
 }

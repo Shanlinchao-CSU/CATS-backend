@@ -57,4 +57,13 @@ public class AccountDto {
     }
 
 
+    public AccountDto(int account_id, String account_name, String phone, String email, String cnType, double t_coin, double t_limit) {
+        this.account_id = account_id;
+        this.account_name = account_name;
+        this.phone = phone;
+        this.email = email;
+        this.t_coin = t_coin;
+        this.enterprise_type = cnType;
+        this.t_limit = t_limit;
+    }
 }
