@@ -69,7 +69,7 @@ public class TransactionServiceImpl implements TransactionService {
         return CommonResponse.createForSuccess(transactionDtoList);
     }
 
-    public synchronized CommonResponse<String> CompleteTransaction(int account_id ,int quotaSale_id , double amount){
+    public CommonResponse<String> CompleteTransaction(int account_id ,int quotaSale_id , double amount){
         //获取买额度企业信息
         CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", account_id));
         Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
@@ -85,6 +85,9 @@ public class TransactionServiceImpl implements TransactionService {
         }
         if (account1 == null){
             return CommonResponse.createForError("卖额度企业用户不存在");
+        }
+        if(amount > quota){
+            return CommonResponse.createForError("购买额度失败,购买额度超额");
         }
         if(BigDecimalUtil.compareTo(account.getT_coin(),cost)>=0){
             //完成交易
