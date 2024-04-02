@@ -8,6 +8,7 @@ import com.example.cntsbackend.dto.QuotaSaleDto;
 import com.example.cntsbackend.dto.TransactionDto;
 import com.example.cntsbackend.service.RedisService;
 import com.example.cntsbackend.service.serviceimpl.*;
+import com.example.cntsbackend.util.AES;
 import com.example.cntsbackend.util.GenData;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
@@ -298,6 +299,39 @@ class CntsBackendApplicationTests {
         list.add("123");
         CommonResponse<List<AccountDto>> enterpriseInfoByAddress = accountService.getEnterpriseInfoByAddress(list);
         System.out.println(enterpriseInfoByAddress.getData());
+    }
+
+    //TODO: 解密TEST
+
+    /**
+     * 解密 TEST
+     * 使用默认密钥 DEFAULT_KEY 只能使用默认密钥
+     * @throws Exception 异常
+     */
+    @Test
+    public void decryptTest() throws Exception {
+        String context = "123";
+        String s2 = AES.decrypt(context);
+        System.out.println(s2);
+    }
+
+    private static final String DEFAULT_KEY = "2a34575d0f1b7cb39a2c117c0650311a4d3a6e4f507142b45cc3d144bd62ec41";
+    //TODO: 根据传入的密钥解密 TEST
+
+    /**
+     * 根据传入的密钥解密
+     * key为空时使用默认密钥 DEFAULT_KEY 可以使用自定义密钥
+     * @throws Exception 异常
+     */
+    @Test
+    public void decryptTest2() throws Exception {
+        String context = "123";
+        String key = "";
+        if (key.isEmpty()) {
+            key = DEFAULT_KEY;
+        }
+        String s2 = AES.decrypt(context, AES.hexToBytes(key));
+        System.out.println(s2);
     }
 
 
