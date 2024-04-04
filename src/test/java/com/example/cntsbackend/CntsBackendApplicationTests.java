@@ -343,4 +343,10 @@ class CntsBackendApplicationTests {
     }
 
 
+    @Test
+    public void GetTransactionHash() throws Exception {
+        CommonResponse<String> stringCommonResponse = transactionService.GetTransactionHash(1, "1231231312312312312321");
+        System.out.println(stringCommonResponse.getMessage());
+    }
+
 }

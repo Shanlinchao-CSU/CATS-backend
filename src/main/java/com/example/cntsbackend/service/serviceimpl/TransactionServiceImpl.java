@@ -139,4 +139,11 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
     }
+
+    public CommonResponse<String> GetTransactionHash(int transaction_id , String hash){
+        Transaction transaction = transactionMapper.selectOne(new QueryWrapper<Transaction>().eq("transaction_id", transaction_id));
+        transaction.setTransaction_hash(hash);
+        transactionMapper.updateById(transaction);
+        return CommonResponse.createForSuccess("获取交易hash成功");
+    }
 }

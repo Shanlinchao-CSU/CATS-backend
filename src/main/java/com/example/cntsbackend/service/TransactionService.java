@@ -14,4 +14,6 @@ public interface TransactionService {
     CommonResponse<List<TransactionDto>> getMyFinishedTransactionDatas(int account_id);
     //额度购买，第一个参数为买家id，第二个参数为额度发布信息的id，第三个参数为要买的额度
     CommonResponse<String> CompleteTransaction(int account_id ,int quotaSale_id , double amount);
+    //TODO(新加):后端获取交易hash,用户在交易完成之后需要调用这个函数
+    CommonResponse<String> GetTransactionHash(int transaction_id , String hash);
 }

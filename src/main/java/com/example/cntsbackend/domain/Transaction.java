@@ -18,6 +18,7 @@ public class Transaction {
     private int buyer_id;
     private int sale_id;
     private double cost;
+    private String transaction_hash;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date complete_time;
 
