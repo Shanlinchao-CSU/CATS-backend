@@ -46,7 +46,7 @@ public interface AccountService {
 //    CommonResponse<String> getInfo(int account_id,String public_key) throws Exception;
     //后端获取区块链相关信息(碳币、剩余额度,每次登录都要进行数据更新)
     CommonResponse<String> getT_coinAndT_limit(int account_id, double t_coin, double t_remain);
-    //TODO:(新加)后端获取区块链相关信息(碳额度,每次登录都要进行数据更新)
+    //后端获取区块链相关信息(碳额度,每次登录都要进行数据更新)
     CommonResponse<String> getT_limit(int account_id, double t_limit);
 
     //-----------------------------------管理员--------------------------------------

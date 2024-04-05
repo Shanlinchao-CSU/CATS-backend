@@ -179,6 +179,21 @@ public class GeneralController {
     }
 
     /**
+     * 后端获取区块链相关信息 ———— t_limit(碳额度)
+     *
+     * @param account_id 账号ID
+     * @param t_limit 碳额度
+     * @return 获取结果 CommonResponse<String>
+     */
+    @GetMapping("/general/block/info/t_limit")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
+    public CommonResponse<String> getT_limit(
+            @PathParam("account_id") int account_id,
+            @PathParam("t_limit") double t_limit) {
+        return accountService.getT_limit(account_id, t_limit);
+    }
+
+    /**
      * 验证数字签名
      *
      * @param signature 数字签名体
