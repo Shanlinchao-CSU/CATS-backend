@@ -358,6 +358,17 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
+    public CommonResponse<String> getT_limit(int account_id, double t_limit){
+        //更新用户的额度
+        AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
+        if(accountLimit != null){
+            accountLimit.setT_limit(t_limit);
+            accountLimitMapper.updateById(accountLimit);
+            return CommonResponse.createForSuccess("获取用户碳额度信息成功");
+        }else return CommonResponse.createForError("该用户不存在");
+
+    }
+
 
     //-------------------------------------------管理员------------------------------------------------------
 
@@ -385,7 +396,7 @@ public class AccountServiceImpl implements AccountService {
             accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type,public_key,file_address,secret_key));
             if(type == 1){
                 Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
-                accountLimitMapper.insert(new AccountLimit(account.getAccount_id(),500,500));
+                accountLimitMapper.insert(new AccountLimit(account.getAccount_id(),500,0));
             }
             return CommonResponse.createForSuccess("审核成功，同意注册");
         }else return CommonResponse.createForError("审核失败，该请求注册id不存在");

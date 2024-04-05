@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface AccountingRecordService {
     //管理员获取所有待审核的碳核算请求
-    CommonResponse<List<AccountingRecordDto>> getAllCarbonAccountingForReview();
+    CommonResponse<List<AccountingRecordDto>> getAllCarbonAccountingForReview() throws Exception;
     //管理员获取所有碳核算请求
     CommonResponse<List<AccountingRecordDto>> getAllCarbonAccounting();
     //(id为核算记录的id)管理员获取证明材料文件流

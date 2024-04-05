@@ -14,6 +14,7 @@ import com.example.cntsbackend.persistence.AccountMapper;
 import com.example.cntsbackend.persistence.AccountingRecordMapper;
 import com.example.cntsbackend.persistence.CMessageMapper;
 import com.example.cntsbackend.service.AccountingRecordService;
+import com.example.cntsbackend.util.AES;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,16 +39,22 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
     @Autowired
     private AccountLimitMapper accountLimitMapper;
 
-    public CommonResponse<List<AccountingRecordDto>> getAllCarbonAccountingForReview() {
+    private static final String KEY = "2a34575d0f1b7cb39a2c117c0650311a4d3a6e4f507142b45cc3d144bd62ec41";
+
+    public CommonResponse<List<AccountingRecordDto>> getAllCarbonAccountingForReview() throws Exception {
         List<AccountingRecord> accountingRecordList = accountingRecordMapper.selectList(new QueryWrapper<AccountingRecord>().eq("state", 1));
         List<AccountingRecordDto> accountingRecordDTOList = new ArrayList<>();
+        if(accountingRecordList == null){
+            return CommonResponse.createForSuccess("待审核碳请求为空",null);
+        }
         for (AccountingRecord accountingRecord : accountingRecordList) {
             int enterprise_id = accountingRecord.getEnterprise_id();
             Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
             String account_name = account.getAccount_name();
             Integer enterprise_type = account.getEnterprise_type();
             String s = "待审核";
-            AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(), s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null);
+            String public_key = AES.decrypt(account.getPublic_key(), AES.hexToBytes(KEY));
+            AccountingRecordDto accountingRecordDto = new AccountingRecordDto(accountingRecord.getId(),accountingRecord.getEnterprise_id(),accountingRecord.getMonth(),accountingRecord.getTime(), s,accountingRecord.getVariable_json(),accountingRecord.getResult(),accountingRecord.getConductor_id(),account_name,null,public_key);
             EnterpriseType.setDto(accountingRecordDto, enterprise_type);
             accountingRecordDTOList.add(accountingRecordDto);
         }
@@ -57,6 +64,9 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
     public CommonResponse<List<AccountingRecordDto>> getAllCarbonAccounting(){
         List<AccountingRecord> accountingRecordList = accountingRecordMapper.selectList(null);
         List<AccountingRecordDto> accountingRecordDTOList = new ArrayList<>();
+        if(accountingRecordList == null){
+            return CommonResponse.createForSuccess("碳请求为空",null);
+        }
         for (AccountingRecord accountingRecord : accountingRecordList) {
             int enterprise_id = accountingRecord.getEnterprise_id();
             Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
@@ -203,6 +213,9 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
     public CommonResponse<List<AccountingRecordDto>> getMyCarbonAccounting(int enterprise_id){
         List<AccountingRecord> accountingRecordList = accountingRecordMapper.selectList(new QueryWrapper<AccountingRecord>().eq("enterprise_id", enterprise_id));
         List<AccountingRecordDto> accountingRecordDTOList = new ArrayList<>();
+        if(accountingRecordList == null){
+            return CommonResponse.createForSuccess("该用户碳请求为空",null);
+        }
         for (AccountingRecord accountingRecord : accountingRecordList) {
             Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
             String account_name = account.getAccount_name();
@@ -232,6 +245,9 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
 
     public CommonResponse<String> ModifyMyCarbonAccounting(int id,AccountingRecord accountingRecord){
         AccountingRecord accountingRecord1 = accountingRecordMapper.selectOne(new QueryWrapper<AccountingRecord>().eq("id", id));
+        if(accountingRecord1 == null){
+            return CommonResponse.createForError("该碳核算记录不存在");
+        }
         int state = accountingRecord1.getState();
         if(state ==1){
             accountingRecord1.setMonth(accountingRecord.getMonth());
@@ -288,6 +304,9 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
 
     public CommonResponse<String> CarbonAccountingRequests(int id,boolean approve,int conductor_id){
         AccountingRecord accountingRecord = accountingRecordMapper.selectOne(new QueryWrapper<AccountingRecord>().eq("id", id));
+        if(accountingRecord == null){
+            return CommonResponse.createForError("该碳核算请求不存在");
+        }
         if(accountingRecord.getState() !=1){
             return CommonResponse.createForError("该请求已被处理");
         }else{

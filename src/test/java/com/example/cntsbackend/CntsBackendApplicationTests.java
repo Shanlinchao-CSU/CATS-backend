@@ -185,7 +185,7 @@ class CntsBackendApplicationTests {
     }
 
     @Test
-    public void getAllCarbonAccountingForReviewTest(){
+    public void getAllCarbonAccountingForReviewTest() throws Exception {
         CommonResponse<List<AccountingRecordDto>> allCarbonAccountingForReview = accountingRecordService.getAllCarbonAccountingForReview();
         System.out.println(allCarbonAccountingForReview.getData());
         System.out.println(allCarbonAccountingForReview.getData().get(0).getAccount_name());

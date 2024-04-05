@@ -61,7 +61,7 @@ public class AdministratorController {
      */
     @GetMapping("/administrator/accounting_record/review")
     @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
-    public CommonResponse<List<AccountingRecordDto>> getAllCarbonAccountingForReview() {
+    public CommonResponse<List<AccountingRecordDto>> getAllCarbonAccountingForReview() throws Exception {
         return accountingRecordService.getAllCarbonAccountingForReview();
     }
 
