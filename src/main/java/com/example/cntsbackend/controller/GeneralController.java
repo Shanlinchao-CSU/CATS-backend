@@ -167,7 +167,6 @@ public class GeneralController {
      * @param account_id 账号ID
      * @param t_coin 碳币
      * @param t_remain 剩余额度
-     * @param t_limit 碳额度
      * @return 获取结果 CommonResponse<String>
      */
     @GetMapping("/general/block/info/update")
@@ -175,9 +174,8 @@ public class GeneralController {
     public CommonResponse<String> getT_coinAndT_limit(
             @PathParam("account_id") int account_id,
             @PathParam("t_coin") double t_coin,
-            @PathParam("t_remain") double t_remain,
-            @PathParam("t_limit") double t_limit) {
-        return accountService.getT_coinAndT_limit(account_id, t_coin, t_remain, t_limit);
+            @PathParam("t_remain") double t_remain) {
+        return accountService.getT_coinAndT_limit(account_id, t_coin, t_remain);
     }
 
     /**

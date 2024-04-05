@@ -331,7 +331,7 @@ public class AccountServiceImpl implements AccountService {
 //        }
 //    }
 
-    public CommonResponse<String> getT_coinAndT_limit(int account_id, double t_coin, double t_remain,double t_limit){
+    public CommonResponse<String> getT_coinAndT_limit(int account_id, double t_coin, double t_remain){
         // 获取当前时间的上个月份
         YearMonth currentYearMonth = YearMonth.now();
         YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
@@ -344,9 +344,6 @@ public class AccountServiceImpl implements AccountService {
         UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("account_id",account_id);
         accountMapper.update(account,updateWrapper);
-        //更新用户的额度
-        AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
-        accountLimit.setT_limit(t_limit);
         //更新用户剩余额度
         CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", account_id).eq("month",previousMonthString));
         if(cMessage != null){
