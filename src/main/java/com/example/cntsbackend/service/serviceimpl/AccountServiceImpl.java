@@ -332,15 +332,11 @@ public class AccountServiceImpl implements AccountService {
 //        }
 //    }
 
-    public CommonResponse<String> getT_coinAndT_limit(BlockInfoDto blockInfoDto){
-        List<Integer> account_ids = blockInfoDto.getAccounts();
-        List<Double> t_coins = blockInfoDto.getCoins();
-        List<Double> t_remains = blockInfoDto.getRemains();
-
-        for (int i = 0; i < account_ids.size(); i++) {
-            int account_id = account_ids.get(i);
-            double t_coin = t_coins.get(i);
-            double t_remain = t_remains.get(i);
+    public CommonResponse<String> getT_coinAndT_limit(List<BlockInfoDto> blockInfoDto){
+        for (BlockInfoDto blockInfoDto1 : blockInfoDto) {
+            int account_id = blockInfoDto1.getAccount();
+            double t_coin = blockInfoDto1.getCoin();
+            double t_remain = blockInfoDto1.getRemain();
             // 获取当前时间的上个月份
             YearMonth currentYearMonth = YearMonth.now();
             YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
@@ -366,7 +362,6 @@ public class AccountServiceImpl implements AccountService {
         }
 
         return CommonResponse.createForSuccess("获取用户碳币信息成功");
-
     }
 
     public CommonResponse<String> getT_limit(int account_id, double t_limit){

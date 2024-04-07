@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.cntsbackend.service.AccountService;
 import org.web3j.abi.datatypes.Bool;
 
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -170,7 +171,7 @@ public class GeneralController {
     @GetMapping("/general/block/info/update")
     @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> getT_coinAndT_limit(
-            @RequestBody BlockInfoDto blockInfoDto) {
+            @RequestBody List<BlockInfoDto> blockInfoDto) {
         return accountService.getT_coinAndT_limit(blockInfoDto);
     }
 
