@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.*;
 import com.example.cntsbackend.dto.AccountDto;
+import com.example.cntsbackend.dto.BlockInfoDto;
 import com.example.cntsbackend.persistence.*;
 import com.example.cntsbackend.service.AccountService;
 import com.example.cntsbackend.service.RedisService;
@@ -331,30 +332,40 @@ public class AccountServiceImpl implements AccountService {
 //        }
 //    }
 
-    public CommonResponse<String> getT_coinAndT_limit(int account_id, double t_coin, double t_remain){
-        // 获取当前时间的上个月份
-        YearMonth currentYearMonth = YearMonth.now();
-        YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
-        // 格式化为"yyyy-MM"的字符串
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
-        String previousMonthString = previousYearMonth.format(formatter);
-        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
-        //更新用户表中的碳币
-        account.setT_coin(t_coin);
-        UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("account_id",account_id);
-        accountMapper.update(account,updateWrapper);
-        //更新用户剩余额度
-        CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", account_id).eq("month",previousMonthString));
-        if(cMessage != null){
-            cMessage.setT_remain(t_remain);
-            UpdateWrapper<CMessage> updateWrapper1 = new UpdateWrapper<>();
-            updateWrapper1.eq("account_id",account_id);
-            cMessageMapper.update(cMessage,updateWrapper1);
-            return CommonResponse.createForSuccess("获取用户碳币信息成功");
-        }else {
-            return CommonResponse.createForError("该用户还未进行碳核算");
+    public CommonResponse<String> getT_coinAndT_limit(BlockInfoDto blockInfoDto){
+        List<Integer> account_ids = blockInfoDto.getAccounts();
+        List<Double> t_coins = blockInfoDto.getCoins();
+        List<Double> t_remains = blockInfoDto.getRemains();
+
+        for (int i = 0; i < account_ids.size(); i++) {
+            int account_id = account_ids.get(i);
+            double t_coin = t_coins.get(i);
+            double t_remain = t_remains.get(i);
+            // 获取当前时间的上个月份
+            YearMonth currentYearMonth = YearMonth.now();
+            YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
+            // 格式化为"yyyy-MM"的字符串
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+            String previousMonthString = previousYearMonth.format(formatter);
+            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
+            //更新用户表中的碳币
+            account.setT_coin(t_coin);
+            UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("account_id",account_id);
+            accountMapper.update(account,updateWrapper);
+            //更新用户剩余额度
+            CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", account_id).eq("month",previousMonthString));
+            if(cMessage != null){
+                cMessage.setT_remain(t_remain);
+                UpdateWrapper<CMessage> updateWrapper1 = new UpdateWrapper<>();
+                updateWrapper1.eq("account_id",account_id);
+                cMessageMapper.update(cMessage,updateWrapper1);
+            }else {
+                return CommonResponse.createForError("该用户还未进行碳核算");
+            }
         }
+
+        return CommonResponse.createForSuccess("获取用户碳币信息成功");
 
     }
 
