@@ -162,18 +162,6 @@ public class GeneralController {
             return CommonResponse.createForError("验证码错误");
     }
 
-    /**
-     * 后端获取区块链相关信息(碳币、碳额度、剩余额度,每次登录都要进行数据更新)
-     *
-     * @param blockInfoDto 区块链信息
-     * @return 获取结果 CommonResponse<String>
-     */
-    @GetMapping("/general/block/info/update")
-    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
-    public CommonResponse<String> getT_coinAndT_limit(
-            @RequestBody List<BlockInfoDto> blockInfoDto) {
-        return accountService.getT_coinAndT_limit(blockInfoDto);
-    }
 
     /**
      * 后端获取区块链相关信息 ———— t_limit(碳额度)
@@ -188,6 +176,19 @@ public class GeneralController {
             @PathParam("account_id") int account_id,
             @PathParam("t_limit") double t_limit) {
         return accountService.getT_limit(account_id, t_limit);
+    }
+
+    /**
+     * 后端获取区块链相关信息(碳币、碳额度、剩余额度,每次登录都要进行数据更新)
+     *
+     * @param blockInfoDto 区块链信息
+     * @return 获取结果 CommonResponse<String>
+     */
+    @PostMapping("/general/block/info/update")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
+    public CommonResponse<String> getT_coinAndT_limit(
+            @RequestBody List<BlockInfoDto> blockInfoDto) {
+        return accountService.getT_coinAndT_limit(blockInfoDto);
     }
 
     /**

@@ -356,11 +356,8 @@ public class AccountServiceImpl implements AccountService {
                 UpdateWrapper<CMessage> updateWrapper1 = new UpdateWrapper<>();
                 updateWrapper1.eq("account_id",account_id);
                 cMessageMapper.update(cMessage,updateWrapper1);
-            }else {
-                return CommonResponse.createForError("该用户还未进行碳核算");
             }
         }
-
         return CommonResponse.createForSuccess("获取用户碳币信息成功");
     }
 
