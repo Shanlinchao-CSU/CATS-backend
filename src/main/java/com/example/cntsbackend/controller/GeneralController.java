@@ -4,6 +4,7 @@ import com.example.cntsbackend.annotation.LOG;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.Signature;
+import com.example.cntsbackend.dto.BlockInfoDto;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -91,7 +92,6 @@ public class GeneralController {
     public CommonResponse<Map> loginById(
             @PathParam("id") String id,
             @PathParam("password") String password) throws Exception {
-        System.out.println(id+password);
         return accountService.loginById(id, password);
     }
 
@@ -164,18 +164,14 @@ public class GeneralController {
     /**
      * 后端获取区块链相关信息(碳币、碳额度、剩余额度,每次登录都要进行数据更新)
      *
-     * @param account_id 账号ID
-     * @param t_coin 碳币
-     * @param t_remain 剩余额度
+     * @param blockInfoDto 区块链信息
      * @return 获取结果 CommonResponse<String>
      */
     @GetMapping("/general/block/info/update")
     @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> getT_coinAndT_limit(
-            @PathParam("account_id") int account_id,
-            @PathParam("t_coin") double t_coin,
-            @PathParam("t_remain") double t_remain) {
-        return accountService.getT_coinAndT_limit(account_id, t_coin, t_remain);
+            @RequestBody BlockInfoDto blockInfoDto) {
+        return accountService.getT_coinAndT_limit(blockInfoDto);
     }
 
     /**
