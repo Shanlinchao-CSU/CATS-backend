@@ -454,11 +454,10 @@ public class AccountServiceImpl implements AccountService {
     public CommonResponse<List<RegisterApplication>> getPendingReviewAccount() throws Exception {
         List<RegisterApplication> registerApplications = registerApplicationMapper.selectList(new QueryWrapper<RegisterApplication>().eq("state", 0));
         for (RegisterApplication registerApplication : registerApplications) {
-            String phone = registerApplication.getPhone();
-            phone = AES.decrypt(phone, AES.hexToBytes(KEY));
-            registerApplication.setPhone(phone);
+            String email = registerApplication.getEmail();
+            email = AES.decrypt(email, AES.hexToBytes(KEY));
+            registerApplication.setEmail(email);
             registerApplication.setPassword("");
-            registerApplication.setPublic_key("");
         }
         return CommonResponse.createForSuccess("查询未审核申请信息成功",registerApplications);
     }
