@@ -25,34 +25,34 @@ public class RegisterApplicationServiceImpl implements RegisterApplicationServic
     @Autowired
     private AccountMapper accountMapper;
     private static final String KEY = "2a34575d0f1b7cb39a2c117c0650311a4d3a6e4f507142b45cc3d144bd62ec41";
-    public CommonResponse<String> EnterpriseUserRegister(File file , String account_name , String password , String phone , int enterprise_type , int type ,String public_key) throws Exception {
+    public CommonResponse<String> EnterpriseUserRegister(File file , String account_name , String password , String email , int enterprise_type , int type ,String public_key) throws Exception {
         //检验手机是否已被提交注册过
-        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone));
-        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
+        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("email", email));
+        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
         String str= String.valueOf(file);
         // 保存文件到路径
         if(registerApplication!=null || account!=null){
             return CommonResponse.createForError();
         }else {
-            phone = AES.encrypt(phone, AES.hexToBytes(KEY));
+            email = AES.encrypt(email, AES.hexToBytes(KEY));
             password = AES.encrypt(password, AES.hexToBytes(KEY));
             public_key = AES.encrypt(public_key, AES.hexToBytes(KEY));
-            RegisterApplication registerApplication1 = new RegisterApplication(account_name,password,phone,type,str,enterprise_type,public_key);
+            RegisterApplication registerApplication1 = new RegisterApplication(account_name,password,email,type,str,enterprise_type,public_key);
             int i = registerApplicationMapper.insert(registerApplication1);
             return CommonResponse.createForSuccess("SUCCESS");
         }
     }
-    public CommonResponse<String> ThirdPartyRegulatorsRegister(File file ,String account_name ,String password ,String phone ,int type ) throws Exception {
-        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("phone", phone));
-        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
+    public CommonResponse<String> ThirdPartyRegulatorsRegister(File file ,String account_name ,String password ,String email ,int type ) throws Exception {
+        RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("email", email));
+        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
         String str= String.valueOf(file);
         if(registerApplication!=null || account!=null){
             return CommonResponse.createForError();
         }else {
-            phone = AES.encrypt(phone, AES.hexToBytes(KEY));
+            email = AES.encrypt(email, AES.hexToBytes(KEY));
             password = AES.encrypt(password, AES.hexToBytes(KEY));
             //-1为企业类型之外的编号
-            RegisterApplication registerApplication1 = new RegisterApplication(account_name,password,phone,type,str,-1);
+            RegisterApplication registerApplication1 = new RegisterApplication(account_name,password,email,type,str,-1);
             int i = registerApplicationMapper.insert(registerApplication1);
             return CommonResponse.createForSuccess("SUCCESS");
         }

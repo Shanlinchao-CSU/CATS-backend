@@ -23,10 +23,10 @@ public class RegisterApplication {
     private Integer state;
     private String public_key;
 
-    public RegisterApplication(String account_name, String password, String phone, Integer type, String file_address, Integer enterprise_type,String public_key) {
+    public RegisterApplication(String account_name, String password, String email, Integer type, String file_address, Integer enterprise_type,String public_key) {
         this.account_name = account_name;
         this.password = password;
-        this.phone = phone;
+        this.email = email;
         this.type = type;
         this.file_address = file_address;
         this.enterprise_type = enterprise_type;
