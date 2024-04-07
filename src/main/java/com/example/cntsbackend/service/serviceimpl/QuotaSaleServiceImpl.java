@@ -10,6 +10,7 @@ import com.example.cntsbackend.persistence.AccountingRecordMapper;
 import com.example.cntsbackend.persistence.CMessageMapper;
 import com.example.cntsbackend.persistence.QuotaSaleMapper;
 import com.example.cntsbackend.service.QuotaSaleService;
+import com.example.cntsbackend.util.AES;
 import com.example.cntsbackend.util.BigDecimalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class QuotaSaleServiceImpl implements QuotaSaleService {
     private AccountMapper accountMapper;
     @Autowired
     private AccountingRecordMapper accountingRecordMapper;
+    private static final String KEY = "2a34575d0f1b7cb39a2c117c0650311a4d3a6e4f507142b45cc3d144bd62ec41";
 
     public CommonResponse<String> PublishTransaction(int account_id , double quota , double unit_price) {
         // 获取当前时间的上个月份
@@ -103,7 +105,7 @@ public class QuotaSaleServiceImpl implements QuotaSaleService {
         return CommonResponse.createForSuccess("查询上月额度成功",quotaSaleList);
     }
 
-    public CommonResponse<List<QuotaSaleDto>> getAllRemain(){
+    public CommonResponse<List<QuotaSaleDto>> getAllRemain() throws Exception {
         // 获取当前时间的上个月份
         YearMonth currentYearMonth = YearMonth.now();
         YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
@@ -115,7 +117,9 @@ public class QuotaSaleServiceImpl implements QuotaSaleService {
         for (QuotaSale quotaSale : quotaSaleList) {
             int seller_id = quotaSale.getSeller_id();
             Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", seller_id));
-            QuotaSaleDto quotaSaleDto = new QuotaSaleDto(quotaSale.getId(), quotaSale.getQuota(), seller_id, quotaSale.getUnit_price(), quotaSale.getMonth(), account.getAccount_name());
+            String public_key = account.getPublic_key();
+            public_key = AES.decrypt(public_key,AES.hexToBytes(KEY));
+            QuotaSaleDto quotaSaleDto = new QuotaSaleDto(quotaSale.getId(), quotaSale.getQuota(), seller_id, quotaSale.getUnit_price(), quotaSale.getMonth(), account.getAccount_name(),public_key);
             quotaSaleDtoList.add(quotaSaleDto);
         }
         return CommonResponse.createForSuccess("获取所有用户余额成功",quotaSaleDtoList);

@@ -3,6 +3,7 @@ package com.example.cntsbackend.service;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.Account;
 import com.example.cntsbackend.domain.RegisterApplication;
+import com.example.cntsbackend.domain.UpdateAccount;
 import com.example.cntsbackend.dto.AccountDto;
 import com.example.cntsbackend.dto.BlockInfoDto;
 
@@ -35,6 +36,8 @@ public interface AccountService {
     CommonResponse<String> changeEmail(String email,int account_id) throws Exception;
     //用户修改个人信息(只能修改name、企业type并提供证明材料)(需要管理员审核)
     CommonResponse<String> updateAccountInfo(Account account);
+    //TODO：(新加)用户查看提交的修改记录
+    CommonResponse<UpdateAccount> GetMyUpdateAccountInfo(int account_id);
     //找回密码(使用手机号或邮箱号)
     CommonResponse<String> findPassword(String str,String password) throws Exception;
     //验证数字签名

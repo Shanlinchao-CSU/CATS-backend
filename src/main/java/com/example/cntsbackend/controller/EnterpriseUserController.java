@@ -78,7 +78,7 @@ public class EnterpriseUserController {
      */
     @GetMapping("/enterprise/transaction/remain")
     @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
-    public CommonResponse<List<QuotaSaleDto>> getAllRemain() {
+    public CommonResponse<List<QuotaSaleDto>> getAllRemain() throws Exception {
         return quotaSaleService.getAllRemain();
     }
 

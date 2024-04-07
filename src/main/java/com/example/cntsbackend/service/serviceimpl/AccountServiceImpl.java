@@ -121,9 +121,11 @@ public class AccountServiceImpl implements AccountService {
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
             String phone = account.getPhone();
+            String public_key = account.getPublic_key();
             phone = AES.decrypt(phone, AES.hexToBytes(KEY));
             email = AES.decrypt(email, AES.hexToBytes(KEY));
-            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit);
+            public_key = AES.decrypt(public_key,AES.hexToBytes(KEY));
+            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit,public_key);
             map.put("Account",accountDto);
             map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
@@ -151,7 +153,9 @@ public class AccountServiceImpl implements AccountService {
             if(email != null){
                 email = AES.decrypt(email, AES.hexToBytes(KEY));
             }
-            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit);
+            String public_key = account.getPublic_key();
+            public_key = AES.decrypt(public_key,AES.hexToBytes(KEY));
+            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit,public_key);
             map.put("Account",accountDto);
             map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
@@ -185,7 +189,9 @@ public class AccountServiceImpl implements AccountService {
             if(email != null){
                 email = AES.decrypt(email, AES.hexToBytes(KEY));
             }
-            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit);
+            String public_key = account.getPublic_key();
+            public_key = AES.decrypt(public_key,AES.hexToBytes(KEY));
+            AccountDto accountDto = new AccountDto(account.getAccount_id(),account.getAccount_name(),phone,email,account.getType(),account.getFile(),account.getT_coin(),cnType,t_limit,public_key);
             map.put("Account",accountDto);
             map.put("token",token);
             redisService.setToken(token,account.getAccount_id());
@@ -257,6 +263,13 @@ public class AccountServiceImpl implements AccountService {
         updateAccountMapper.insert(updateAccount);
 
         return CommonResponse.createForSuccess("提交修改信息成功，等待审核");
+    }
+
+    public CommonResponse<UpdateAccount> GetMyUpdateAccountInfo(int account_id){
+        UpdateAccount updateAccount = updateAccountMapper.selectOne(new QueryWrapper<UpdateAccount>().eq("account_id", account_id));
+        if(updateAccount == null){
+            return CommonResponse.createForError("该用户并未有提交修改记录");
+        }else return CommonResponse.createForSuccess("获取提交修改记录成功",updateAccount);
     }
 
     public CommonResponse<String> findPassword(String str,String password) throws Exception {
@@ -398,7 +411,7 @@ public class AccountServiceImpl implements AccountService {
             }
             accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type,public_key,file_address,secret_key));
             if(type == 1){
-                Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("phone", phone));
+                Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
                 accountLimitMapper.insert(new AccountLimit(account.getAccount_id(),500,0));
             }
             return CommonResponse.createForSuccess("审核成功，同意注册");

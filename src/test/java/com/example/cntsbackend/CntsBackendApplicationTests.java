@@ -38,6 +38,7 @@ class CntsBackendApplicationTests {
     private RedisServiceImpl redisServer;
     @Autowired
     private GenData genData;
+    private static final String KEY = "2a34575d0f1b7cb39a2c117c0650311a4d3a6e4f507142b45cc3d144bd62ec41";
 
     @Test
     void contextLoads() {
@@ -348,5 +349,26 @@ class CntsBackendApplicationTests {
 //        CommonResponse<String> stringCommonResponse = transactionService.GetTransactionHash(1, "1231231312312312312321");
 //        System.out.println(stringCommonResponse.getMessage());
 //    }
+
+    @Test
+    public void encrypt() throws Exception {
+        String decrypt = AES.decrypt("", AES.hexToBytes(KEY));
+        if(decrypt.equals("")){
+            System.out.println("解密成功");
+        }
+        System.out.println(111111111);
+        System.out.println("decrypt"+decrypt);
+
+        String encrypt = AES.encrypt("", AES.hexToBytes(KEY));
+        System.out.println(222222222);
+        System.out.println("encrypt"+encrypt);
+    }
+
+    @Test
+    public void GetMyUpdateAccountInfo() throws Exception {
+        CommonResponse<UpdateAccount> updateAccountCommonResponse = accountService.GetMyUpdateAccountInfo(1);
+        System.out.println(updateAccountCommonResponse.getMessage());
+        System.out.println(updateAccountCommonResponse.getData());
+    }
 
 }
