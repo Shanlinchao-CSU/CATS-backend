@@ -8,10 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,6 +16,7 @@ import java.util.List;
  * DataAuditors 数据审核员controller
  */
 @RestController
+@RequestMapping("/api")
 public class DataAuditorsController {
 
     @Autowired
@@ -41,12 +39,25 @@ public class DataAuditorsController {
         return accountingRecordService.DataAuditorsGetMyCarbonAccounting(account_id);
     }
 
+    /**
+     * 数据审核员审核
+     *
+     * @param id    碳请求的id
+     * @return    返回审核结果
+     */
+    @GetMapping("/dataAuditors/verify_result")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
+    public CommonResponse<Double> VerifyResult(
+            @PathParam("id") int id) throws JsonProcessingException {
+        return accountingRecordService.CarbonAccounting(id);
+    }
+
 
     /**
      * 数据审核员审核
      *
      * @param account_id    数据审核员id
-     * @return              返回所有待审核的碳核算请求
+     * @return              返回审核结果
      */
     @PostMapping("/dataAuditors/accounting/{account_id}")
     @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
@@ -73,11 +84,5 @@ public class DataAuditorsController {
         return accountingRecordService.CarbonAccountingRequests(id, approve, conductor_id);
     }
 
-    @GetMapping("/dataAuditors/verify_result")
-    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
-    public CommonResponse<Double> VerifyResult(
-            @PathParam("id") int id) throws JsonProcessingException {
-        return accountingRecordService.CarbonAccounting(id);
-    }
 
 }

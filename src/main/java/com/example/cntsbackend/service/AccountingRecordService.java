@@ -23,7 +23,7 @@ public interface AccountingRecordService {
     CommonResponse<String> SubmitCarbonAccounting(int enterprise_id, String variable_json, String result, File file);
     //用户查看以往自己的碳核算记录
     CommonResponse<List<AccountingRecordDto>> getMyCarbonAccounting(int enterprise_id);
-    //TODO:(新加,参数为碳核算id)数据审核员审核
+    //(参数为碳核算id)数据审核员审核
     CommonResponse<Double> CarbonAccounting(int id) throws JsonProcessingException;
 
     //(id为碳核算记录的id)用户取消碳核算记录(未被审核)

@@ -29,6 +29,7 @@ import java.util.List;
  * EnterpriseUser 企业用户controller
  */
 @RestController
+@RequestMapping("/api")
 public class EnterpriseUserController {
 
     @Autowired
@@ -107,6 +108,19 @@ public class EnterpriseUserController {
     public CommonResponse<UpdateAccount> GetMyUpdateAccountInfo(
             @PathVariable("account_id") int account_id) {
         return accountService.GetMyUpdateAccountInfo(account_id);
+    }
+
+    /**
+     * 获取企业上个月还能出售的额度
+     *
+     * @param account_id 企业ID
+     * @return 企业上个月还能出售的额度 CommonResponse<Double>
+     */
+    @GetMapping("/enterprise/transaction/remain/{account_id}/last")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
+    public CommonResponse<Double> GetRemain(
+            @PathVariable("account_id") int account_id) {
+        return quotaSaleService.GetRemain(account_id);
     }
 
 
@@ -245,7 +259,7 @@ public class EnterpriseUserController {
      */
     @PostMapping("/enterprise/transaction/publish")
     @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
-    public CommonResponse<String> publishTransaction(
+    public CommonResponse<Double> publishTransaction(
             @PathParam("account_id") int account_id,
             @PathParam("quota") double quota,
             @PathParam("unit_price") double unit_price) {

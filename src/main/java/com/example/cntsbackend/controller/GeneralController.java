@@ -21,6 +21,7 @@ import java.util.logging.Logger;
  * 减少重复代码
  */
 @RestController
+@RequestMapping("/api")
 public class GeneralController {
 
     @Autowired

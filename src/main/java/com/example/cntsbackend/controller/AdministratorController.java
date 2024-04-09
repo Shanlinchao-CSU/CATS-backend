@@ -26,6 +26,7 @@ import java.util.List;
  * Administrator 管理员controller
  */
 @RestController
+@RequestMapping("/api")
 public class AdministratorController {
 
     @Autowired
