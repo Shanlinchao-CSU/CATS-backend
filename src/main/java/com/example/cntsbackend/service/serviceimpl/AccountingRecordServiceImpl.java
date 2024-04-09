@@ -161,15 +161,6 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
 //                    UpdateWrapper<AccountingRecord> updateWrapper = new UpdateWrapper<>();
 //                    updateWrapper.eq("id",id);
 //                    accountingRecordMapper.update(accountingRecord,updateWrapper);
-                    // 获取当前时间的上个月份
-                    YearMonth currentYearMonth = YearMonth.now();
-                    YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
-                    // 格式化为"yyyy-MM"的字符串
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
-                    String previousMonthString = previousYearMonth.format(formatter);
-                    //进行碳核算后cmessage表的更新
-                    CMessage cMessage = new CMessage(enterprise_id,t_limit-res,previousMonthString,t_limit);
-                    cMessageMapper.insert(cMessage);
 
                     return CommonResponse.createForSuccess("审核通过");
                 }else{
@@ -207,15 +198,6 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
 //                    UpdateWrapper<AccountingRecord> updateWrapper = new UpdateWrapper<>();
 //                    updateWrapper.eq("id",id);
 //                    accountingRecordMapper.update(accountingRecord,updateWrapper);
-                    // 获取当前时间的上个月份
-                    YearMonth currentYearMonth = YearMonth.now();
-                    YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
-                    // 格式化为"yyyy-MM"的字符串
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
-                    String previousMonthString = previousYearMonth.format(formatter);
-                    //进行碳核算后cmessage表的更新
-                    CMessage cMessage = new CMessage(enterprise_id,t_limit-res,previousMonthString,t_limit);
-                    cMessageMapper.insert(cMessage);
 
                     return CommonResponse.createForSuccess("审核通过");
                 }else{
@@ -345,11 +327,25 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
         if(accountingRecord == null){
             return CommonResponse.createForError("该碳核算请求不存在");
         }
+        int enterprise_id = accountingRecord.getEnterprise_id();
+        String result = accountingRecord.getResult();
+        double result_double = Double.parseDouble(result);
+        AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", enterprise_id));
+        double t_limit = accountLimit.getT_limit();
         if(accountingRecord.getState() !=1){
             return CommonResponse.createForError("该请求已被处理");
         }else{
             if(approve){
                 accountingRecord.setState(0);
+                // 获取当前时间的上个月份
+                YearMonth currentYearMonth = YearMonth.now();
+                YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
+                // 格式化为"yyyy-MM"的字符串
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+                String previousMonthString = previousYearMonth.format(formatter);
+                //进行碳核算后cmessage表的更新
+                CMessage cMessage = new CMessage(enterprise_id,t_limit-result_double,previousMonthString,t_limit);
+                cMessageMapper.insert(cMessage);
             }else accountingRecord.setState(2);
             accountingRecord.setConductor_id(conductor_id);
             accountingRecordMapper.updateById(accountingRecord);
