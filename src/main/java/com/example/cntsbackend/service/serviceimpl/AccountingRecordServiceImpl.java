@@ -2,12 +2,15 @@ package com.example.cntsbackend.service.serviceimpl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.common.EnterpriseType;
 import com.example.cntsbackend.domain.Account;
+import com.example.cntsbackend.domain.AccountLimit;
 import com.example.cntsbackend.domain.AccountingRecord;
+import com.example.cntsbackend.domain.CMessage;
 import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.persistence.AccountLimitMapper;
 import com.example.cntsbackend.persistence.AccountMapper;
@@ -111,86 +114,121 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
         }
     }
 
-//    public CommonResponse<String> CarbonAccounting(int id,int account_id){
-//        AccountingRecord accountingRecord = accountingRecordMapper.selectOne(new QueryWrapper<AccountingRecord>().eq("id", id));
-//        int state = accountingRecord.getState();
-//        if(state != 1){
-//            return CommonResponse.createForError("该请求已被处理");
-//        }else{
-//            //得到企业id
-//            int enterprise_id = accountingRecord.getEnterprise_id();
-//            //得到证明材料的字符串
-//            String variable_json = accountingRecord.getVariable_json();
-//            //得到用户提交的结果
-//            String result = accountingRecord.getResult();
-//            double result_double = Double.parseDouble(result);
-//            //将字符串解析为 JSON 对象
-//            JSONObject jsonObject=JSONObject.parseObject(variable_json);
-//
-//            Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
-//            AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", enterprise_id));
-//            double t_limit = accountLimit.getT_limit();
-//            Integer enterprise_type = account.getEnterprise_type();
-//            switch (enterprise_type) {
-//                case 1 :
-//                    break;
-//                case 2 :
-//                    JSONArray rec_cap_arr = jsonObject.getJSONArray("rec_cap_arr");
-//                    JSONArray rec_pra_arr = jsonObject.getJSONArray("rec_pra_arr");
-//                    JSONArray rep_cap_arr = jsonObject.getJSONArray("rep_cap_arr");
-//                    JSONArray rep_pra_arr = jsonObject.getJSONArray("rep_pra_arr");
-//                    double[] rec_cap_arr1 = jsonArrayToDoubleArray(rec_cap_arr);
-//                    double[] rec_pra_arr1 = jsonArrayToDoubleArray(rec_pra_arr);
-//                    double[] rep_cap_arr1 = jsonArrayToDoubleArray(rep_cap_arr);
-//                    double[] rep_pra_arr1 = jsonArrayToDoubleArray(rep_pra_arr);
-//                    double ef = jsonObject.getIntValue("ef");//区域排放因子
-//                    int rec_num = jsonObject.getIntValue("rec_num");//退役设备数量
-//                    int rep_num = jsonObject.getIntValue("rep_num");//修理设备数量
-//                    double el_net = jsonObject.getIntValue("el_net");//电网上网数量
-//                    double el_input = jsonObject.getIntValue("el_input");//自外省输入电量
-//                    double el_output = jsonObject.getIntValue("el_output");//自外省输出电量
-//                    double el_sell = jsonObject.getIntValue("el_sell");//售电量
-//                    double res = Model2ServiceImpl.Model2CarbonAccounting(rec_cap_arr1, rec_pra_arr1, rep_cap_arr1, rep_pra_arr1, el_net, el_input, el_output, el_sell, ef);
-//                    if(res == result_double){
-//                        //更新碳核算记录表
-//                        accountingRecord.setState(0);
-//                        accountingRecord.setConductor_id(account_id);
-//                        UpdateWrapper<AccountingRecord> updateWrapper = new UpdateWrapper<>();
-//                        updateWrapper.eq("id",id);
-//                        accountingRecordMapper.update(accountingRecord,updateWrapper);
-//                        // 获取当前时间的上个月份
-//                        YearMonth currentYearMonth = YearMonth.now();
-//                        YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
-//                        // 格式化为"yyyy-MM"的字符串
-//                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
-//                        String previousMonthString = previousYearMonth.format(formatter);
-//                        //进行碳核算后cmessage表的更新
-//                        CMessage cMessage = new CMessage(enterprise_id,t_limit-res,previousMonthString,t_limit);
-//                        cMessageMapper.insert(cMessage);
-//
-//                        return CommonResponse.createForSuccess("审核通过");
-//                    }else{
-//                        accountingRecord.setState(2);
-//                        accountingRecord.setConductor_id(account_id);
-//                        UpdateWrapper<AccountingRecord> updateWrapper = new UpdateWrapper<>();
-//                        updateWrapper.eq("id",id);
-//                        accountingRecordMapper.update(accountingRecord,updateWrapper);
-//                        return CommonResponse.createForError("审核失败");
-//                    }
-//                    break;
-//                case 3 :
-//                case 4 :
-//                case 5 :
-//                case 6 :
-//                case 7 :
-//                case 8 :
-//                case 9 :break;
-//                case 10 :
-//
-//
-//            }
-//        }
-//    }
+    public CommonResponse<String> CarbonAccounting(int id){
+        AccountingRecord accountingRecord = accountingRecordMapper.selectOne(new QueryWrapper<AccountingRecord>().eq("id", id));
+        if(accountingRecord==null){
+            return CommonResponse.createForError("该碳核算请求不存在");
+        }
+        //得到企业id
+        int enterprise_id = accountingRecord.getEnterprise_id();
+        //得到证明材料的字符串
+        String variable_json = accountingRecord.getVariable_json();
+        //得到用户提交的结果
+        String result = accountingRecord.getResult();
+        double result_double = Double.parseDouble(result);
+        //将字符串解析为 JSON 对象
+        JSONObject jsonObject=JSONObject.parseObject(variable_json);
+
+        Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", enterprise_id));
+        AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", enterprise_id));
+        double t_limit = accountLimit.getT_limit();
+        Integer enterprise_type = account.getEnterprise_type();
+        double res = 0;
+        switch (enterprise_type) {
+            case 0 :
+                break;
+            case 1 :
+                JSONArray rec_cap_arr = jsonObject.getJSONArray("rec_cap_arr");
+                JSONArray rec_pra_arr = jsonObject.getJSONArray("rec_pra_arr");
+                JSONArray rep_cap_arr = jsonObject.getJSONArray("rep_cap_arr");
+                JSONArray rep_pra_arr = jsonObject.getJSONArray("rep_pra_arr");
+                double[] rec_cap_arr1 = jsonArrayToDoubleArray(rec_cap_arr);
+                double[] rec_pra_arr1 = jsonArrayToDoubleArray(rec_pra_arr);
+                double[] rep_cap_arr1 = jsonArrayToDoubleArray(rep_cap_arr);
+                double[] rep_pra_arr1 = jsonArrayToDoubleArray(rep_pra_arr);
+                double ef = jsonObject.getDoubleValue("ef");//区域排放因子
+                int rec_num = jsonObject.getIntValue("rec_num");//退役设备数量
+                int rep_num = jsonObject.getIntValue("rep_num");//修理设备数量
+                double el_net = jsonObject.getDoubleValue("el_net");//电网上网数量
+                double el_input = jsonObject.getDoubleValue("el_input");//自外省输入电量
+                double el_output = jsonObject.getDoubleValue("el_output");//自外省输出电量
+                double el_sell = jsonObject.getDoubleValue("el_sell");//售电量
+                res = Model2ServiceImpl.Model2CarbonAccounting(rec_cap_arr1, rec_pra_arr1, rep_cap_arr1, rep_pra_arr1, el_net, el_input, el_output, el_sell, ef);
+                if(res == result_double){
+//                    //更新碳核算记录表
+//                    accountingRecord.setState(0);
+//                    accountingRecord.setConductor_id(account_id);
+//                    UpdateWrapper<AccountingRecord> updateWrapper = new UpdateWrapper<>();
+//                    updateWrapper.eq("id",id);
+//                    accountingRecordMapper.update(accountingRecord,updateWrapper);
+                    // 获取当前时间的上个月份
+                    YearMonth currentYearMonth = YearMonth.now();
+                    YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
+                    // 格式化为"yyyy-MM"的字符串
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+                    String previousMonthString = previousYearMonth.format(formatter);
+                    //进行碳核算后cmessage表的更新
+                    CMessage cMessage = new CMessage(enterprise_id,t_limit-res,previousMonthString,t_limit);
+                    cMessageMapper.insert(cMessage);
+
+                    return CommonResponse.createForSuccess("审核通过");
+                }else{
+//                    accountingRecord.setState(2);
+//                    accountingRecord.setConductor_id(account_id);
+//                    UpdateWrapper<AccountingRecord> updateWrapper = new UpdateWrapper<>();
+//                    updateWrapper.eq("id",id);
+//                    accountingRecordMapper.update(accountingRecord,updateWrapper);
+                    return CommonResponse.createForError("审核失败");
+                }
+            case 2 :
+            case 3 :
+            case 4 :
+            case 5 :
+            case 6 :
+            case 7 :
+            case 8 :break;
+            case 9 :
+                JSONArray fuelValueArr = jsonObject.getJSONArray("fuelValueArr");
+                JSONArray bioFuelValueArr = jsonObject.getJSONArray("bioFuelValueArr");
+                JSONArray bioFuelNCVArr = jsonObject.getJSONArray("bioFuelNCVArr");
+                JSONArray bioFuelBFArr = jsonObject.getJSONArray("bioFuelBFArr");
+                double[] fuelValueArr1 = jsonArrayToDoubleArray(fuelValueArr);
+                double[] bioFuelValueArr1 = jsonArrayToDoubleArray(bioFuelValueArr);
+                double[] bioFuelNCVArr1 = jsonArrayToDoubleArray(bioFuelNCVArr);
+                double[] bioFuelBFArr1 = jsonArrayToDoubleArray(bioFuelBFArr);
+                double ADElec = jsonObject.getDoubleValue("ADElec");//企业的净购入电量（MWh）
+                double region = jsonObject.getIntValue("region");//区域电网年平均供电排放因子（tCO2/MWh）
+                double ADHeat = jsonObject.getIntValue("ADHeat");//企业净购入的热力（GJ）
+                res = Model1ServiceImpl.Model1CarbonAccounting(fuelValueArr1, bioFuelValueArr1, bioFuelNCVArr1, bioFuelBFArr1, ADElec, region, ADHeat);
+                if(res == result_double){
+//                    //更新碳核算记录表
+//                    accountingRecord.setState(0);
+//                    accountingRecord.setConductor_id(account_id);
+//                    UpdateWrapper<AccountingRecord> updateWrapper = new UpdateWrapper<>();
+//                    updateWrapper.eq("id",id);
+//                    accountingRecordMapper.update(accountingRecord,updateWrapper);
+                    // 获取当前时间的上个月份
+                    YearMonth currentYearMonth = YearMonth.now();
+                    YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
+                    // 格式化为"yyyy-MM"的字符串
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+                    String previousMonthString = previousYearMonth.format(formatter);
+                    //进行碳核算后cmessage表的更新
+                    CMessage cMessage = new CMessage(enterprise_id,t_limit-res,previousMonthString,t_limit);
+                    cMessageMapper.insert(cMessage);
+
+                    return CommonResponse.createForSuccess("审核通过");
+                }else{
+//                    accountingRecord.setState(2);
+//                    accountingRecord.setConductor_id(account_id);
+//                    UpdateWrapper<AccountingRecord> updateWrapper = new UpdateWrapper<>();
+//                    updateWrapper.eq("id",id);
+//                    accountingRecordMapper.update(accountingRecord,updateWrapper);
+                    return CommonResponse.createForError("审核失败");
+                }
+        }
+        return CommonResponse.createForError("模型不存在,审核失败");
+    }
 
     public CommonResponse<String> SubmitCarbonAccounting(int enterprise_id,String variable_json,String result,File file){
         // 获取当前时间的上个月份
@@ -315,9 +353,10 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
             }else accountingRecord.setState(2);
             accountingRecord.setConductor_id(conductor_id);
             accountingRecordMapper.updateById(accountingRecord);
-            return CommonResponse.createForSuccess("审核碳请求成功");
+            return CommonResponse.createForSuccess("审核碳核算请求成功");
         }
     }
 
 
 }
+

@@ -3,6 +3,7 @@ package com.example.cntsbackend.service;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.AccountingRecord;
 import com.example.cntsbackend.dto.AccountingRecordDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,8 @@ public interface AccountingRecordService {
     CommonResponse<String> SubmitCarbonAccounting(int enterprise_id, String variable_json, String result, File file);
     //用户查看以往自己的碳核算记录
     CommonResponse<List<AccountingRecordDto>> getMyCarbonAccounting(int enterprise_id);
-    //数据审核员审核
-//    CommonResponse<String> CarbonAccounting(int id,int account_id) throws JsonProcessingException;
+    //TODO:(新加,参数为碳核算id)数据审核员审核
+    CommonResponse<String> CarbonAccounting(int id) throws JsonProcessingException;
 
     //(id为碳核算记录的id)用户取消碳核算记录(未被审核)
     CommonResponse<String> CancelMyCarbonAccounting(int id);
