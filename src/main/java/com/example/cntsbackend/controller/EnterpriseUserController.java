@@ -5,6 +5,7 @@ import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.AccountingRecord;
 import com.example.cntsbackend.domain.QuotaSale;
 import com.example.cntsbackend.domain.Transaction;
+import com.example.cntsbackend.domain.UpdateAccount;
 import com.example.cntsbackend.dto.AccountDto;
 import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.dto.QuotaSaleDto;
@@ -94,6 +95,20 @@ public class EnterpriseUserController {
             @PathVariable("enterprise_id") int enterprise_id) {
         return accountingRecordService.getMyCarbonAccounting(enterprise_id);
     }
+
+    /**
+     * 用户查看提交的修改记录
+     *
+     * @param account_id 账号ID
+     * @return 修改记录 CommonResponse<UpdateAccount>
+     */
+    @GetMapping("/enterprise/update_account/{account_id}")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
+    public CommonResponse<UpdateAccount> GetMyUpdateAccountInfo(
+            @PathVariable("account_id") int account_id) {
+        return accountService.GetMyUpdateAccountInfo(account_id);
+    }
+
 
 
     /**
