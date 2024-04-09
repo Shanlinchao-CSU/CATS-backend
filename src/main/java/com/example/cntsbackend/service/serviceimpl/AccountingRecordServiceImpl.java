@@ -238,7 +238,7 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
         String previousMonthString = previousYearMonth.format(formatter);
         //获取当前时间
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formatedDateTime = format.format(new Date());
         Date timestamp = Timestamp.valueOf(formatedDateTime);
         //获取文件

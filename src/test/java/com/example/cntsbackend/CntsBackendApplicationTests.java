@@ -6,6 +6,7 @@ import com.example.cntsbackend.dto.AccountDto;
 import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.dto.QuotaSaleDto;
 import com.example.cntsbackend.dto.TransactionDto;
+import com.example.cntsbackend.service.QuotaSaleService;
 import com.example.cntsbackend.service.RedisService;
 import com.example.cntsbackend.service.serviceimpl.*;
 import com.example.cntsbackend.util.AES;
@@ -288,6 +289,11 @@ class CntsBackendApplicationTests {
 //    }
 
 
+    @Test
+    public void mutest(){
+        CommonResponse<List<QuotaSale>> sale = quotaSaleService.getRemain(31);
+        System.out.println(sale);
+    }
     @Test
     public void getMyCarbonAccounting(){
         CommonResponse<List<AccountingRecordDto>> myCarbonAccounting = accountingRecordService.getMyCarbonAccounting(1);

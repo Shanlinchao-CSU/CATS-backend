@@ -4,6 +4,7 @@ import com.example.cntsbackend.annotation.LOG;
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.dto.AccountingRecordDto;
 import com.example.cntsbackend.service.AccountingRecordService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,6 +56,13 @@ public class DataAuditorsController {
             @PathParam("approve") boolean approve,
             @PathParam("conductor_id") int conductor_id) {
         return accountingRecordService.CarbonAccountingRequests(id, approve, conductor_id);
+    }
+
+    @GetMapping("/dataAuditors/verify_result")
+    @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
+    public CommonResponse<String> VerifyResult(
+            @PathParam("id") int id) throws JsonProcessingException {
+        return accountingRecordService.CarbonAccounting(id);
     }
 
 }
