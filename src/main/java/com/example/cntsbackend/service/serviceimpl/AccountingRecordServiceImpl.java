@@ -114,10 +114,10 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
         }
     }
 
-    public CommonResponse<String> CarbonAccounting(int id){
+    public CommonResponse<Double> CarbonAccounting(int id){
         AccountingRecord accountingRecord = accountingRecordMapper.selectOne(new QueryWrapper<AccountingRecord>().eq("id", id));
         if(accountingRecord==null){
-            return CommonResponse.createForError("该碳核算请求不存在");
+            return CommonResponse.createForError("该碳核算请求不存在",0.0);
         }
         //得到企业id
         int enterprise_id = accountingRecord.getEnterprise_id();
@@ -154,7 +154,7 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
                 double el_output = jsonObject.getDoubleValue("el_output");//自外省输出电量
                 double el_sell = jsonObject.getDoubleValue("el_sell");//售电量
                 res = Model2ServiceImpl.Model2CarbonAccounting(rec_cap_arr1, rec_pra_arr1, rep_cap_arr1, rep_pra_arr1, el_net, el_input, el_output, el_sell, ef);
-                if(res == result_double){
+                if(Math.abs(res - result_double) < 0.01){
 //                    //更新碳核算记录表
 //                    accountingRecord.setState(0);
 //                    accountingRecord.setConductor_id(account_id);
@@ -162,14 +162,14 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
 //                    updateWrapper.eq("id",id);
 //                    accountingRecordMapper.update(accountingRecord,updateWrapper);
 
-                    return CommonResponse.createForSuccess("审核通过");
+                    return CommonResponse.createForSuccess("审核通过",0.0);
                 }else{
 //                    accountingRecord.setState(2);
 //                    accountingRecord.setConductor_id(account_id);
 //                    UpdateWrapper<AccountingRecord> updateWrapper = new UpdateWrapper<>();
 //                    updateWrapper.eq("id",id);
 //                    accountingRecordMapper.update(accountingRecord,updateWrapper);
-                    return CommonResponse.createForError("审核失败");
+                    return CommonResponse.createForError("审核失败",res);
                 }
             case 2 :
             case 3 :
@@ -191,7 +191,7 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
                 double region = jsonObject.getIntValue("region");//区域电网年平均供电排放因子（tCO2/MWh）
                 double ADHeat = jsonObject.getIntValue("ADHeat");//企业净购入的热力（GJ）
                 res = Model1ServiceImpl.Model1CarbonAccounting(fuelValueArr1, bioFuelValueArr1, bioFuelNCVArr1, bioFuelBFArr1, ADElec, region, ADHeat);
-                if(res == result_double){
+                if(Math.abs(res - result_double) < 0.01){
 //                    //更新碳核算记录表
 //                    accountingRecord.setState(0);
 //                    accountingRecord.setConductor_id(account_id);
@@ -199,17 +199,17 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
 //                    updateWrapper.eq("id",id);
 //                    accountingRecordMapper.update(accountingRecord,updateWrapper);
 
-                    return CommonResponse.createForSuccess("审核通过");
+                    return CommonResponse.createForSuccess("审核通过",0.0);
                 }else{
 //                    accountingRecord.setState(2);
 //                    accountingRecord.setConductor_id(account_id);
 //                    UpdateWrapper<AccountingRecord> updateWrapper = new UpdateWrapper<>();
 //                    updateWrapper.eq("id",id);
 //                    accountingRecordMapper.update(accountingRecord,updateWrapper);
-                    return CommonResponse.createForError("审核失败");
+                    return CommonResponse.createForError("审核失败",res);
                 }
         }
-        return CommonResponse.createForError("模型不存在,审核失败");
+        return CommonResponse.createForError("模型不存在,审核失败",0.0);
     }
 
     public CommonResponse<String> SubmitCarbonAccounting(int enterprise_id,String variable_json,String result,File file){

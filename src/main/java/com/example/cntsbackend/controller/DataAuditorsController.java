@@ -60,7 +60,7 @@ public class DataAuditorsController {
 
     @GetMapping("/dataAuditors/verify_result")
     @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
-    public CommonResponse<String> VerifyResult(
+    public CommonResponse<Double> VerifyResult(
             @PathParam("id") int id) throws JsonProcessingException {
         return accountingRecordService.CarbonAccounting(id);
     }
