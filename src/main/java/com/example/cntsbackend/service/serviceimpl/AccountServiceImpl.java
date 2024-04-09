@@ -513,7 +513,8 @@ public class AccountServiceImpl implements AccountService {
         for (CMessage cMessage : cMessageList) {
             int account_id = cMessage.getAccount_id();
             double t_remain = cMessage.getT_remain();
-            double t_limit = cMessage.getT_limit();
+            AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
+            double t_limit = accountLimit.getT_limit();
             Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("account_id", account_id));
             String email = account.getEmail();
             if (email == null) {
