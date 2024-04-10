@@ -232,7 +232,6 @@ public class EnterpriseUserController {
             @RequestParam("message") String message,
             @RequestParam("address") String address,
             @RequestParam("public_key") String public_key) throws Exception {
-        System.out.println("11111111");
         File f = MultipartFileToFileConverter.convert(file);
         if (f == null) {
             return CommonResponse.createForError(2,"文件已存在，请重新上传后重试");
