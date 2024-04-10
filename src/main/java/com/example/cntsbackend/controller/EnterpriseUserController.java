@@ -77,8 +77,11 @@ public class EnterpriseUserController {
      */
     @GetMapping("/enterprise/transaction/remain")
     @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
-    public CommonResponse<List<QuotaSaleDto>> getAllRemain() throws Exception {
-        return quotaSaleService.getAllRemain();
+    public CommonResponse<List<QuotaSaleDto>> getAllRemain(
+            @PathParam("account_id") int account_id
+    ) throws Exception {
+        System.out.println("123");
+        return quotaSaleService.getAllRemain(account_id);
     }
 
     /**

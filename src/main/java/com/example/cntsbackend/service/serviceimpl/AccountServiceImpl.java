@@ -388,7 +388,7 @@ public class AccountServiceImpl implements AccountService {
 
     //-------------------------------------------管理员------------------------------------------------------
 
-    public CommonResponse<String> AgreeApplication(int register_application_id, int account_id) throws Exception {
+    public CommonResponse<String> AgreeApplication(int register_application_id, int account_id, int amount) throws Exception {
         RegisterApplication registerApplication = registerApplicationMapper.selectOne(new QueryWrapper<RegisterApplication>().eq("register_application_id", register_application_id));
         if(registerApplication != null){
             registerApplication.setConductor_id(account_id);
@@ -413,7 +413,7 @@ public class AccountServiceImpl implements AccountService {
             accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type,public_key,file_address,secret_key));
             if(type == 1){
                 Account account = accountMapper.selectOne(new QueryWrapper<Account>().eq("email", email));
-                accountLimitMapper.insert(new AccountLimit(account.getAccount_id(),500,0));
+                accountLimitMapper.insert(new AccountLimit(account.getAccount_id(),amount,0));
             }
             return CommonResponse.createForSuccess("审核成功，同意注册");
         }else return CommonResponse.createForError("审核失败，该请求注册id不存在");
@@ -466,8 +466,15 @@ public class AccountServiceImpl implements AccountService {
         List<RegisterApplication> registerApplications = registerApplicationMapper.selectList(new QueryWrapper<RegisterApplication>().eq("state", 0));
         for (RegisterApplication registerApplication : registerApplications) {
             String email = registerApplication.getEmail();
+            String public_key = registerApplication.getPublic_key();
             email = AES.decrypt(email, AES.hexToBytes(KEY));
+            if (public_key == null || public_key.isEmpty()) {
+                public_key = "";
+            }else {
+                public_key = AES.decrypt(public_key, AES.hexToBytes(KEY));
+            }
             registerApplication.setEmail(email);
+            registerApplication.setPublic_key(public_key);
             registerApplication.setPassword("");
         }
         return CommonResponse.createForSuccess("查询未审核申请信息成功",registerApplications);

@@ -56,7 +56,7 @@ public interface AccountService {
     //-----------------------------------管理员--------------------------------------
 
     //同意注册
-    CommonResponse<String> AgreeApplication(int register_application_id, int account_id) throws Exception;
+    CommonResponse<String> AgreeApplication(int register_application_id, int account_id, int amount) throws Exception;
     //拒绝注册
     CommonResponse<String> RefuseApplication(int register_application_id, int account_id);
     //同意修改个人信息

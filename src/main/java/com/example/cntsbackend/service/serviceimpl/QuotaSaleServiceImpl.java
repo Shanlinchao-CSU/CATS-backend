@@ -109,14 +109,14 @@ public class QuotaSaleServiceImpl implements QuotaSaleService {
         return CommonResponse.createForSuccess("查询上月额度成功",quotaSaleList);
     }
 
-    public CommonResponse<List<QuotaSaleDto>> getAllRemain() throws Exception {
+    public CommonResponse<List<QuotaSaleDto>> getAllRemain(int account_id) throws Exception {
         // 获取当前时间的上个月份
         YearMonth currentYearMonth = YearMonth.now();
         YearMonth previousYearMonth = currentYearMonth.minusMonths(1);
         // 格式化为"yyyy-MM"的字符串
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
         String previousMonthString = previousYearMonth.format(formatter);
-        List<QuotaSale> quotaSaleList = quotaSaleMapper.selectList(new QueryWrapper<QuotaSale>().eq("month",previousMonthString));
+        List<QuotaSale> quotaSaleList = quotaSaleMapper.selectList(new QueryWrapper<QuotaSale>().eq("month",previousMonthString).ne("seller_id",account_id));
         List<QuotaSaleDto> quotaSaleDtoList = new ArrayList<>();
         for (QuotaSale quotaSale : quotaSaleList) {
             int seller_id = quotaSale.getSeller_id();

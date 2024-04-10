@@ -163,8 +163,9 @@ public class AdministratorController {
     @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> AgreeApplication(
             @PathParam("register_application_id") int register_application_id,
-            @PathParam("account_id") int account_id) throws Exception {
-        return accountService.AgreeApplication(register_application_id, account_id);
+            @PathParam("account_id") int account_id,
+            @PathParam("amount") int amount) throws Exception {
+        return accountService.AgreeApplication(register_application_id, account_id, amount);
     }
 
     /**

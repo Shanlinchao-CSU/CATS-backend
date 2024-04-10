@@ -2,10 +2,7 @@ package com.example.cntsbackend;
 
 import com.example.cntsbackend.common.CommonResponse;
 import com.example.cntsbackend.domain.*;
-import com.example.cntsbackend.dto.AccountDto;
-import com.example.cntsbackend.dto.AccountingRecordDto;
-import com.example.cntsbackend.dto.QuotaSaleDto;
-import com.example.cntsbackend.dto.TransactionDto;
+import com.example.cntsbackend.dto.*;
 import com.example.cntsbackend.service.QuotaSaleService;
 import com.example.cntsbackend.service.RedisService;
 import com.example.cntsbackend.service.serviceimpl.*;
@@ -290,9 +287,8 @@ class CntsBackendApplicationTests {
 
 
     @Test
-    public void mutest(){
-        CommonResponse<List<QuotaSale>> sale = quotaSaleService.getRemain(31);
-        System.out.println(sale);
+    public void mutest() throws Exception {
+        accountService.AgreeApplication(19,1,200);
     }
     @Test
     public void getMyCarbonAccounting(){
@@ -325,7 +321,7 @@ class CntsBackendApplicationTests {
     @Test
     public void encryptTest() throws Exception {
         //String context = "0x8b751a0226707Ef8Df389078B288D13A415343b7";
-        String context = "0x2F875A7c2069a7b389C24e6227755cDE6494e56D";
+        String context = "0x8b751a0226707Ef8Df389078B288D13A415343b7";
         String result = AES.encrypt(context);
         System.out.println(result);
     }
@@ -372,9 +368,10 @@ class CntsBackendApplicationTests {
 
     @Test
     public void GetMyUpdateAccountInfo() throws Exception {
-        CommonResponse<UpdateAccount> updateAccountCommonResponse = accountService.GetMyUpdateAccountInfo(1);
-        System.out.println(updateAccountCommonResponse.getMessage());
-        System.out.println(updateAccountCommonResponse.getData());
+//        CommonResponse<UpdateAccount> updateAccountCommonResponse = accountService.GetMyUpdateAccountInfo(1);
+//        System.out.println(updateAccountCommonResponse.getMessage());
+//        System.out.println(updateAccountCommonResponse.getData());
+//        transactionService.CompleteTransaction(0,1,50);
     }
 
 }
