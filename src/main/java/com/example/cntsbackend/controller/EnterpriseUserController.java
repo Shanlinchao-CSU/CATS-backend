@@ -6,10 +6,7 @@ import com.example.cntsbackend.domain.AccountingRecord;
 import com.example.cntsbackend.domain.QuotaSale;
 import com.example.cntsbackend.domain.Transaction;
 import com.example.cntsbackend.domain.UpdateAccount;
-import com.example.cntsbackend.dto.AccountDto;
-import com.example.cntsbackend.dto.AccountingRecordDto;
-import com.example.cntsbackend.dto.QuotaSaleDto;
-import com.example.cntsbackend.dto.TransactionDto;
+import com.example.cntsbackend.dto.*;
 import com.example.cntsbackend.service.*;
 import com.example.cntsbackend.util.MultipartFileToFileConverter;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -143,18 +140,20 @@ public class EnterpriseUserController {
     /**
      * 额度购买，第一个参数为买家id，第二个参数为额度发布信息的id，第三个参数为要买的额度
      *
-     * @param account_id   买家ID
-     * @param quotaSale_id 额度发布信息ID
-     * @param amount       要买的额度
+     * @param transformDto 购买信息
      * @return 购买结果 CommonResponse<String>
      */
     @PatchMapping("/enterprise/transaction/amount")
     @LOG(moduleName = MODULE_NAME, moduleVersion = MODULE_VERSION)
     public CommonResponse<String> CompleteTransaction(
-            @PathParam("account_id") int account_id,
-            @PathParam("quotaSale_id") int quotaSale_id,
-            @PathParam("amount") double amount) {
-        return transactionService.CompleteTransaction(account_id, quotaSale_id, amount);
+            @RequestBody TransformDto transformDto) {
+        // 同步区块链数据
+        accountService.getT_coinAndT_limit(transformDto.getBlockInfoList());
+        // 完成交易
+        return transactionService.CompleteTransaction(
+                transformDto.getAccount_id(),
+                transformDto.getQuotaSale_id(),
+                transformDto.getAmount());
     }
 
     /**
