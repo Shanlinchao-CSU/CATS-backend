@@ -406,6 +406,7 @@ public class AccountServiceImpl implements AccountService {
             String public_key = registerApplication.getPublic_key();
             String secret_key = "";
             if(public_key != null){
+                public_key = AES.decrypt(public_key,AES.hexToBytes(KEY));
                 byte[] bytes = AES.generateKey(public_key);
                 secret_key = Arrays.toString(bytes);
             }
