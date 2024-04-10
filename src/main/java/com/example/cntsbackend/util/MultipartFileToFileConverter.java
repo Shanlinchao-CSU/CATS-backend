@@ -18,6 +18,11 @@ public class MultipartFileToFileConverter {
         tempFile.delete();
         // 文件保存路径
         String prefix = System.getProperty("user.dir") + "\\data\\upload\\";
+        // 检查是否有此文件夹
+        File folder = new File(prefix);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
         // 查看文件夹下是否有重名文件
         if(checkFile(prefix, etag)){
             return null;

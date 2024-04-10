@@ -241,9 +241,12 @@ public class EnterpriseUserController {
             if (accountService.VerifyPhoneCode(phone, code).getData()) {
                 return registerApplicationService.EnterpriseUserRegister(f, name, password, phone, enterprise_type, type, public_key);
             }
-            else
+            else{
+                f.delete();
                 return CommonResponse.createForError(1,"验证码错误");
+            }
         }else{
+            f.delete();
             return CommonResponse.createForError(3,"数字签名错误");
         }
     }
