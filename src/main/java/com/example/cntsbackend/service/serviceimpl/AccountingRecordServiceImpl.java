@@ -219,6 +219,10 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
         // 格式化为"yyyy-MM"的字符串
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
         String previousMonthString = previousYearMonth.format(formatter);
+        AccountingRecord accountingRecord1 = accountingRecordMapper.selectOne(new QueryWrapper<AccountingRecord>().eq("enterprise_id", enterprise_id).eq("month", previousMonthString).ne("state", 2));
+        if(accountingRecord1!=null){
+            return CommonResponse.createForError("您已提交过碳核算");
+        }
         //获取当前时间
         SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formatedDateTime = format.format(new Date());
