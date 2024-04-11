@@ -409,7 +409,7 @@ public class AccountServiceImpl implements AccountService {
             String secret_key = "";
             if(public_key != null){
                 byte[] bytes = AES.generateKey(AES.decrypt(public_key,AES.hexToBytes(KEY)));
-                secret_key = Arrays.toString(bytes);
+                secret_key = AES.bytesToHex(bytes);
             }
             accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type,public_key,file_address,secret_key));
             if(type == 1){

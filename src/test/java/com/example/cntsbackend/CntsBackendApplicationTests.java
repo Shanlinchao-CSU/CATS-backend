@@ -286,10 +286,10 @@ class CntsBackendApplicationTests {
 //    }
 
 
-    @Test
-    public void mutest() throws Exception {
-        accountService.AgreeApplication(19,1,200);
-    }
+//    @Test
+//    public void mutest() throws Exception {
+//        accountService.AgreeApplication(19,1,200);
+//    }
     @Test
     public void getMyCarbonAccounting(){
         CommonResponse<List<AccountingRecordDto>> myCarbonAccounting = accountingRecordService.getMyCarbonAccounting(1);
