@@ -140,12 +140,12 @@ public class QuotaSaleServiceImpl implements QuotaSaleService {
         //判断用户是否进行了上月的碳核算
         AccountingRecord accountingRecord = accountingRecordMapper.selectOne(new QueryWrapper<AccountingRecord>().eq("enterprise_id", account_id).eq("month", previousMonthString).eq("state", 0));
         AccountLimit accountLimit = accountLimitMapper.selectOne(new QueryWrapper<AccountLimit>().eq("account_id", account_id));
-        CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", account_id));
-        double t_remain = cMessage.getT_remain();
-        double t_limit = accountLimit.getT_limit();
+        CMessage cMessage = cMessageMapper.selectOne(new QueryWrapper<CMessage>().eq("account_id", account_id).eq("month", previousMonthString));
         if(accountingRecord == null){
+            double t_limit = accountLimit.getT_limit();
             return CommonResponse.createForSuccess("获取用户的默认额度成功",t_limit);
         }else {
+            double t_remain = cMessage.getT_remain();
             double allquota = 0;
             List<QuotaSale> quotaSaleList = quotaSaleMapper.selectList(new QueryWrapper<QuotaSale>().eq("seller_id", account_id).eq("month", previousMonthString));
             for (QuotaSale quotaSale : quotaSaleList) {
@@ -153,7 +153,6 @@ public class QuotaSaleServiceImpl implements QuotaSaleService {
                 allquota += quota;
             }
             t_remain -= allquota;
-
             return CommonResponse.createForSuccess("获取用户还能出售额度成功",t_remain);
         }
 

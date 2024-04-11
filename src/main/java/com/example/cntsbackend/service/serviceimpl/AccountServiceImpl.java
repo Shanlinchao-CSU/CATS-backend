@@ -184,7 +184,9 @@ public class AccountServiceImpl implements AccountService {
             Map<String, Object> map = new HashMap<>();
             String token = UUID.randomUUID().toString();
             String phone = account.getPhone();
-            phone = AES.decrypt(phone, AES.hexToBytes(KEY));
+            if (phone != null){
+                phone = AES.decrypt(phone, AES.hexToBytes(KEY));
+            }
             String email = account.getEmail();
             if(email != null){
                 email = AES.decrypt(email, AES.hexToBytes(KEY));
@@ -319,7 +321,7 @@ public class AccountServiceImpl implements AccountService {
             case 1 -> cnType="电网企业";
             case 2 -> cnType="钢铁生产企业";
             case 3 -> cnType="化工生产企业";
-            case 4 -> cnType="电解铝生产企业企业";
+            case 4 -> cnType="电解铝生产企业";
             case 5 -> cnType="镁冶炼企业";
             case 6 -> cnType="平板玻璃生产企业";
             case 7 -> cnType="水泥生产企业";
@@ -406,8 +408,7 @@ public class AccountServiceImpl implements AccountService {
             String public_key = registerApplication.getPublic_key();
             String secret_key = "";
             if(public_key != null){
-                public_key = AES.decrypt(public_key,AES.hexToBytes(KEY));
-                byte[] bytes = AES.generateKey(public_key);
+                byte[] bytes = AES.generateKey(AES.decrypt(public_key,AES.hexToBytes(KEY)));
                 secret_key = Arrays.toString(bytes);
             }
             accountMapper.insert(new Account(account_name, password, phone, email, type,enterprise_type,public_key,file_address,secret_key));
@@ -493,7 +494,9 @@ public class AccountServiceImpl implements AccountService {
                 cnType = getCNType(enterprise_type);
             }
             String phone = account.getPhone();
-            phone = AES.decrypt(phone, AES.hexToBytes(KEY));
+            if (phone != null){
+                phone = AES.decrypt(phone, AES.hexToBytes(KEY));
+            }
             String email = account.getEmail();
             if(email !=null){
                 email = AES.decrypt(email, AES.hexToBytes(KEY));

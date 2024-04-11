@@ -47,7 +47,7 @@ public class TransformDto {
                 continue;
             }
             String[] blockDataArray1 = blockData.split(",");
-            BlockInfoDto blockInfoDto = new BlockInfoDto(Integer.parseInt(blockDataArray1[0]), Double.parseDouble(blockDataArray1[1]), Double.parseDouble(blockDataArray1[2]));
+            BlockInfoDto blockInfoDto = new BlockInfoDto(Integer.parseInt(blockDataArray1[0]), Double.parseDouble(blockDataArray1[2]), Double.parseDouble(blockDataArray1[1]));
             blockInfoList.add(blockInfoDto);
         }
         return blockInfoList;
