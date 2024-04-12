@@ -41,7 +41,7 @@ public class OrderStreamListener implements StreamListener<String, ObjectRecord<
                 case "e":
                     String email = values[1];
                     String verificationCode = values[2];
-                    SendMailUtil.sendQQEmail(email, Integer.parseInt(verificationCode));
+                    SendMailUtil.sendQQEmail(email, verificationCode);
                     boolean b = redisService.hasKey(email);
                     if(b){
                         redisService.delete(email);

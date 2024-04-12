@@ -15,7 +15,7 @@ public class SendMailUtil {
      * @param code		    验证码
      * @return
      */
-    public static boolean sendQQEmail(String recevices,int code){
+    public static boolean sendQQEmail(String recevices,String code){
         String from_email ="2674314843@qq.com";
         String pwd = "wahqdfonefgqeaed";
         Properties props = new Properties();
