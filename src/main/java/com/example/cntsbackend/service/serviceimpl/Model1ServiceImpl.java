@@ -33,6 +33,10 @@ public class Model1ServiceImpl {
     Model1Mapper model1Mapper;
     //todo:用户需要输入各燃料的消耗值，生物质混合燃料的消耗值、低位发热值、生物质含量，国内与国际化石燃料消耗量(double[] FC3)，国内与国际消耗的生物质混合燃料的消耗量(double[] FC4)、低位发热值以及生物质混合燃料中生物质的含量、数据的月份、公司账户名、企业的净购入电量（MWh）、区域电网年平均供电排放因子（tCO2/MWh）、企业净购入的热力（GJ）
     public static double Model1CarbonAccounting(double[] FC1,double[] FC2,double[] NCV2,double[] BF,double ADE,double EFE,double ADre){
+        double[] AD1 = new double[23];
+        double[] AD2 = new double[23];
+        double[] EF = new double[23];
+        double Eran = 0.0,EE,Ere;
         for (int i = 0; i < AD1.length; i++) {
             AD1[i] = BigDecimalUtil.divide(BigDecimalUtil.multiply(FC1[i],NCV1[i]),1000000);
 //            AD1[i] = FC1[i] * NCV1[i]  / 1000000;
