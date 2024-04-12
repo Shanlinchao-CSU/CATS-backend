@@ -31,7 +31,7 @@ public class AccountServiceImpl implements AccountService {
     private RedisService redisService;
     @Autowired
     private AccountLimitMapper accountLimitMapper;
-    private static final String CHARACTERS = "0123456789";
+    private static final String CHARACTERS = "123456789";
     private static final int CODE_LENGTH = 4;
     private static final String KEY = "2a34575d0f1b7cb39a2c117c0650311a4d3a6e4f507142b45cc3d144bd62ec41";
 
