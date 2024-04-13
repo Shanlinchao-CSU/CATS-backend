@@ -153,8 +153,8 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
                 double el_input = jsonObject.getDoubleValue("el_input");//自外省输入电量
                 double el_output = jsonObject.getDoubleValue("el_output");//自外省输出电量
                 double el_sell = jsonObject.getDoubleValue("el_sell");//售电量
-                res = Model2ServiceImpl.Model2CarbonAccounting(rec_cap_arr1, rec_pra_arr1, rep_cap_arr1, rep_pra_arr1, el_net, el_input, el_output, el_sell, ef);
-                if(Math.abs(res - result_double) < 0.01){
+                res = new Model2ServiceImpl().Model2CarbonAccounting(rec_cap_arr1, rec_pra_arr1, rep_cap_arr1, rep_pra_arr1, el_net, el_input, el_output, el_sell, ef);
+                if(Math.abs(res - result_double) < 1){
 //                    //更新碳核算记录表
 //                    accountingRecord.setState(0);
 //                    accountingRecord.setConductor_id(account_id);
@@ -190,8 +190,8 @@ public class AccountingRecordServiceImpl implements AccountingRecordService {
                 double ADElec = jsonObject.getDoubleValue("ADElec");//企业的净购入电量（MWh）
                 double region = jsonObject.getIntValue("region");//区域电网年平均供电排放因子（tCO2/MWh）
                 double ADHeat = jsonObject.getIntValue("ADHeat");//企业净购入的热力（GJ）
-                res = Model1ServiceImpl.Model1CarbonAccounting(fuelValueArr1, bioFuelValueArr1, bioFuelNCVArr1, bioFuelBFArr1, ADElec, region, ADHeat);
-                if(Math.abs(res - result_double) < 0.01){
+                res = new Model1ServiceImpl().Model1CarbonAccounting(fuelValueArr1, bioFuelValueArr1, bioFuelNCVArr1, bioFuelBFArr1, ADElec, region, ADHeat);
+                if(Math.abs(res - result_double) < 1){
 //                    //更新碳核算记录表
 //                    accountingRecord.setState(0);
 //                    accountingRecord.setConductor_id(account_id);

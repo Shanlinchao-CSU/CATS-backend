@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface AccountService {
+    public String generateVerificationCode();
 
     //----------------------------------企业用户--------------------------------
 

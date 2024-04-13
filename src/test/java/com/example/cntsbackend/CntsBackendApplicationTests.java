@@ -321,9 +321,18 @@ class CntsBackendApplicationTests {
     @Test
     public void encryptTest() throws Exception {
         //String context = "0x8b751a0226707Ef8Df389078B288D13A415343b7";
-        String context = "0x8b751a0226707Ef8Df389078B288D13A415343b7";
-        String result = AES.encrypt(context);
-        System.out.println(result);
+        String context1 = "1111111111@qq.com";
+        String context2 = "2222222222@qq.com";
+        String context3 = "3333333333@qq.com";
+        String context4 = "4444444444@qq.com";
+        String context5 = "5555555555@qq.com";
+        String context6 = "6666666666@qq.com";
+        System.out.println(AES.encrypt(context1));
+        System.out.println(AES.encrypt(context2));
+        System.out.println(AES.encrypt(context3));
+        System.out.println(AES.encrypt(context4));
+        System.out.println(AES.encrypt(context5));
+        System.out.println(AES.encrypt(context6));
     }
 
     private static final String DEFAULT_KEY = "2a34575d0f1b7cb39a2c117c0650311a4d3a6e4f507142b45cc3d144bd62ec41";
@@ -368,10 +377,7 @@ class CntsBackendApplicationTests {
 
     @Test
     public void GetMyUpdateAccountInfo() throws Exception {
-//        CommonResponse<UpdateAccount> updateAccountCommonResponse = accountService.GetMyUpdateAccountInfo(1);
-//        System.out.println(updateAccountCommonResponse.getMessage());
-//        System.out.println(updateAccountCommonResponse.getData());
-//        transactionService.CompleteTransaction(0,1,50);
+
     }
 
 }

@@ -31,7 +31,7 @@ public class AccountServiceImpl implements AccountService {
     private RedisService redisService;
     @Autowired
     private AccountLimitMapper accountLimitMapper;
-    private static final String CHARACTERS = "0123456789";
+    private static final String CHARACTERS = "123456789";
     private static final int CODE_LENGTH = 4;
     private static final String KEY = "2a34575d0f1b7cb39a2c117c0650311a4d3a6e4f507142b45cc3d144bd62ec41";
 
@@ -91,7 +91,7 @@ public class AccountServiceImpl implements AccountService {
         return CommonResponse.createForSuccess("SUCCESS",verificationCode); // 发送成功
     }
     //生成四位验证码
-    private String generateVerificationCode() {
+    public String generateVerificationCode() {
         Random random = new Random();
         StringBuilder codeBuilder = new StringBuilder(CODE_LENGTH);
 
@@ -537,7 +537,9 @@ public class AccountServiceImpl implements AccountService {
                 cnType = getCNType(enterprise_type);
             }
             String phone = account.getPhone();
-            phone = AES.decrypt(phone, AES.hexToBytes(KEY));
+            if (phone == null) {
+                phone = "无";
+            }else phone = AES.decrypt(phone, AES.hexToBytes(KEY));
             AccountDto accountDto = new AccountDto(account_id, account.getAccount_name(), phone, email, cnType, cMessage.getMonth(), t_remain,t_limit);
             accountDtoList.add(accountDto);
         }
@@ -553,7 +555,9 @@ public class AccountServiceImpl implements AccountService {
             if(account != null){
                 int account_id = account.getAccount_id();
                 String phone = account.getPhone();
-                phone = AES.decrypt(phone, AES.hexToBytes(KEY));
+                if (phone == null) {
+                    phone = "无";
+                }else phone = AES.decrypt(phone, AES.hexToBytes(KEY));
                 String email = account.getEmail();
                 if (email == null) {
                     email = "无";

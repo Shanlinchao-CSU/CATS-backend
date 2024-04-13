@@ -28,6 +28,7 @@ public class AES {
 
     // 加密函数
     public static String encrypt(String text, byte[] key) throws Exception {
+        text = text.toLowerCase();
         byte[] iv = Arrays.copyOfRange(key, 0, 16);
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
@@ -38,6 +39,7 @@ public class AES {
 
     // 解密函数
     public static String decrypt(String encryptedText, byte[] key) throws Exception {
+        encryptedText = encryptedText.toLowerCase();
         byte[] iv = Arrays.copyOfRange(key, 0, 16);
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
