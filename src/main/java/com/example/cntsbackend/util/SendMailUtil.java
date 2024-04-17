@@ -37,7 +37,7 @@ public class SendMailUtil {
 
             String str = "<!DOCTYPE html><html><head><meta charset='UTF-8'></head><body><p style='font-size: 20px;font-weight:bold;'>您好！</p>"
                     + "<p style='text-indent:2em; font-size: 20px;'>欢迎登录碳交易系统，您本次的验证码是 "
-                    + "<span style='font-size:30px;font-weight:bold;color:red;'>" + "code" + "</span>，3分钟之内有效，请尽快使用！</p>"
+                    + "<span style='font-size:30px;font-weight:bold;color:red;'>" + code + "</span>，3分钟之内有效，请尽快使用！</p>"
                     + "<p style='text-align:right; padding-right: 20px;'"
                     + "<a href='http://www.hyycinfo.com'  style='font-size: 18px'>碳碳交易有限公司</a></p>"
                     + "<span style='font-size: 18px; float:right; margin-right: 60px;'>" + sdf.format(new Date()) + "</span></body></html>";
